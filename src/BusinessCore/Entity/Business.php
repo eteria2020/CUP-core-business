@@ -292,12 +292,13 @@ class Business
         $this->{$field} = (empty($value) ? null : $value);
     }
 
-    private function updateEmail($field)
+    private function updateEmail($email)
     {
         $validator = new EmailAddress();
-        if (!$validator->isValid($field)) {
+        if (!$validator->isValid($email)) {
             throw new InvalidElementException("L'email inserita non è valida");
         }
+        $this->email = $email;
     }
 
     private function updateVatNumber($vat)
@@ -306,12 +307,12 @@ class Business
         if (!$validator->isValid($vat)) {
             throw new InvalidElementException("Partita IVA non valida");
         }
+        $this->vatNumber = $vat;
     }
 
     private function updateDomains($domains)
     {
         $validator = new Hostname();
-
         $domains = explode(" ", $domains);
         $domains = array_filter($domains);
         foreach ($domains as $domain) {
