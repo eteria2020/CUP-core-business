@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity;
 
+use BusinessCore\Form\InputData\BusinessData;
 use BusinessCore\Form\Validator\VatNumber;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Exception\InvalidElementException;
@@ -138,8 +139,15 @@ class Business
      */
     private $updatedTs;
 
+    /**
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="BusinessEmployee", mappedBy="business")
+     */
+    private $businessEmployee;
 
-    public function __construct($code, $data)
+
+    public function __construct($code, BusinessData $data)
     {
         $this->code = $code;
         $this->insertedTs = date_create();
@@ -152,6 +160,14 @@ class Business
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
     }
 
     /**
@@ -272,6 +288,20 @@ class Business
     public function isBusinessMailControl()
     {
         return $this->businessMailControl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmployees()
+    {
+        $associations = $this->businessEmployee;
+        $result = [];
+
+        foreach ($associations as $association) {
+            $result[] = $association->getEmployee();
+        }
+        return $result;
     }
 
     /**

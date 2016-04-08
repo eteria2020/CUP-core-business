@@ -104,6 +104,11 @@ class BusinessService
         return $this->businessRepository->getBusinessByCode($code);
     }
 
+    public function removeEmployee($businessCode, $employeeId)
+    {
+        return $this->businessRepository->removeEmployee($businessCode, $employeeId);
+    }
+
     public function getUniqueCode()
     {
         $code = substr(md5(uniqid(rand(), true)), 0, 6);
