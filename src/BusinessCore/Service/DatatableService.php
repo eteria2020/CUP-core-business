@@ -41,19 +41,12 @@ class DatatableService
             !empty($options['searchValue']) &&
             !empty($options['column'])
         ) {
-            // if there is a selected filter, we apply it to the query
-            $checkIdColumn = strpos($options['column'], '.id');
 
-            if ($options['column'] == 'id' || $checkIdColumn) {
-                $withAndWhere = $where ? 'AND ' : 'WHERE ';
-                $dql .= $withAndWhere . $options['column'] . ' = :id ';
-                $as_parameters['id'] = (int)$options['searchValue'];
-            } else {
-                $value = strtolower("%" . $options['searchValue'] . "%");
-                $withAndWhere = $where ? 'AND ' : 'WHERE ';
-                $dql .= $withAndWhere . ' LOWER(' . $options['column'] . ') LIKE :value ';
-                $as_parameters['value'] = $value;
-            }
+            $value = strtolower("%" . $options['searchValue'] . "%");
+            $withAndWhere = $where ? 'AND ' : 'WHERE ';
+            $dql .= $withAndWhere . ' LOWER(' . $options['column'] . ') LIKE :value ';
+            $as_parameters['value'] = $value;
+
             $where = true;
         }
 

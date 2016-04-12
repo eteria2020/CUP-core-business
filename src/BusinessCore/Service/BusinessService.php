@@ -6,7 +6,10 @@ use BusinessCore\Entity\Business;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Form\InputData\BusinessData;
 
+use BusinessCore\Form\InputData\BusinessPaymentParams;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Zend\Mvc\I18n\Translator;
 
 class BusinessService
@@ -81,12 +84,17 @@ class BusinessService
         }, $businesses);
     }
 
-    public function addBusiness(BusinessData $businessData)
+    public function addBusiness(BusinessData $businessData, BusinessPaymentParams $businessParams)
     {
-        $business = new Business($businessData->getCode(), $businessData->getData());
+        $code = $this->getUniqueCode();
+        $business = Business::fromBusinessDataAndParams($code, $businessData, $businessParams);
 
-        $this->entityManager->persist($business);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->persist($business);
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            throw new \Exception($this->translator->translate("Errore di duplicazione codice azienda"));
+        }
         return $business;
     }
 
