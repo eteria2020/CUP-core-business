@@ -2,7 +2,7 @@
 
 namespace BusinessCore\Form\InputData;
 
-class BusinessPaymentParams
+class BusinessParams
 {
     private $paymentType;
     private $paymentFrequence;
@@ -46,5 +46,4 @@ class BusinessPaymentParams
     {
         return $this->businessMailControl;
     }
-
 }

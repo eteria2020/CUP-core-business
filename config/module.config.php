@@ -21,7 +21,7 @@ return [
     'service_manager' => [
         'factories' => [
             'BusinessCore\Service\BusinessService' => 'BusinessCore\Service\BusinessServiceFactory',
-            'BusinessCore\Service\Datatable' => 'BusinessCore\Service\DatatableServiceFactory',
+            'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory'
         ]
     ],
 ];

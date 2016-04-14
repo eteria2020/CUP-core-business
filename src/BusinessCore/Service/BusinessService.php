@@ -4,87 +4,59 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\Repository\BusinessRepository;
-use BusinessCore\Form\InputData\BusinessData;
+use BusinessCore\Form\InputData\BusinessDetails;
+use BusinessCore\Form\InputData\BusinessParams;
+use BusinessCore\Service\Helper\SearchCriteria;
 
-use BusinessCore\Form\InputData\BusinessPaymentParams;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Zend\Mvc\I18n\Translator;
 
 class BusinessService
 {
     /**
-     * @var string website base url
-     */
-    private $url;
-
-    /**
      * @var Translator
      */
     private $translator;
-    /**
-     * @var DatatableService
-     */
-    private $datatableService;
+
     /**
      * @var BusinessRepository
      */
+
     private $businessRepository;
     /**
      * @var EntityManager
      */
+
     private $entityManager;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessRepository $businessRepository
-     * @param DatatableService $datatableService
-     * @param Translator $translator
+     * @param $translator
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessRepository $businessRepository,
-        DatatableService $datatableService,
-        Translator $translator
+        $translator
     ) {
         $this->translator = $translator;
         $this->businessRepository = $businessRepository;
         $this->entityManager = $entityManager;
-        $this->datatableService = $datatableService;
     }
 
     public function getTotalBusinesses()
     {
-        return count($this->businessRepository->findAll());
+        return $this->businessRepository->countAll();
     }
 
-    public function getDataDataTable(array $filters = [], $count = false)
+    public function searchBusinesses(SearchCriteria $searchCriteria)
     {
-        $businesses = $this->datatableService->getData('Business', $filters, $count);
-
-        if ($count) {
-            return $businesses;
-        }
-
-        return array_map(function (Business $business) {
-            return [
-                'e' => [
-                    'name' => $business->getName(),
-                    'code' => $business->getCode(),
-                    'vatNumber' => $business->getVatNumber(),
-                    'domains' => $business->getDomains(),
-                    'city' => $business->getCity(),
-                    'phone' => $business->getPhone(),
-                    'insertedTs' => $business->getInsertedTs()->format('d-m-Y H:i:s'),
-                ],
-                'button' => $business->getCode()
-            ];
-        }, $businesses);
+        return $this->businessRepository->searchBusinesses($searchCriteria);
     }
 
-    public function addBusiness(BusinessData $businessData, BusinessPaymentParams $businessParams)
+    public function addBusiness(BusinessDetails $businessData, BusinessParams $businessParams)
     {
         $code = $this->getUniqueCode();
         $business = Business::fromBusinessDataAndParams($code, $businessData, $businessParams);

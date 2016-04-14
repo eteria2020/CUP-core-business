@@ -2,13 +2,10 @@
 
 namespace BusinessCore\Entity;
 
-use BusinessCore\Form\InputData\BusinessData;
+use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Form\InputData\BusinessParams;
-use BusinessCore\Form\InputData\BusinessPaymentParams;
-use BusinessCore\Form\Validator\VatNumber;
+
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Exception\InvalidElementException;
-use Zend\Validator\EmailAddress;
 use Zend\Validator\Hostname;
 
 /**
@@ -141,7 +138,6 @@ class Business
      */
     private $updatedTs;
 
-
     /**
      * Business constructor.
      * @param $code
@@ -152,8 +148,11 @@ class Business
         $this->insertedTs = date_create();
     }
 
-    public static function fromBusinessDataAndParams($code, BusinessData $businessData, BusinessPaymentParams $businessParams)
-    {
+    public static function fromBusinessDataAndParams(
+        $code,
+        BusinessDetails $businessData,
+        BusinessParams $businessParams
+    ) {
         $business = new Business($code);
         $business->update($businessData);
         $business->update($businessParams);
@@ -311,7 +310,7 @@ class Business
 
     public function update($data)
     {
-        if ($data instanceof BusinessData) {
+        if ($data instanceof BusinessDetails) {
             $this->updateData($data);
         } else {
             $this->updateParams($data);
@@ -319,7 +318,7 @@ class Business
         $this->updatedTs = date_create();
     }
 
-    public function updateData(BusinessData $data)
+    public function updateData(BusinessDetails $data)
     {
         $this->name = $data->getName();
         $this->domains = $data->getDomains();
@@ -333,7 +332,7 @@ class Business
         $this->fax = $data->getFax();
     }
 
-    public function updateParams(BusinessPaymentParams $data)
+    public function updateParams(BusinessParams $data)
     {
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();

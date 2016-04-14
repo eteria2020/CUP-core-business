@@ -2,7 +2,7 @@
 
 namespace BusinessCore\Form\InputData;
 
-class BusinessData
+class BusinessDetails
 {
     private $name;
     private $domains;

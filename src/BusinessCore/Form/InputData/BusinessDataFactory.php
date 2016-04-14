@@ -11,7 +11,7 @@ class BusinessDataFactory
 {
     /**
      * @param array $data
-     * @return BusinessData
+     * @return BusinessDetails
      * @throws InvalidBusinessFormException
      */
     public static function businessDatafromArray(array $data)
@@ -65,8 +65,18 @@ class BusinessDataFactory
                 throw new InvalidBusinessFormException("I domini inseriti non sono validi, devono essere nel formato 'example.com'");
             }
         }
-
-        return new BusinessData($name, $domains, $address, $zipCode, $province, $city, $vatNumber, $email, $phone, $fax);
+        return new BusinessDetails(
+            $name,
+            $domains,
+            $address,
+            $zipCode,
+            $province,
+            $city,
+            $vatNumber,
+            $email,
+            $phone,
+            $fax
+        );
     }
 
     public static function businessParamsfromArray(array $data)
@@ -81,12 +91,11 @@ class BusinessDataFactory
         if (empty($paymentFrequence)) {
             $paymentFrequence = null;
         }
-
         if (is_nan($businessMailControl)) {
             throw new InvalidBusinessFormException("Si è verificato un errore, riprovare");
         }
 
-        return new BusinessPaymentParams($paymentType, $paymentFrequence, $businessMailControl);
+        return new BusinessParams($paymentType, $paymentFrequence, $businessMailControl);
 
     }
 }

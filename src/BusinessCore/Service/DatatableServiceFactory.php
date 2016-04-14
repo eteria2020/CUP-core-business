@@ -9,8 +9,6 @@ class DatatableServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
-
-        return new DatatableService($entityManager);
+        return new DatatableService();
     }
 }
