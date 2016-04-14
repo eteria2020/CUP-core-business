@@ -36,6 +36,13 @@ class BusinessEmployee
     private $business;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="blocked", type="boolean", nullable=false)
+     */
+    private $blocked;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="inserted_ts", type="datetime", nullable=false)
@@ -52,7 +59,6 @@ class BusinessEmployee
 
     public function __construct($employee, $business)
     {
-
         $this->employee = $employee;
         $this->business = $business;
     }
@@ -63,5 +69,21 @@ class BusinessEmployee
     public function getEmployee()
     {
         return $this->employee;
+    }
+
+    /**
+     * @return Business
+     */
+    public function getBusiness()
+    {
+        return $this->business;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isBlocked()
+    {
+        return $this->blocked;
     }
 }

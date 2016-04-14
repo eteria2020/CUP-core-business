@@ -109,6 +109,16 @@ class BusinessService
         return $this->businessRepository->removeEmployee($businessCode, $employeeId);
     }
 
+    public function blockEmployee($businessCode, $employeeId)
+    {
+        return $this->businessRepository->setEmployeeBlockStatus($businessCode, $employeeId, true);
+    }
+
+    public function unblockEmployee($businessCode, $employeeId)
+    {
+        return $this->businessRepository->setEmployeeBlockStatus($businessCode, $employeeId, false);
+    }
+
     public function getUniqueCode()
     {
         $code = substr(md5(uniqid(rand(), true)), 0, 6);

@@ -2,6 +2,7 @@ CREATE TABLE businesses.business_employee
 (
   employee_id integer,
   business_code character varying,
+  blocked boolean DEFAULT false,
   confirmed_ts timestamp with time zone DEFAULT NULL,
   inserted_ts timestamp with time zone,
   CONSTRAINT tb_PK PRIMARY KEY (employee_id, business_code),

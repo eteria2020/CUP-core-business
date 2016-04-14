@@ -293,15 +293,9 @@ class Business
     /**
      * @return mixed
      */
-    public function getEmployees()
+    public function getBusinessEmployeesAssociations()
     {
-        $associations = $this->businessEmployee;
-        $result = [];
-
-        foreach ($associations as $association) {
-            $result[] = $association->getEmployee();
-        }
-        return $result;
+        return $this->businessEmployee;
     }
 
     /**

@@ -33,4 +33,21 @@ class BusinessRepository extends \Doctrine\ORM\EntityRepository
 
         return $query->execute();
     }
+
+    public function setEmployeeBlockStatus($businessCode, $employeeId, $block)
+    {
+        {
+            $query =  'UPDATE \BusinessCore\Entity\BusinessEmployee be
+                SET be.blocked = :block
+                WHERE be.business = :code AND
+                be.employee = :employee ' ;
+
+            $query = $this->getEntityManager()->createQuery($query);
+            $query->setParameter('block', $block);
+            $query->setParameter('code', $businessCode);
+            $query->setParameter('employee', $employeeId);
+
+            return $query->execute();
+        }
+    }
 }
