@@ -2,11 +2,11 @@
 
 namespace BusinessCore\Entity;
 
-use BusinessCore\Form\InputData\BusinessData;
-use BusinessCore\Form\Validator\VatNumber;
+
+use BusinessCore\Form\InputData\BusinessDetails;
+use BusinessCore\Form\InputData\BusinessParams;
+
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Form\Exception\InvalidElementException;
-use Zend\Validator\EmailAddress;
 use Zend\Validator\Hostname;
 
 /**
@@ -146,12 +146,21 @@ class Business
      */
     private $businessEmployee;
 
-
-    public function __construct($code, BusinessData $data)
+    public function __construct($code)
     {
         $this->code = $code;
         $this->insertedTs = date_create();
-        $this->update($data);
+    }
+
+    public static function fromBusinessDataAndParams(
+        $code,
+        BusinessDetails $businessData,
+        BusinessParams $businessParams
+    ) {
+        $business = new Business($code);
+        $business->update($businessData);
+        $business->update($businessParams);
+        return $business;
     }
 
     /**
@@ -311,53 +320,34 @@ class Business
         $this->translate('Mensile');
     }
 
-    private function updateField($field, $value)
-    {
-        $this->{$field} = (empty($value) ? null : $value);
-    }
-
-    private function updateEmail($email)
-    {
-        $validator = new EmailAddress();
-        if (!$validator->isValid($email)) {
-            throw new InvalidElementException("L'email inserita non è valida");
-        }
-        $this->email = $email;
-    }
-
-    private function updateVatNumber($vat)
-    {
-        $validator = new VatNumber();
-        if (!$validator->isValid($vat)) {
-            throw new InvalidElementException("Partita IVA non valida");
-        }
-        $this->vatNumber = $vat;
-    }
-
-    private function updateDomains($domains)
-    {
-        $validator = new Hostname();
-        $domains = explode(" ", $domains);
-        $domains = array_filter($domains);
-        foreach ($domains as $domain) {
-            if (!$validator->isValid($domain)) {
-                throw new InvalidElementException("I domini inseriti non sono validi, devono essere nel formato 'example.com'");
-            }
-        }
-        $this->domains = $domains;
-    }
-
     public function update($data)
     {
-        foreach ($data as $key => $field) {
-
-            $function = 'update' . ucfirst($key);
-            if (method_exists($this, $function)) {
-                $this->{$function}($field);
-            } else if (property_exists($this, $key)) {
-                $this->updateField($key, $field);
-            }
+        if ($data instanceof BusinessDetails) {
+            $this->updateData($data);
+        } else {
+            $this->updateParams($data);
         }
         $this->updatedTs = date_create();
+    }
+
+    public function updateData(BusinessDetails $data)
+    {
+        $this->name = $data->getName();
+        $this->domains = $data->getDomains();
+        $this->address = $data->getAddress();
+        $this->zipCode = $data->getZipCode();
+        $this->province = $data->getProvince();
+        $this->city = $data->getCity();
+        $this->vatNumber = $data->getVatNumber();
+        $this->email = $data->getEmail();
+        $this->phone = $data->getPhone();
+        $this->fax = $data->getFax();
+    }
+
+    public function updateParams(BusinessParams $data)
+    {
+        $this->paymentType = $data->getPaymentType();
+        $this->paymentFrequence = $data->getPaymentFrequence();
+        $this->businessMailControl = $data->getBusinessMailControl();
     }
 }

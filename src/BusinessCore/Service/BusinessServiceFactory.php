@@ -11,14 +11,11 @@ class BusinessServiceFactory implements FactoryInterface
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessRepository = $entityManager->getRepository('BusinessCore\Entity\Business');
-        $datatableService = $serviceLocator->get('BusinessCore\Service\Datatable');
-
         $translator = $serviceLocator->get('translator');
 
         return new BusinessService(
             $entityManager,
             $businessRepository,
-            $datatableService,
             $translator
         );
     }
