@@ -307,19 +307,6 @@ class Business
         return $this->businessEmployee;
     }
 
-    /**
-     * This dummy function has the sole purpose of allowing
-     * the parser of POEdit to parse this translations
-     */
-    private function dummyFunctionForPoEdit()
-    {
-        $this->translate('Bonifico');
-        $this->translate('Carta di credito');
-        $this->translate('Settimanale');
-        $this->translate('Quindicinale');
-        $this->translate('Mensile');
-    }
-
     public function update($data)
     {
         if ($data instanceof BusinessDetails) {
@@ -349,5 +336,29 @@ class Business
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();
         $this->businessMailControl = $data->getBusinessMailControl();
+    }
+
+    public function getPendingBusinessEmployees()
+    {
+        $result = [];
+        /** @var BusinessEmployee $be */
+        foreach ($this->businessEmployee as $be) {
+            if ($be->isPending()) {
+                $result[] = $be;
+            }
+        }
+        return $result;
+    }
+
+    public function getApprovedBusinessEmployees()
+    {
+        $result = [];
+        /** @var BusinessEmployee $be */
+        foreach ($this->businessEmployee as $be) {
+            if (!$be->isPending()) {
+                $result[] = $be;
+            }
+        }
+        return $result;
     }
 }

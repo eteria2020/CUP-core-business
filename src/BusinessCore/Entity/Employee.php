@@ -31,13 +31,6 @@ class Employee
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="text", nullable=true)
-     */
-    private $password;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="text", nullable=true)
      */
     private $name;
@@ -174,13 +167,6 @@ class Employee
      * @ORM\Column(name="inserted_ts", type="datetime", nullable=true)
      */
     private $insertedTs;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="update_id", type="bigint", nullable=true)
-     */
-    private $updateId;
 
     /**
      * @var integer

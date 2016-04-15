@@ -16,6 +16,10 @@ class BusinessRepository extends \Doctrine\ORM\EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * @param $code
+     * @return Business
+     */
     public function getBusinessByCode($code)
     {
         $query =  'SELECT e
@@ -41,15 +45,16 @@ class BusinessRepository extends \Doctrine\ORM\EntityRepository
         return $query->execute();
     }
 
-    public function setEmployeeBlockStatus($businessCode, $employeeId, $block)
+    public function setEmployeeStatus($businessCode, $employeeId, $status)
     {
         $query =  'UPDATE \BusinessCore\Entity\BusinessEmployee be
-            SET be.blocked = :block
+            SET be.status = :status,  be.confirmedTs = :now
             WHERE be.business = :code AND
             be.employee = :employee ' ;
 
         $query = $this->getEntityManager()->createQuery($query);
-        $query->setParameter('block', $block);
+        $query->setParameter('status', $status);
+        $query->setParameter('now', date_create());
         $query->setParameter('code', $businessCode);
         $query->setParameter('employee', $employeeId);
 
@@ -85,6 +90,5 @@ class BusinessRepository extends \Doctrine\ORM\EntityRepository
         $query->setDql($dql);
 
         return $query->getResult();
-
     }
 }

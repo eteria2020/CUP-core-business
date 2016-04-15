@@ -1,8 +1,10 @@
+CREATE TYPE employee_status AS ENUM ('pending', 'approved', 'blocked');
+
 CREATE TABLE businesses.business_employee
 (
   employee_id integer,
   business_code character varying,
-  blocked boolean DEFAULT false,
+  status employee_status NOT NULL,
   confirmed_ts timestamp with time zone DEFAULT NULL,
   inserted_ts timestamp with time zone,
   CONSTRAINT tb_PK PRIMARY KEY (employee_id, business_code),
@@ -20,7 +22,6 @@ ALTER TABLE businesses.business_employee
 CREATE OR REPLACE VIEW businesses.employee AS
  SELECT customers.id,
     customers.email,
-    customers.password,
     customers.name,
     customers.surname,
     customers.gender,
@@ -41,7 +42,6 @@ CREATE OR REPLACE VIEW businesses.employee AS
     customers.mobile,
     customers.fax,
     customers.inserted_ts,
-    customers.update_id,
     customers.update_ts
     FROM customers
      JOIN businesses.business_employee be ON customers.id = be.employee_id;

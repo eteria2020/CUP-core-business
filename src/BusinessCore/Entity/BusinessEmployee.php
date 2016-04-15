@@ -14,6 +14,9 @@ use Zend\Validator\Hostname;
  */
 class BusinessEmployee
 {
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_BLOCKED = 'blocked';
 
     /**
      * @var Employee
@@ -36,11 +39,11 @@ class BusinessEmployee
     private $business;
 
     /**
-     * @var boolean
+     * @var string
      *
-     * @ORM\Column(name="blocked", type="boolean", nullable=false)
+     * @ORM\Column(name="status", type="text", nullable=false)
      */
-    private $blocked;
+    private $status;
 
     /**
      * @var \DateTime
@@ -84,6 +87,30 @@ class BusinessEmployee
      */
     public function isBlocked()
     {
-        return $this->blocked;
+        return $this->status == self::STATUS_BLOCKED;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isApproved()
+    {
+        return $this->status == self::STATUS_APPROVED;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPending()
+    {
+        return $this->status == self::STATUS_PENDING;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

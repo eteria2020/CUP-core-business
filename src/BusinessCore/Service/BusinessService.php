@@ -3,6 +3,7 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Form\InputData\BusinessParams;
@@ -79,6 +80,10 @@ class BusinessService
         return $business;
     }
 
+    /**
+     * @param $code
+     * @return Business
+     */
     public function getBusinessByCode($code)
     {
         return $this->businessRepository->getBusinessByCode($code);
@@ -91,12 +96,12 @@ class BusinessService
 
     public function blockEmployee($businessCode, $employeeId)
     {
-        return $this->businessRepository->setEmployeeBlockStatus($businessCode, $employeeId, true);
+        return $this->businessRepository->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_BLOCKED);
     }
 
-    public function unblockEmployee($businessCode, $employeeId)
+    public function approveEmployee($businessCode, $employeeId)
     {
-        return $this->businessRepository->setEmployeeBlockStatus($businessCode, $employeeId, false);
+        return $this->businessRepository->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_APPROVED);
     }
 
     public function getUniqueCode()
