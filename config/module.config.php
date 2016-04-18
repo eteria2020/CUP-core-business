@@ -17,6 +17,14 @@ return [
                 ]
             ],
         ],
+        'migrations_configuration' => [
+            'orm_default' => [
+                'directory' => 'module/BusinessCore/doctrine-migrations',
+                'name'      => 'Doctrine Database Migrations',
+                'namespace' => 'DoctrineORMModule\Migrations',
+                'table'     => 'business.migrations',
+            ]
+        ]
     ],
     'service_manager' => [
         'factories' => [

@@ -8,7 +8,7 @@ use Zend\Validator\Hostname;
 /**
  * BusinessEmployee
  *
- * @ORM\Table(name="business_employee", schema="businesses")
+ * @ORM\Table(name="business_employee", schema="business")
  * @ORM\Entity
 
  */

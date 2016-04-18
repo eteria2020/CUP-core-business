@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Business
  *
- * @ORM\Table(name="employee", schema="businesses")
+ * @ORM\Table(name="employee", schema="business")
  * @ORM\Entity(readOnly=true)
  */
 

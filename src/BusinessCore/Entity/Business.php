@@ -12,23 +12,23 @@ use Zend\Validator\Hostname;
 /**
  * Business
  *
- * @ORM\Table(name="business", schema="businesses")
+ * @ORM\Table(name="business", schema="business")
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessRepository")
 
  */
 class Business
 {
-    const TYPE_WIRE_TRANSFER = 'Bonifico';
-    const TYPE_CREDIT_CARD = 'Carta di credito';
+    const TYPE_WIRE_TRANSFER = 'wire_transfer';
+    const TYPE_CREDIT_CARD = 'credit_card';
 
-    const FREQUENCE_WEEKLY = 'Settimanale';
-    const FREQUENCE_FORTHNIGHTLY = 'Quindicinale';
-    const FREQUENCE_MONTHLY = 'Mensile';
+    const FREQUENCE_WEEKLY = 'weekly';
+    const FREQUENCE_FORTNIGHTLY = 'fortnightly';
+    const FREQUENCE_MONTHLY = 'monthly';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="string", nullable=false)
+     * @ORM\Column(name="code", type="string", length=6, nullable=false, unique=true)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -37,7 +37,7 @@ class Business
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", nullable=false)
+     * @ORM\Column(name="name", type="string", length=64, nullable=false)
      */
     private $name;
 
@@ -51,35 +51,35 @@ class Business
     /**
      * @var string
      *
-     * @ORM\Column(name="address", type="string", nullable=false)
+     * @ORM\Column(name="address", type="string", length=128, nullable=false)
      */
     private $address;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="zip_code", type="string", nullable=false)
+     * @ORM\Column(name="zip_code", type="string", length=12, nullable=false)
      */
     private $zipCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="province", type="string", nullable=false)
+     * @ORM\Column(name="province", type="string", length=2, nullable=false)
      */
     private $province;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", nullable=false)
+     * @ORM\Column(name="city", type="string", length=64, nullable=false)
      */
     private $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="vat_number", type="string", nullable=false)
+     * @ORM\Column(name="vat_number", type="string", length=64, nullable=false)
      */
     private $vatNumber;
 
@@ -93,14 +93,14 @@ class Business
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", nullable=false)
+     * @ORM\Column(name="phone", type="string",  length=64, nullable=false)
      */
     private $phone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="fax", type="string", nullable=false)
+     * @ORM\Column(name="fax", type="string", length=64, nullable=false)
      */
     private $fax;
 
