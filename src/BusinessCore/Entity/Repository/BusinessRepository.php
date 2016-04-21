@@ -2,18 +2,38 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Service\Helper\SearchCriteria;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * BusinessRepository
  */
-class BusinessRepository extends \Doctrine\ORM\EntityRepository
+class BusinessRepository extends EntityRepository
 {
     public function countAll()
     {
         $em = $this->getEntityManager();
         $query = $em->createQuery('SELECT COUNT(e.code) FROM \BusinessCore\Entity\Business e');
         return $query->getSingleScalarResult();
+    }
+
+    /**
+     * @param $businessCode
+     * @param $employeeId
+     * @return BusinessEmployee
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getBusinessEmployeeAssociation($businessCode, $employeeId)
+    {
+        $query =  'SELECT be FROM \BusinessCore\Entity\BusinessEmployee be
+            WHERE be.business = :code AND
+            be.employee = :employee ';
+
+        $query = $this->getEntityManager()->createQuery($query);
+        $query->setParameter('code', $businessCode);
+        $query->setParameter('employee', $employeeId);
+        return $query->getOneOrNullResult();
     }
 
     /**

@@ -146,6 +146,13 @@ class Business
      */
     private $businessEmployee;
 
+    /**
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="Group", mappedBy="business")
+     */
+    private $businessGroups;
+
     public function __construct($code)
     {
         $this->code = $code;
@@ -300,9 +307,9 @@ class Business
     }
 
     /**
-     * @return mixed
+     * @return BusinessEmployee[]
      */
-    public function getBusinessEmployeesAssociations()
+    public function getBusinessEmployees()
     {
         return $this->businessEmployee;
     }
@@ -360,5 +367,25 @@ class Business
             }
         }
         return $result;
+    }
+
+    public function getBusinessEmployeesWithoutGroup()
+    {
+        $result = [];
+        /** @var BusinessEmployee $be */
+        foreach ($this->businessEmployee as $be) {
+            if (!$be->getGroup() instanceof Group) {
+                $result[] = $be;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBusinessGroups()
+    {
+        return $this->businessGroups;
     }
 }
