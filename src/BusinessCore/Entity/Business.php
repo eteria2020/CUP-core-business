@@ -152,14 +152,14 @@ class Business
         $this->insertedTs = date_create();
     }
 
-    public static function fromBusinessDataAndParams(
+    public static function fromBusinessDetailsAndParams(
         $code,
-        BusinessDetails $businessData,
+        BusinessDetails $businessDetails,
         BusinessParams $businessParams
     ) {
         $business = new Business($code);
-        $business->update($businessData);
-        $business->update($businessParams);
+        $business->updateDetails($businessDetails);
+        $business->updateParams($businessParams);
         return $business;
     }
 
@@ -294,7 +294,7 @@ class Business
     /**
      * @return boolean
      */
-    public function isBusinessMailControl()
+    public function isBusinessMailControlEnabled()
     {
         return $this->businessMailControl;
     }
@@ -307,17 +307,7 @@ class Business
         return $this->businessEmployee;
     }
 
-    public function update($data)
-    {
-        if ($data instanceof BusinessDetails) {
-            $this->updateData($data);
-        } else {
-            $this->updateParams($data);
-        }
-        $this->updatedTs = date_create();
-    }
-
-    public function updateData(BusinessDetails $data)
+    public function updateDetails(BusinessDetails $data)
     {
         $this->name = $data->getName();
         $this->domains = $data->getDomains();

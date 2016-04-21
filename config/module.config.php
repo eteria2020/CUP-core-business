@@ -32,4 +32,9 @@ return [
             'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory'
         ]
     ],
+    'view_helpers'    => [
+        'factories' => [
+            'BusinessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
+        ]
+    ],
 ];

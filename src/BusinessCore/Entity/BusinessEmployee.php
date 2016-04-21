@@ -60,7 +60,7 @@ class BusinessEmployee
     private $confirmedTs;
 
 
-    public function __construct($employee, $business)
+    public function __construct(Employee $employee, Business $business)
     {
         $this->employee = $employee;
         $this->business = $business;
@@ -112,5 +112,13 @@ class BusinessEmployee
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }

@@ -57,10 +57,10 @@ class BusinessService
         return $this->businessRepository->searchBusinesses($searchCriteria);
     }
 
-    public function addBusiness(BusinessDetails $businessData, BusinessParams $businessParams)
+    public function addBusiness(BusinessDetails $businessDetails, BusinessParams $businessParams)
     {
         $code = $this->getUniqueCode();
-        $business = Business::fromBusinessDataAndParams($code, $businessData, $businessParams);
+        $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
 
         try {
             $this->entityManager->persist($business);
@@ -71,45 +71,54 @@ class BusinessService
         return $business;
     }
 
-    public function updateBusiness(Business $business, $data)
-    {
-        $business->update($data);
-
-        $this->entityManager->persist($business);
-        $this->entityManager->flush();
-        return $business;
-    }
-
     /**
      * @param $code
      * @return Business
      */
     public function getBusinessByCode($code)
     {
-        return $this->businessRepository->getBusinessByCode($code);
+        return $this->businessRepository->findOneBy(['code' => $code]);
     }
 
     public function removeEmployee($businessCode, $employeeId)
     {
-        return $this->businessRepository->removeEmployee($businessCode, $employeeId);
+        $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation($businessCode, $employeeId);
+        $this->entityManager->remove($businessEmployee);
+        $this->entityManager->flush();
     }
 
-    public function blockEmployee($businessCode, $employeeId)
+    public function setEmployeeStatus($businessCode, $employeeId, $status)
     {
-        return $this->businessRepository->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_BLOCKED);
-    }
-
-    public function approveEmployee($businessCode, $employeeId)
-    {
-        return $this->businessRepository->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_APPROVED);
+        $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation($businessCode, $employeeId);
+        $businessEmployee->setStatus($status);
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 
     public function getUniqueCode()
     {
         $code = substr(md5(uniqid(rand(), true)), 0, 6);
-        while ($this->businessRepository->getBusinessByCode($code) != null) {
+        while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
             $code = substr(md5(uniqid(rand(), true)), 0, 6);
         }
         return $code;
+    }
+
+    public function updateBusinessDetails(Business $business, BusinessDetails $inputData)
+    {
+        $business->updateDetails($inputData);
+
+        $this->entityManager->persist($business);
+        $this->entityManager->flush();
+        return $business;
+    }
+
+    public function updateBusinessParams(Business $business, BusinessParams $inputData)
+    {
+        $business->updateParams($inputData);
+
+        $this->entityManager->persist($business);
+        $this->entityManager->flush();
+        return $business;
     }
 }

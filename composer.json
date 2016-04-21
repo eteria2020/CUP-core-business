@@ -1,0 +1,15 @@
+{
+    "name": "mvlabs/sharengo-core-business-module",
+    "description": "Business Core module",
+    "require": {
+        "php": ">=5.4",
+        "zendframework/zendframework": "2.4.*",
+        "doctrine/doctrine-orm-module": "1.0.*",
+        "doctrine/migrations": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}

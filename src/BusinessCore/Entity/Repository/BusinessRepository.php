@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Service\Helper\SearchCriteria;
 
 /**
@@ -17,48 +18,21 @@ class BusinessRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $code
-     * @return Business
+     * @param $businessCode
+     * @param $employeeId
+     * @return BusinessEmployee
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getBusinessByCode($code)
+    public function getBusinessEmployeeAssociation($businessCode, $employeeId)
     {
-        $query =  'SELECT e
-            FROM \BusinessCore\Entity\Business e
-            WHERE lower(e.code) = lower(:code)';
+        $query =  'SELECT be FROM \BusinessCore\Entity\BusinessEmployee be
+            WHERE be.business = :code AND
+            be.employee = :employee ';
 
         $query = $this->getEntityManager()->createQuery($query);
-        $query->setParameter('code', $code);
-
+        $query->setParameter('code', $businessCode);
+        $query->setParameter('employee', $employeeId);
         return $query->getOneOrNullResult();
-    }
-
-    public function removeEmployee($businessCode, $employeeId)
-    {
-        $query =  'DELETE FROM \BusinessCore\Entity\BusinessEmployee be
-            WHERE be.business = :code AND
-            be.employee = :employee ' ;
-
-        $query = $this->getEntityManager()->createQuery($query);
-        $query->setParameter('code', $businessCode);
-        $query->setParameter('employee', $employeeId);
-
-        return $query->execute();
-    }
-
-    public function setEmployeeStatus($businessCode, $employeeId, $status)
-    {
-        $query =  'UPDATE \BusinessCore\Entity\BusinessEmployee be
-            SET be.status = :status,  be.confirmedTs = :now
-            WHERE be.business = :code AND
-            be.employee = :employee ' ;
-
-        $query = $this->getEntityManager()->createQuery($query);
-        $query->setParameter('status', $status);
-        $query->setParameter('now', date_create());
-        $query->setParameter('code', $businessCode);
-        $query->setParameter('employee', $employeeId);
-
-        return $query->execute();
     }
 
     public function searchBusinesses(SearchCriteria $searchCriteria)

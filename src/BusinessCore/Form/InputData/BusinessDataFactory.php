@@ -14,7 +14,7 @@ class BusinessDataFactory
      * @return BusinessDetails
      * @throws InvalidBusinessFormException
      */
-    public static function businessDatafromArray(array $data)
+    public static function businessDetailsfromArray(array $data)
     {
         $name = $data['name'];
         $domains = $data['domains'];
