@@ -3,9 +3,8 @@
 namespace BusinessCore\Entity;
 
 
+use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
-use BusinessCore\Form\InputData\BusinessParams;
-
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Validator\Hostname;
 
@@ -155,7 +154,7 @@ class Business
     public static function fromBusinessDetailsAndParams(
         $code,
         BusinessDetails $businessDetails,
-        BusinessParams $businessParams
+        BusinessConfigParams $businessParams
     ) {
         $business = new Business($code);
         $business->updateDetails($businessDetails);
@@ -321,7 +320,7 @@ class Business
         $this->fax = $data->getFax();
     }
 
-    public function updateParams(BusinessParams $data)
+    public function updateParams(BusinessConfigParams $data)
     {
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();

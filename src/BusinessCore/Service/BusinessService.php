@@ -3,12 +3,11 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
-use BusinessCore\Entity\BusinessEmployee;
+use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
+use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
-use BusinessCore\Form\InputData\BusinessParams;
 use BusinessCore\Service\Helper\SearchCriteria;
-
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\I18n\Translator;
@@ -30,21 +29,28 @@ class BusinessService
      */
 
     private $entityManager;
+    /**
+     * @var BusinessEmployeeRepository
+     */
+    private $businessEmployeeRepository;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessRepository $businessRepository
+     * @param BusinessEmployeeRepository $businessEmployeeRepository
      * @param $translator
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessRepository $businessRepository,
+        BusinessEmployeeRepository $businessEmployeeRepository,
         $translator
     ) {
         $this->translator = $translator;
         $this->businessRepository = $businessRepository;
         $this->entityManager = $entityManager;
+        $this->businessEmployeeRepository = $businessEmployeeRepository;
     }
 
     public function getTotalBusinesses()
@@ -57,7 +63,7 @@ class BusinessService
         return $this->businessRepository->searchBusinesses($searchCriteria);
     }
 
-    public function addBusiness(BusinessDetails $businessDetails, BusinessParams $businessParams)
+    public function addBusiness(BusinessDetails $businessDetails, BusinessConfigParams $businessParams)
     {
         $code = $this->getUniqueCode();
         $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
@@ -82,14 +88,14 @@ class BusinessService
 
     public function removeEmployee($businessCode, $employeeId)
     {
-        $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation($businessCode, $employeeId);
+        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
         $this->entityManager->remove($businessEmployee);
         $this->entityManager->flush();
     }
 
     public function setEmployeeStatus($businessCode, $employeeId, $status)
     {
-        $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation($businessCode, $employeeId);
+        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
         $businessEmployee->setStatus($status);
         $this->entityManager->persist($businessEmployee);
         $this->entityManager->flush();
@@ -113,7 +119,7 @@ class BusinessService
         return $business;
     }
 
-    public function updateBusinessParams(Business $business, BusinessParams $inputData)
+    public function updateBusinessConfigParams(Business $business, BusinessConfigParams $inputData)
     {
         $business->updateParams($inputData);
 

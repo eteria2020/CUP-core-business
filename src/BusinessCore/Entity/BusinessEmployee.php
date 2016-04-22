@@ -9,7 +9,7 @@ use Zend\Validator\Hostname;
  * BusinessEmployee
  *
  * @ORM\Table(name="business_employee", schema="business")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessEmployeeRepository")
 
  */
 class BusinessEmployee
