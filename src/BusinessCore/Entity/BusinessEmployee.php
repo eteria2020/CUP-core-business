@@ -9,7 +9,7 @@ use Zend\Validator\Hostname;
  * BusinessEmployee
  *
  * @ORM\Table(name="business_employee", schema="business")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessEmployeeRepository")
 
  */
 class BusinessEmployee
@@ -68,7 +68,7 @@ class BusinessEmployee
     private $group;
 
 
-    public function __construct($employee, $business)
+    public function __construct(Employee $employee, Business $business)
     {
         $this->employee = $employee;
         $this->business = $business;
@@ -146,5 +146,13 @@ class BusinessEmployee
     public function removeGroup()
     {
         $this->group = null;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }

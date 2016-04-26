@@ -14,7 +14,7 @@ class BusinessDataFactory
      * @return BusinessDetails
      * @throws InvalidBusinessFormException
      */
-    public static function businessDatafromArray(array $data)
+    public static function businessDetailsfromArray(array $data)
     {
         $name = $data['name'];
         $domains = $data['domains'];
@@ -79,7 +79,7 @@ class BusinessDataFactory
         );
     }
 
-    public static function businessParamsfromArray(array $data)
+    public static function businessConfigParamsfromArray(array $data)
     {
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
@@ -95,7 +95,7 @@ class BusinessDataFactory
             throw new InvalidBusinessFormException("Si è verificato un errore, riprovare");
         }
 
-        return new BusinessParams($paymentType, $paymentFrequence, $businessMailControl);
+        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl);
 
     }
 }

@@ -3,9 +3,8 @@
 namespace BusinessCore\Entity;
 
 
+use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
-use BusinessCore\Form\InputData\BusinessParams;
-
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Validator\Hostname;
 
@@ -159,14 +158,14 @@ class Business
         $this->insertedTs = date_create();
     }
 
-    public static function fromBusinessDataAndParams(
+    public static function fromBusinessDetailsAndParams(
         $code,
-        BusinessDetails $businessData,
-        BusinessParams $businessParams
+        BusinessDetails $businessDetails,
+        BusinessConfigParams $businessParams
     ) {
         $business = new Business($code);
-        $business->update($businessData);
-        $business->update($businessParams);
+        $business->updateDetails($businessDetails);
+        $business->updateParams($businessParams);
         return $business;
     }
 
@@ -301,7 +300,7 @@ class Business
     /**
      * @return boolean
      */
-    public function isBusinessMailControl()
+    public function isBusinessMailControlEnabled()
     {
         return $this->businessMailControl;
     }
@@ -314,17 +313,7 @@ class Business
         return $this->businessEmployee;
     }
 
-    public function update($data)
-    {
-        if ($data instanceof BusinessDetails) {
-            $this->updateData($data);
-        } else {
-            $this->updateParams($data);
-        }
-        $this->updatedTs = date_create();
-    }
-
-    public function updateData(BusinessDetails $data)
+    public function updateDetails(BusinessDetails $data)
     {
         $this->name = $data->getName();
         $this->domains = $data->getDomains();
@@ -338,7 +327,7 @@ class Business
         $this->fax = $data->getFax();
     }
 
-    public function updateParams(BusinessParams $data)
+    public function updateParams(BusinessConfigParams $data)
     {
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();

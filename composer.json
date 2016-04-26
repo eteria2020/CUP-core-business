@@ -1,0 +1,15 @@
+{
+    "name": "cup-web/core-business",
+    "description": "Business Core module",
+    "require": {
+        "php": ">=5.4",
+        "zendframework/zendframework": "2.4.*",
+        "doctrine/doctrine-orm-module": "0.9.*",
+        "doctrine/migrations": "^1.2"
+    },
+    "autoload": {
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}

@@ -2,7 +2,6 @@
 namespace BusinessCore\View\Helper;
 
 use BusinessCore\Entity\BusinessEmployee;
-
 use Zend\Mvc\I18n\Translator;
 use Zend\View\Helper\AbstractHelper;
 

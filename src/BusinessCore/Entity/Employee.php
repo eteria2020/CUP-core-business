@@ -182,12 +182,6 @@ class Employee
      */
     private $businessEmployee;
 
-
-    public function __construct()
-    {
-        $this->insertedTs = date('Y-m-d h:i:s');
-    }
-
     /**
      * @return string
      */

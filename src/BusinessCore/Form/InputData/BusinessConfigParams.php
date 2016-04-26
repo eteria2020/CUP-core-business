@@ -2,7 +2,7 @@
 
 namespace BusinessCore\Form\InputData;
 
-class BusinessParams
+class BusinessConfigParams
 {
     private $paymentType;
     private $paymentFrequence;
