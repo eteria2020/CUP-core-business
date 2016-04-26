@@ -3,11 +3,13 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Service\Helper\SearchCriteria;
+
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\I18n\Translator;
@@ -93,7 +95,17 @@ class BusinessService
         $this->entityManager->flush();
     }
 
-    public function setEmployeeStatus($businessCode, $employeeId, $status)
+    public function approveEmployee($businessCode, $employeeId)
+    {
+        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_APPROVED);
+    }
+
+    public function blockEmployee($businessCode, $employeeId)
+    {
+        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_BLOCKED);
+    }
+
+    private function setEmployeeStatus($businessCode, $employeeId, $status)
     {
         $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
         $businessEmployee->setStatus($status);
