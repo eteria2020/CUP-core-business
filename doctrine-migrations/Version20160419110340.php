@@ -24,12 +24,15 @@ class Version20160419110340 extends AbstractMigration
         $table = $schema->createTable(self::TABLE);
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
+        $table->addColumn("name", "string", ["notnull" => true]);
         $table->addColumn("description", "string", ["notnull" => true ]);
         $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
+        $table->addUniqueIndex(["name"]);
 
         $businessEmployeeTable = $schema->getTable(self::BUSINESS_EMPLOYEE_TABLE);
+
         $businessEmployeeTable->addColumn("group_id", "integer", ["notnull" => false]);
         $businessEmployeeTable->addForeignKeyConstraint(self::TABLE, ['group_id'], ['id']);
     }

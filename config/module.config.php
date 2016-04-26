@@ -35,7 +35,7 @@ return [
     ],
     'view_helpers'    => [
         'factories' => [
-            'BusinessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
+            'businessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
         ]
     ],
 ];

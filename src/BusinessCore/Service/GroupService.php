@@ -67,29 +67,22 @@ class GroupService
     }
 
     /**
-     * This function receive raw $data from the form post
-     * selected users come in $data as 'add-1234' => 'on' where 1234 is the id of the user
-     *
-     * @param array $data
+     * @param array $userIdsToAdd
      * @param Group $group
      * @return int
      */
-    public function addEmployeesToGroup(array $data, Group $group)
+    public function addEmployeesToGroup(array $userIdsToAdd, Group $group)
     {
         $nInsert = 0;
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 3) === 'add' && $value === 'on') {
-                $employeeId = substr($key, 4);
-
+        foreach ($userIdsToAdd as $userId) {
                 $businessEmployee = $this->businessEmployeeRepository->find([
-                    'employee' => $employeeId,
+                    'employee' => $userId,
                     'business' => $group->getBusiness()->getCode()
                     ]);
                 $businessEmployee->setGroup($group);
                 $this->entityManager->persist($businessEmployee);
                 $this->entityManager->flush();
                 $nInsert++;
-            }
         }
         return $nInsert;
     }
@@ -110,9 +103,6 @@ class GroupService
         $name = $data['name'];
         $description = $data['description'];
 
-        if (empty($name)) {
-            throw new InvalidGroupFormException($this->translator->translate("Il gruppo deve avere un nome"));
-        }
         $group = new Group($business, $name, $description);
 
         $this->entityManager->persist($group);
