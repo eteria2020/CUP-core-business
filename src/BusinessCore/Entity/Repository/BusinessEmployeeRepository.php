@@ -2,9 +2,11 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use Doctrine\ORM\EntityRepository;
+
 /**
  * BusinessRepository
  */
-class BusinessEmployeeRepository extends \Doctrine\ORM\EntityRepository
+class BusinessEmployeeRepository extends EntityRepository
 {
 }

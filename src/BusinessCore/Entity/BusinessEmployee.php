@@ -123,6 +123,14 @@ class BusinessEmployee
     }
 
     /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
      * @return Group
      */
     public function getGroup()
@@ -146,13 +154,5 @@ class BusinessEmployee
     public function removeGroup()
     {
         $this->group = null;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
     }
 }

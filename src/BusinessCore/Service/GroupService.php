@@ -4,6 +4,7 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\Group;
+use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Entity\Repository\GroupRepository;
 
@@ -21,34 +22,43 @@ class GroupService
     /**
      * @var EntityManager
      */
-
     private $entityManager;
+
     /**
      * @var GroupRepository
      */
     private $groupRepository;
+
     /**
      * @var BusinessRepository
      */
     private $businessRepository;
 
     /**
+     * @var BusinessEmployeeRepository
+     */
+    private $businessEmployeeRepository;
+
+    /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param GroupRepository $groupRepository
      * @param BusinessRepository $businessRepository
+     * @param BusinessEmployeeRepository $businessEmployeeRepository
      * @param $translator
      */
     public function __construct(
         EntityManager $entityManager,
         GroupRepository $groupRepository,
         BusinessRepository $businessRepository,
+        BusinessEmployeeRepository $businessEmployeeRepository,
         $translator
     ) {
         $this->translator = $translator;
         $this->entityManager = $entityManager;
         $this->groupRepository = $groupRepository;
         $this->businessRepository = $businessRepository;
+        $this->businessEmployeeRepository = $businessEmployeeRepository;
     }
 
     public function getGroupById($groupId)
@@ -71,10 +81,10 @@ class GroupService
             if (substr($key, 0, 3) === 'add' && $value === 'on') {
                 $employeeId = substr($key, 4);
 
-                $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation(
-                    $group->getBusiness()->getCode(),
-                    $employeeId
-                );
+                $businessEmployee = $this->businessEmployeeRepository->find([
+                    'employee' => $employeeId,
+                    'business' => $group->getBusiness()->getCode()
+                    ]);
                 $businessEmployee->setGroup($group);
                 $this->entityManager->persist($businessEmployee);
                 $this->entityManager->flush();
@@ -86,10 +96,10 @@ class GroupService
 
     public function removeEmployeeFromGroup(Group $group, $employeeId)
     {
-        $businessEmployee = $this->businessRepository->getBusinessEmployeeAssociation(
-            $group->getBusiness()->getCode(),
-            $employeeId
-        );
+        $businessEmployee = $this->businessEmployeeRepository->find([
+            'employee' => $employeeId,
+            'business' => $group->getBusiness()->getCode()
+        ]);
         $businessEmployee->removeGroup();
         $this->entityManager->persist($businessEmployee);
         $this->entityManager->flush();
@@ -109,5 +119,3 @@ class GroupService
         $this->entityManager->flush();
     }
 }
-
-

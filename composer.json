@@ -10,6 +10,9 @@
     "autoload": {
         "classmap": [
             "./Module.php"
-        ]
+        ],
+        "psr-0": {
+            "BusinessCore": "src/"
+        }
     }
 }
