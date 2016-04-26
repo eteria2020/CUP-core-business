@@ -101,7 +101,7 @@ class GroupService
         $description = $data['description'];
 
         if (empty($name)) {
-            throw new InvalidGroupFormException("Il gruppo deve avere un nome");
+            throw new InvalidGroupFormException($this->translator->translate("Il gruppo deve avere un nome"));
         }
         $group = new Group($business, $name, $description);
 
