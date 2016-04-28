@@ -3,7 +3,6 @@
 namespace BusinessCore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Validator\Hostname;
 
 /**
  * Group

@@ -31,12 +31,40 @@ return [
             'BusinessCore\Service\BusinessService' => 'BusinessCore\Service\BusinessServiceFactory',
             'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory',
             'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory',
-            'BusinessCore\Service\BusinessTripService' => 'BusinessCore\Service\BusinessTripServiceFactory'
+            'BusinessCore\Service\BusinessTripService' => 'BusinessCore\Service\BusinessTripServiceFactory',
+            'BusinessCore\Service\BusinessInvoiceService' => 'BusinessCore\Service\BusinessInvoiceServiceFactory',
+            'BusinessCore\Service\InvoicePdfService' => 'BusinessCore\Service\InvoicePdfServiceFactory',
         ]
     ],
     'view_helpers'    => [
         'factories' => [
             'businessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
         ]
+    ],
+    'mvlabs-snappy' => [
+        'pdf' => [
+            'binary'  => __DIR__ . '/../../../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64',
+            'options' => [],
+        ]
+    ],
+    'view_manager' => [
+        'template_map' => [
+            'layout/pdf-layout' => __DIR__ . '/../view/pdf/layout_pdf.phtml',
+        ],
+        'template_path_stack' => [
+            __DIR__ . '/../view',
+        ],
+    ],
+    'asset_manager' => [
+        'resolver_configs' => [
+            'paths' => [
+                __DIR__ . '/../public',
+            ]
+        ]
+    ],
+    'invoice' => [
+        'template_version' => '4',
+        'subscription_amount' => 1000,
+        'iva_percentage' => 22
     ],
 ];
