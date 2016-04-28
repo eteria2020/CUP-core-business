@@ -29,7 +29,7 @@ class Version20160419110340 extends AbstractMigration
         $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
-        $table->addUniqueIndex(["name"]);
+        $table->addUniqueIndex(["business_code", "name"]);
 
         $businessEmployeeTable = $schema->getTable(self::BUSINESS_EMPLOYEE_TABLE);
 

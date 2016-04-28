@@ -20,6 +20,10 @@ class DatatableService
         $sortField = isset($filters['iSortCol_0']) ? 'mDataProp_' . $filters['iSortCol_0'] : '';
         $sortColumn = isset($filters[$sortField]) ? $filters[$sortField] : null;
         $sortOrder = isset($filters['sSortDir_0']) ? $filters['sSortDir_0'] : null;
+        $fromDate = isset($filters['fromDate']) ? $filters['fromDate'] : null;
+        $toDate = isset($filters['toDate']) ? $filters['toDate'] : null;
+        $columnFromDate = isset($filters['columnFromDate']) ? $filters['columnFromDate'] : null;
+        $columnToDate = isset($filters['columnToDate']) ? $filters['columnToDate'] : null;
 
         return new SearchCriteria(
             $searchColumn,
@@ -27,7 +31,11 @@ class DatatableService
             $displayStart,
             $displayLength,
             $sortColumn,
-            $sortOrder
+            $sortOrder,
+            $fromDate,
+            $toDate,
+            $columnFromDate,
+            $columnToDate
         );
     }
 }

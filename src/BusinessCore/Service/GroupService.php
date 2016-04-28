@@ -75,14 +75,14 @@ class GroupService
     {
         $nInsert = 0;
         foreach ($userIdsToAdd as $userId) {
-                $businessEmployee = $this->businessEmployeeRepository->find([
-                    'employee' => $userId,
-                    'business' => $group->getBusiness()->getCode()
-                    ]);
-                $businessEmployee->setGroup($group);
-                $this->entityManager->persist($businessEmployee);
-                $this->entityManager->flush();
-                $nInsert++;
+            $businessEmployee = $this->businessEmployeeRepository->find([
+                'employee' => $userId,
+                'business' => $group->getBusiness()->getCode()
+                ]);
+            $businessEmployee->setGroup($group);
+            $this->entityManager->persist($businessEmployee);
+            $this->entityManager->flush();
+            $nInsert++;
         }
         return $nInsert;
     }
