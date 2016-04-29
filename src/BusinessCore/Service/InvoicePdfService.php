@@ -4,7 +4,6 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Invoice;
 use Knp\Snappy\Pdf;
-use Zend\Http\PhpEnvironment\Response;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -63,17 +62,6 @@ class InvoicePdfService
         $htmlOutput = $this->viewRenderer->render($layoutViewModel);
 
         $output = $this->pdfService->getOutputFromHtml($htmlOutput);
-        $response = new Response();
-        $headers  = $response->getHeaders();
-        $headers->addHeaderLine('Content-Type', 'application/pdf');
-        $headers->addHeaderLine(
-            'Content-Disposition',
-            "attachment; filename=\"Fattura-" . $invoice->getInvoiceNumber() . ".pdf\""
-        );
-        $headers->addHeaderLine('Content-Length', strlen($output));
-
-        $response->setContent($output);
-
-        return $response;
+        return $output;
     }
 }
