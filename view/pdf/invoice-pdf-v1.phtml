@@ -33,7 +33,7 @@
     <div class="page-container">
 
         <!-- Logo -->
-        <img class="logo" src="<?php echo $this->serverUrl()?>/assets-modules/business-core/images/sharengo_logo.jpg" alt="">
+        <img class="logo" src="<?php echo $this->serverUrl() . "/images/sharengo_logo.jpg"?>" alt="">
 
         <!-- Invoice data -->
         <div class="invoice-data data">
@@ -111,7 +111,7 @@
                     foreach ($invoiceContent['body']['contents']['body'] as $row) { ?>
                         <tr>
                         <?php foreach ($row as $key => $value) { ?>
-                            <td class="table2-031e <?= $alignmentFormat[$key] ?>"><?= $value ?></th>
+                            <td class="table2-031e <?= $alignmentFormat[$key] ?>"><?= $value ?></td>
                         <?php } ?>
                         </tr>
                     <?php } ?>

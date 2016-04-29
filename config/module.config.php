@@ -48,9 +48,6 @@ return [
         ]
     ],
     'view_manager' => [
-        'template_map' => [
-            'layout/pdf-layout' => __DIR__ . '/../view/pdf/layout_pdf.phtml',
-        ],
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],
@@ -58,13 +55,8 @@ return [
     'asset_manager' => [
         'resolver_configs' => [
             'paths' => [
-                __DIR__ . '/../public',
+                __DIR__ . '/../public/assets-modules/business-core',
             ]
         ]
-    ],
-    'invoice' => [
-        'template_version' => '4',
-        'subscription_amount' => 1000,
-        'iva_percentage' => 22
-    ],
+    ]
 ];
