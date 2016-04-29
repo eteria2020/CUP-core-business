@@ -90,9 +90,7 @@ class BusinessService
 
     public function removeEmployee($businessCode, $employeeId)
     {
-        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
-        $this->entityManager->remove($businessEmployee);
-        $this->entityManager->flush();
+        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_DELETED);
     }
 
     public function approveEmployee($businessCode, $employeeId)

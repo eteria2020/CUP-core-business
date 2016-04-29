@@ -26,6 +26,8 @@ class BusinessEmployeeStatusHelper extends AbstractHelper
                 return $this->translator->translate("Bloccato");
             case BusinessEmployee::STATUS_APPROVED:
                 return $this->translator->translate("Approvato");
+            case BusinessEmployee::STATUS_DELETED:
+                return $this->translator->translate("Disattivato");
             default:
                 return $status;
         }

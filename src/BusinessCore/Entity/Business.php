@@ -351,7 +351,7 @@ class Business
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if (!$be->isPending()) {
+            if ($be->isApproved() || $be->isBlocked()) {
                 $result[] = $be;
             }
         }
@@ -363,7 +363,7 @@ class Business
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if (!$be->getGroup() instanceof Group) {
+            if (!$be->isDeleted() && !$be->getGroup() instanceof Group) {
                 $result[] = $be;
             }
         }
