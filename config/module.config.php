@@ -34,6 +34,7 @@ return [
             'BusinessCore\Service\BusinessTripService' => 'BusinessCore\Service\BusinessTripServiceFactory',
             'BusinessCore\Service\BusinessInvoiceService' => 'BusinessCore\Service\BusinessInvoiceServiceFactory',
             'BusinessCore\Service\InvoicePdfService' => 'BusinessCore\Service\InvoicePdfServiceFactory',
+            'BusinessCore\Service\BusinessTimePackageService' => 'BusinessCore\Service\BusinessTimePackageServiceFactory',
         ]
     ],
     'view_helpers'    => [

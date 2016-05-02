@@ -152,6 +152,13 @@ class Business
      */
     private $businessGroups;
 
+    /**
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="BusinessTimePackage", mappedBy="business")
+     */
+    private $businessTimePackages;
+
     public function __construct($code)
     {
         $this->code = $code;
@@ -376,5 +383,13 @@ class Business
     public function getBusinessGroups()
     {
         return $this->businessGroups;
+    }
+
+    /**
+     * @return BusinessTimePackage[]
+     */
+    public function getBusinessTimePackages()
+    {
+        return $this->businessTimePackages;
     }
 }
