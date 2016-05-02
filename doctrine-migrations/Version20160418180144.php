@@ -17,7 +17,7 @@ class Version20160418180144 extends AbstractMigration
     public function up(Schema $schema)
     {
         $table = $schema->getTable(self::TABLE);
-        $table->addColumn("business_code", "string", ["notnull" => false, "length" => 6]);
+        $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
     }
 

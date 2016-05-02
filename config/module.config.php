@@ -36,6 +36,11 @@ return [
     'view_helpers'    => [
         'factories' => [
             'businessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
+        ],
+        'invokables' => [
+            'groupLink' => 'BusinessCore\View\Helper\GroupLinkHelper',
+            'businessEmployeeAvailableActionButtons' =>
+                'BusinessCore\View\Helper\BusinessEmployeeAvailableActionButtonHelper',
         ]
     ],
 ];
