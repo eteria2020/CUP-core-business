@@ -9,10 +9,10 @@ use BjyAuthorize\Provider\Role\ProviderInterface;
  * Webuser
  *
  * @ORM\Table(name="webuser",schema="business",uniqueConstraints={@ORM\UniqueConstraint(name="email_idx", columns={"email"})})
- * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\WebuserRepository", readOnly=true)
+ * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\WebuserRepository")
  */
-class Webuser implements ProviderInterface {
-
+class Webuser implements ProviderInterface
+{
     /**
      * @var integer
      *
@@ -50,12 +50,11 @@ class Webuser implements ProviderInterface {
     private $role;
 
     /**
-     * @var string
-     * @ORM\OneToOne(targetEntity="Business")
+     * @var Business
+     * @ORM\ManyToOne(targetEntity="Business")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code")
      */
     private $business;
-
 
     /**
      * Get id
@@ -68,20 +67,6 @@ class Webuser implements ProviderInterface {
     }
 
     /**
-     * Set displayName
-     *
-     * @param string $displayName
-     *
-     * @return Webuser
-     */
-    public function setDisplayName($displayName)
-    {
-        $this->displayName = $displayName;
-
-        return $this;
-    }
-
-    /**
      * Get displayName
      *
      * @return string
@@ -89,20 +74,6 @@ class Webuser implements ProviderInterface {
     public function getDisplayName()
     {
         return $this->displayName;
-    }
-    
-    /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return Webuser
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     /**
@@ -116,20 +87,6 @@ class Webuser implements ProviderInterface {
     }
 
     /**
-     * Set username
-     *
-     * @param string $username
-     *
-     * @return Webuser
-     */
-    public function setUsername($username)
-    {
-        // do nothing, here only to adhere with UserInterface
-
-        return $this;
-    }
-
-    /**
      * Get username
      *
      * @return string
@@ -140,20 +97,6 @@ class Webuser implements ProviderInterface {
     }
 
     /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return Webuser
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
      * Get password
      *
      * @return string
@@ -161,20 +104,6 @@ class Webuser implements ProviderInterface {
     public function getPassword()
     {
         return $this->password;
-    }
-
-    /**
-     * Set role
-     *
-     * @param string $role
-     *
-     * @return Webuser
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
-
-        return $this;
     }
 
     /**
@@ -192,17 +121,16 @@ class Webuser implements ProviderInterface {
      *
      * @return array
      */
-    public function getRoles() {
+    public function getRoles()
+    {
         return array($this->getRole());
     }
 
     /**
-     * @return string
+     * @return Business
      */
     public function getBusiness()
     {
         return $this->business;
     }
-
-
 }

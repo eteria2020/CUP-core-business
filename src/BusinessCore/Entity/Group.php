@@ -87,7 +87,7 @@ class Group
     /**
      * @return BusinessEmployee[]
      */
-    public function getBusinessEmployee()
+    public function getBusinessEmployees()
     {
         return $this->businessEmployees;
     }

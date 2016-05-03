@@ -365,12 +365,12 @@ class Business
         return $result;
     }
 
-    public function getBusinessEmployeesWithoutGroup()
+    public function getEnabledBusinessEmployeesWithoutGroup()
     {
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if (!$be->isDeleted() && !$be->getGroup() instanceof Group) {
+            if ($be->isApproved() && is_null($be->getGroup())) {
                 $result[] = $be;
             }
         }

@@ -3,6 +3,7 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\Group;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
@@ -10,6 +11,7 @@ use BusinessCore\Entity\Repository\GroupRepository;
 
 use BusinessCore\Exception\InvalidGroupFormException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityNotFoundException;
 use Zend\Mvc\I18n\Translator;
 
 class GroupService
@@ -45,14 +47,14 @@ class GroupService
      * @param GroupRepository $groupRepository
      * @param BusinessRepository $businessRepository
      * @param BusinessEmployeeRepository $businessEmployeeRepository
-     * @param $translator
+     * @param Translator $translator
      */
     public function __construct(
         EntityManager $entityManager,
         GroupRepository $groupRepository,
         BusinessRepository $businessRepository,
         BusinessEmployeeRepository $businessEmployeeRepository,
-        $translator
+        Translator $translator
     ) {
         $this->translator = $translator;
         $this->entityManager = $entityManager;
@@ -63,7 +65,12 @@ class GroupService
 
     public function getGroupById($groupId)
     {
-        return $this->groupRepository->find($groupId);
+        $group = $this->groupRepository->find($groupId);
+        if ($group instanceof Group) {
+            return $group;
+        } else {
+            throw new EntityNotFoundException($this->translator->translate("Nessun gruppo con questo id"));
+        }
     }
 
     /**
@@ -74,15 +81,17 @@ class GroupService
     public function addEmployeesToGroup(array $userIdsToAdd, Group $group)
     {
         $nInsert = 0;
-        foreach ($userIdsToAdd as $userId) {
-            $businessEmployee = $this->businessEmployeeRepository->find([
-                'employee' => $userId,
-                'business' => $group->getBusiness()->getCode()
-                ]);
-            $businessEmployee->setGroup($group);
-            $this->entityManager->persist($businessEmployee);
-            $this->entityManager->flush();
-            $nInsert++;
+        $businessEmployees = $this->businessEmployeeRepository->findBy([
+            'employee' => $userIdsToAdd,
+            'business' => $group->getBusiness()->getCode()
+        ]);
+
+        /** @var BusinessEmployee $businessEmployee */
+        foreach ($businessEmployees as $businessEmployee) {
+                $businessEmployee->assignToGroup($group);
+                $this->entityManager->persist($businessEmployee);
+                $this->entityManager->flush();
+                $nInsert++;
         }
         return $nInsert;
     }
