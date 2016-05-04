@@ -13,8 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
 class BusinessTimePackage
 {
     /**
-     * @var Business
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="business.business_time_package_id_seq", allocationSize=1, initialValue=1)
+     */
+    private $id;
+
+    /**
+     * @var Business
      * @ORM\ManyToOne(targetEntity="Business")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
@@ -22,11 +31,17 @@ class BusinessTimePackage
 
     /**
      * @var TimePackage
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="TimePackage")
      * @ORM\JoinColumn(name="time_package_id", referencedColumnName="id", nullable=false)
      */
     private $timePackage;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="residual_minutes", type="integer", nullable=false)
+     */
+    private $residualMinutes;
 
     /**
      * @var \DateTime
@@ -34,6 +49,13 @@ class BusinessTimePackage
      * @ORM\Column(name="inserted_ts", type="datetime", nullable=false)
      */
     private $insertedTs;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_ts", type="datetime", nullable=false)
+     */
+    private $updatedTs;
 
     /**
      * BusinessTimePackage constructor.
@@ -44,7 +66,9 @@ class BusinessTimePackage
     {
         $this->business = $business;
         $this->timePackage = $timePackage;
+        $this->residualMinutes = $timePackage->getMinutes();
         $this->insertedTs = date_create();
+        $this->updatedTs = date_create();
     }
 
     /**
@@ -77,5 +101,30 @@ class BusinessTimePackage
     public function getInsertedTs()
     {
         return $this->insertedTs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResidualMinutes()
+    {
+        return $this->residualMinutes;
+    }
+
+    /**
+     * @param int $residualMinutes
+     */
+    public function setResidualMinutes($residualMinutes)
+    {
+        $this->residualMinutes = $residualMinutes;
+        $this->updatedTs = date_create();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedTs()
+    {
+        return $this->updatedTs;
     }
 }

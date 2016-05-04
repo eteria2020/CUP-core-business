@@ -32,11 +32,6 @@ class GroupService
     private $groupRepository;
 
     /**
-     * @var BusinessRepository
-     */
-    private $businessRepository;
-
-    /**
      * @var BusinessEmployeeRepository
      */
     private $businessEmployeeRepository;
@@ -45,21 +40,18 @@ class GroupService
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param GroupRepository $groupRepository
-     * @param BusinessRepository $businessRepository
      * @param BusinessEmployeeRepository $businessEmployeeRepository
      * @param Translator $translator
      */
     public function __construct(
         EntityManager $entityManager,
         GroupRepository $groupRepository,
-        BusinessRepository $businessRepository,
         BusinessEmployeeRepository $businessEmployeeRepository,
         Translator $translator
     ) {
         $this->translator = $translator;
         $this->entityManager = $entityManager;
         $this->groupRepository = $groupRepository;
-        $this->businessRepository = $businessRepository;
         $this->businessEmployeeRepository = $businessEmployeeRepository;
     }
 

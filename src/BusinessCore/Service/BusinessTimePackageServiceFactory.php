@@ -12,12 +12,9 @@ class BusinessTimePackageServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $timePackageRepository = $entityManager->getRepository('BusinessCore\Entity\TimePackage');
 
-        $translator = $serviceLocator->get('translator');
-
         return new BusinessTimePackageService(
             $entityManager,
-            $timePackageRepository,
-            $translator
+            $timePackageRepository
         );
     }
 }

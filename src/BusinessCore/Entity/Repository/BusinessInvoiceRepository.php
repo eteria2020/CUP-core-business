@@ -55,5 +55,4 @@ class BusinessInvoiceRepository extends EntityRepository
 
         return $query->getResult();
     }
-
 }

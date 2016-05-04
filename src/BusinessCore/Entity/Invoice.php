@@ -5,7 +5,7 @@ namespace BusinessCore\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Invoices
+ * Invoice
  *
  * @ORM\Table(name="invoice", schema="business")
  * @ORM\Entity(readOnly=true)

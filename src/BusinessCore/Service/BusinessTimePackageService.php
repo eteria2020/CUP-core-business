@@ -8,15 +8,9 @@ use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
 
 use Doctrine\ORM\EntityManager;
-use Zend\Mvc\I18n\Translator;
 
 class BusinessTimePackageService
 {
-    /**
-     * @var Translator
-     */
-    private $translator;
-
     /**
      * @var EntityManager
      */
@@ -31,15 +25,12 @@ class BusinessTimePackageService
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param TimePackageRepository $timePackageRepository
-     * @param $translator
      */
     public function __construct(
         EntityManager $entityManager,
-        TimePackageRepository $timePackageRepository,
-        $translator
+        TimePackageRepository $timePackageRepository
     ) {
         $this->entityManager = $entityManager;
-        $this->translator = $translator;
         $this->timePackageRepository = $timePackageRepository;
     }
 
@@ -53,7 +44,7 @@ class BusinessTimePackageService
 
     public function buyTimePackage(Business $business, $timePackageId)
     {
-        //@todo process payment
+        //@todo payment
         $timePackage = $this->timePackageRepository->find($timePackageId);
         $businessTimePackage = new BusinessTimePackage($business, $timePackage);
 

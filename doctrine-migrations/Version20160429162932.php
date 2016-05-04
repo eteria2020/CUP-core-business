@@ -22,7 +22,9 @@ class Version20160429162932 extends AbstractMigration
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
         $table->addColumn("time_package_id", "integer", ["notnull" => true]);
+        $table->addColumn("residual_minutes", "integer", ["notnull" => true]);
         $table->addColumn("inserted_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
+        $table->addColumn("updated_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
 
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);

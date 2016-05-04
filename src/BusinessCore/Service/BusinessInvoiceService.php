@@ -2,22 +2,11 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Business;
-use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\BusinessInvoice;
-use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessInvoiceRepository;
-use BusinessCore\Entity\Repository\BusinessRepository;
-use BusinessCore\Service\Helper\SearchCriteria;
-
-use Doctrine\ORM\EntityManager;
 
 class BusinessInvoiceService
 {
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
     /**
      * @var BusinessInvoiceRepository
      */
@@ -25,14 +14,11 @@ class BusinessInvoiceService
 
     /**
      * BusinessInvoiceService constructor.
-     * @param EntityManager $entityManager
      * @param BusinessInvoiceRepository $businessInvoiceRepository
      */
     public function __construct(
-        EntityManager $entityManager,
         BusinessInvoiceRepository $businessInvoiceRepository
     ) {
-        $this->entityManager = $entityManager;
         $this->businessInvoiceRepository = $businessInvoiceRepository;
     }
 
