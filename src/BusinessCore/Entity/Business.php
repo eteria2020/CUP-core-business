@@ -159,6 +159,13 @@ class Business
      */
     private $businessTimePackages;
 
+    /**
+     * Bidirectional - One-To-One
+     *
+     * @ORM\OneToOne(targetEntity="BusinessRate", mappedBy="business")
+     */
+    private $businessRate;
+
     public function __construct($code)
     {
         $this->code = $code;
@@ -391,5 +398,13 @@ class Business
     public function getBusinessTimePackages()
     {
         return $this->businessTimePackages;
+    }
+
+    /**
+     * @return BusinessRate
+     */
+    public function getBusinessRate()
+    {
+        return $this->businessRate;
     }
 }
