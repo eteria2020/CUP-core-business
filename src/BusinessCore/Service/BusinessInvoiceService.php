@@ -54,7 +54,7 @@ class BusinessInvoiceService
     public function findOneByIdAndBusiness($invoiceId, $business)
     {
         return $this->businessInvoiceRepository->findOneBy([
-                'invoice' => $invoiceId,
+                'id' => $invoiceId,
                 'business' => $business
         ]);
     }

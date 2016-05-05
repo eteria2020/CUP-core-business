@@ -14,7 +14,7 @@ class BusinessInvoiceRepository extends EntityRepository
     public function countAllByBusiness(Business $business)
     {
         $em = $this->getEntityManager();
-        $query = $em->createQuery('SELECT COUNT(bi.invoice) FROM \BusinessCore\Entity\BusinessInvoice bi WHERE bi.business = :business');
+        $query = $em->createQuery('SELECT COUNT(bi.id) FROM \BusinessCore\Entity\BusinessInvoice bi WHERE bi.business = :business');
         $query->setParameter('business', $business);
         return $query->getSingleScalarResult();
     }
@@ -23,8 +23,6 @@ class BusinessInvoiceRepository extends EntityRepository
     {
         $dql = 'SELECT bi
                 FROM \BusinessCore\Entity\BusinessInvoice bi
-                JOIN bi.invoice i
-                JOIN i.employee e
                 WHERE bi.business = :business ';
 
         $query = $this->getEntityManager()->createQuery();
