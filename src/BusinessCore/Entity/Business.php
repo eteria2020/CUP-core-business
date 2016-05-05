@@ -162,14 +162,15 @@ class Business
     /**
      * Bidirectional - One-To-One
      *
-     * @ORM\OneToOne(targetEntity="BusinessRate", mappedBy="business")
+     * @ORM\OneToMany(targetEntity="BusinessFare", mappedBy="business")
      */
-    private $businessRate;
+    private $businessFares;
 
     public function __construct($code)
     {
         $this->code = $code;
         $this->insertedTs = date_create();
+
     }
 
     public static function fromBusinessDetailsAndParams(
@@ -401,10 +402,18 @@ class Business
     }
 
     /**
-     * @return BusinessRate
+     * @return BusinessFare
      */
-    public function getBusinessRate()
+    public function getActiveBusinessFare()
     {
-        return $this->businessRate;
+        /** @var BusinessFare $latestFare */
+        $latestFare = $this->businessFares[0];
+        /** @var BusinessFare $businessFare */
+        foreach ($this->businessFares as $businessFare) {
+            if ($businessFare->getInsertedTs() > $latestFare->getInsertedTs()) {
+                $latestFare = $businessFare;
+            }
+        }
+        return $latestFare;
     }
 }

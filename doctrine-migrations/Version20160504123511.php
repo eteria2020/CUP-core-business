@@ -10,24 +10,20 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20160504123511 extends AbstractMigration
 {
-    const TABLE = 'business.business_rate';
-    const SEQUENCE_NAME = 'business.business_rate_id_seq';
+    const FARE_VIEW = 'business.fare';
     /**
      * @param Schema $schema
      */
     public function up(Schema $schema)
     {
-        $schema->createSequence(self::SEQUENCE_NAME);
-        $table = $schema->createTable(self::TABLE);
-        $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
-        $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
-        $table->addColumn("discount_stop", "decimal", ["notnull" => true, 'precision' => 5, 'scale' => 4]);
-        $table->addColumn("discount_trip", "decimal", ["notnull" => true, 'precision' => 5, 'scale' => 4]);
-        $table->addColumn("inserted_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
-        $table->addColumn("updated_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
-
-        $table->setPrimaryKey(["id"]);
-        $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
+        $this->addSql('
+        CREATE OR REPLACE VIEW ' . self::FARE_VIEW .' AS
+         SELECT fares.id,
+            fares.motion_cost_per_minute,
+            fares.park_cost_per_minute,
+            fares.cost_steps
+            FROM fares;
+             ');
     }
 
     /**
@@ -35,7 +31,6 @@ class Version20160504123511 extends AbstractMigration
      */
     public function down(Schema $schema)
     {
-        $schema->dropTable(self::TABLE);
-        $schema->dropSequence(self::SEQUENCE_NAME);
+        $this->addSql("DROP VIEW " . self::FARE_VIEW);
     }
 }

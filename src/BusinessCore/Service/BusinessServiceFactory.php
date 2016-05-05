@@ -11,6 +11,7 @@ class BusinessServiceFactory implements FactoryInterface
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessRepository = $entityManager->getRepository('BusinessCore\Entity\Business');
+        $fareRepository = $entityManager->getRepository('BusinessCore\Entity\Fare');
         $businessEmployeeRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessEmployee');
         $translator = $serviceLocator->get('translator');
 
@@ -18,6 +19,7 @@ class BusinessServiceFactory implements FactoryInterface
             $entityManager,
             $businessRepository,
             $businessEmployeeRepository,
+            $fareRepository,
             $translator
         );
     }

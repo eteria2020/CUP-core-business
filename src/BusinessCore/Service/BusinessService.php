@@ -4,8 +4,10 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessEmployee;
+use BusinessCore\Entity\BusinessFare;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
+use BusinessCore\Entity\Repository\FareRepository;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Service\Helper\SearchCriteria;
@@ -35,24 +37,31 @@ class BusinessService
      * @var BusinessEmployeeRepository
      */
     private $businessEmployeeRepository;
+    /**
+     * @var FareRepository
+     */
+    private $fareRepository;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessRepository $businessRepository
      * @param BusinessEmployeeRepository $businessEmployeeRepository
+     * @param FareRepository $fareRepository
      * @param $translator
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessRepository $businessRepository,
         BusinessEmployeeRepository $businessEmployeeRepository,
+        FareRepository $fareRepository,
         $translator
     ) {
         $this->translator = $translator;
         $this->businessRepository = $businessRepository;
         $this->entityManager = $entityManager;
         $this->businessEmployeeRepository = $businessEmployeeRepository;
+        $this->fareRepository = $fareRepository;
     }
 
     public function getTotalBusinesses()
@@ -67,14 +76,25 @@ class BusinessService
 
     public function addBusiness(BusinessDetails $businessDetails, BusinessConfigParams $businessParams)
     {
-        $code = $this->getUniqueCode();
-        $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
-
+        $this->entityManager->beginTransaction();
         try {
+            $code = $this->getUniqueCode();
+            $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
+            $baseFare = $this->fareRepository->findOne();
+            $businessFare = new BusinessFare($business, $baseFare);
+
             $this->entityManager->persist($business);
+            $this->entityManager->persist($businessFare);
+
             $this->entityManager->flush();
+            $this->entityManager->commit();
+
         } catch (UniqueConstraintViolationException $e) {
+            $this->entityManager->rollback();
             throw new \Exception($this->translator->translate("Errore di duplicazione codice azienda"));
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
         }
         return $business;
     }
