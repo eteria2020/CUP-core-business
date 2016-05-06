@@ -3,6 +3,7 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessPayment;
 use BusinessCore\Entity\BusinessTimePackage;
 use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
@@ -35,20 +36,36 @@ class BusinessTimePackageService
     }
 
     /**
-     * @return TimePackage[]
+     * @param Business $business
+     * @return \BusinessCore\Entity\TimePackage[]
      */
-    public function getBuyablePackages()
+    public function findBuyablePackages(Business $business)
     {
-        return $this->timePackageRepository->findAll();
+        return $this->timePackageRepository->findBuyableByBusiness($business);
     }
 
     public function buyTimePackage(Business $business, $timePackageId)
     {
-        //@todo payment
-        $timePackage = $this->timePackageRepository->find($timePackageId);
-        $businessTimePackage = new BusinessTimePackage($business, $timePackage);
+        $this->entityManager->beginTransaction();
+        try {
+            /** @var TimePackage $timePackage */
+            $timePackage = $this->timePackageRepository->find($timePackageId);
+            $businessTimePackage = new BusinessTimePackage($business, $timePackage);
 
-        $this->entityManager->persist($businessTimePackage);
-        $this->entityManager->flush();
+            $businessPayment = new BusinessPayment(
+                $business,
+                $timePackage->getCost(),
+                $timePackage->getCurrency(),
+                BusinessPayment::TIME_PACKAGE_TYPE
+            );
+
+            $this->entityManager->persist($businessTimePackage);
+            $this->entityManager->persist($businessPayment);
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
+        }
     }
 }
