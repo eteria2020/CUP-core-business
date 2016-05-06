@@ -45,6 +45,13 @@ class TimePackage
     private $cost;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="currency", type="text", nullable=true)
+     */
+    private $currency;
+
+    /**
      * @return int
      */
     public function getId()
@@ -74,5 +81,13 @@ class TimePackage
     public function getCost()
     {
         return $this->cost;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }
