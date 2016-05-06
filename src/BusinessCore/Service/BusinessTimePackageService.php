@@ -35,16 +35,17 @@ class BusinessTimePackageService
     }
 
     /**
-     * @return TimePackage[]
+     * @param Business $business
+     * @return \BusinessCore\Entity\TimePackage[]
      */
-    public function getBuyablePackages()
+    public function findBuyablePackages(Business $business)
     {
-        return $this->timePackageRepository->findAll();
+        return $this->timePackageRepository->findBuyableByBusiness($business);
     }
 
     public function buyTimePackage(Business $business, $timePackageId)
     {
-        //@todo payment
+        //@todo generate payment
         $timePackage = $this->timePackageRepository->find($timePackageId);
         $businessTimePackage = new BusinessTimePackage($business, $timePackage);
 
