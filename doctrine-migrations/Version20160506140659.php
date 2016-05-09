@@ -25,8 +25,7 @@ class Version20160506140659 extends AbstractMigration
         $table->addColumn("currency", "string", ["notnull" => true, "length" => 3]);
         $table->addColumn("type", "string", ["notnull" => true]);
         $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
-        $table->addColumn("concluded", "boolean", ["notnull" => true, 'default' => false]);
-        $table->addColumn("concluded_ts", "datetime", ["notnull" => false]);
+        $table->addColumn("payed_on_ts", "datetime", ["notnull" => false]);
 
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);

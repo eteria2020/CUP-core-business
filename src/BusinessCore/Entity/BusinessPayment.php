@@ -56,13 +56,6 @@ class BusinessPayment
     private $type;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="concluded", type="boolean", nullable=true)
-     */
-    private $concluded = false;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_ts", type="datetime", nullable=false)
@@ -72,9 +65,9 @@ class BusinessPayment
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="concluded_ts", type="datetime", nullable=false)
+     * @ORM\Column(name="payed_on_ts", type="datetime", nullable=true)
      */
-    private $concludedTs;
+    private $payedOnTs;
 
     /**
      * BusinessPayment constructor.
@@ -90,5 +83,45 @@ class BusinessPayment
         $this->currency = $currency;
         $this->type = $type;
         $this->createdTs = date_create();
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedTs()
+    {
+        return $this->createdTs;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getPayedOnTs()
+    {
+        return $this->payedOnTs;
     }
 }
