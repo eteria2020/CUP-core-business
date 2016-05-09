@@ -14,8 +14,8 @@
         "classmap": [
             "./Module.php"
         ],
-        "psr-0": {
-            "BusinessCore": "src/"
+        "psr-4": {
+            "BusinessCore": "src/BusinessCore/"
         }
     }
 }

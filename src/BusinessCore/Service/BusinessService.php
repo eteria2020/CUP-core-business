@@ -88,36 +88,32 @@ class BusinessService
         return $this->businessRepository->findOneBy(['code' => $code]);
     }
 
-    public function removeEmployee($businessCode, $employeeId)
+    public function removeEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_DELETED);
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_DELETED);
     }
 
-    public function approveEmployee($businessCode, $employeeId)
+    public function approveEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_APPROVED);
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
     }
 
-    public function blockEmployee($businessCode, $employeeId)
+    public function blockEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($businessCode, $employeeId, BusinessEmployee::STATUS_BLOCKED);
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_BLOCKED);
     }
 
-    private function setEmployeeStatus($businessCode, $employeeId, $status)
+    private function setEmployeeStatus(Business $business, $employeeId, $status)
     {
-        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
+        $businessEmployee = $this->businessEmployeeRepository->find(
+            [
+                'employee' => $employeeId,
+                'business' => $business
+            ]
+        );
         $businessEmployee->setStatus($status);
         $this->entityManager->persist($businessEmployee);
         $this->entityManager->flush();
-    }
-
-    public function getUniqueCode()
-    {
-        $code = substr(md5(uniqid(rand(), true)), 0, 6);
-        while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
-            $code = substr(md5(uniqid(rand(), true)), 0, 6);
-        }
-        return $code;
     }
 
     public function updateBusinessDetails(Business $business, BusinessDetails $inputData)
@@ -136,5 +132,14 @@ class BusinessService
         $this->entityManager->persist($business);
         $this->entityManager->flush();
         return $business;
+    }
+
+    public function getUniqueCode()
+    {
+        $code = substr(md5(uniqid(rand(), true)), 0, 6);
+        while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
+            $code = substr(md5(uniqid(rand(), true)), 0, 6);
+        }
+        return $code;
     }
 }

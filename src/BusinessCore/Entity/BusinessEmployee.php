@@ -155,7 +155,7 @@ class BusinessEmployee
         return '-';
     }
 
-    public function setGroup(Group $group)
+    public function assignToGroup(Group $group)
     {
         $this->group = $group;
     }
