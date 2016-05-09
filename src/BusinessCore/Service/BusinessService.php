@@ -3,11 +3,13 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Service\Helper\SearchCriteria;
+
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\I18n\Translator;
@@ -86,28 +88,39 @@ class BusinessService
         return $this->businessRepository->findOneBy(['code' => $code]);
     }
 
-    public function removeEmployee($businessCode, $employeeId)
+    public function removeEmployee(Business $business, $employeeId)
     {
-        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
+        $businessEmployee = $this->businessEmployeeRepository->find(
+            [
+                'employee' => $employeeId,
+                'business' => $business
+            ]
+        );
         $this->entityManager->remove($businessEmployee);
         $this->entityManager->flush();
     }
 
-    public function setEmployeeStatus($businessCode, $employeeId, $status)
+    public function approveEmployee(Business $business, $employeeId)
     {
-        $businessEmployee = $this->businessEmployeeRepository->find(['employee' => $employeeId, 'business' => $businessCode]);
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
+    }
+
+    public function blockEmployee(Business $business, $employeeId)
+    {
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_BLOCKED);
+    }
+
+    private function setEmployeeStatus(Business $business, $employeeId, $status)
+    {
+        $businessEmployee = $this->businessEmployeeRepository->find(
+            [
+                'employee' => $employeeId,
+                'business' => $business
+            ]
+        );
         $businessEmployee->setStatus($status);
         $this->entityManager->persist($businessEmployee);
         $this->entityManager->flush();
-    }
-
-    public function getUniqueCode()
-    {
-        $code = substr(md5(uniqid(rand(), true)), 0, 6);
-        while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
-            $code = substr(md5(uniqid(rand(), true)), 0, 6);
-        }
-        return $code;
     }
 
     public function updateBusinessDetails(Business $business, BusinessDetails $inputData)
@@ -126,5 +139,14 @@ class BusinessService
         $this->entityManager->persist($business);
         $this->entityManager->flush();
         return $business;
+    }
+
+    public function getUniqueCode()
+    {
+        $code = substr(md5(uniqid(rand(), true)), 0, 6);
+        while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
+            $code = substr(md5(uniqid(rand(), true)), 0, 6);
+        }
+        return $code;
     }
 }

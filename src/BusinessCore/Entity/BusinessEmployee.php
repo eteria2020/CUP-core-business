@@ -59,6 +59,14 @@ class BusinessEmployee
      */
     private $confirmedTs;
 
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     */
+    private $group;
+
 
     public function __construct(Employee $employee, Business $business)
     {
@@ -120,5 +128,31 @@ class BusinessEmployee
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    public function getGroupName()
+    {
+        if ($this->group instanceof Group) {
+            return $this->group->getName();
+        }
+        return '-';
+    }
+
+    public function assignToGroup(Group $group)
+    {
+        $this->group = $group;
+    }
+
+    public function removeGroup()
+    {
+        $this->group = null;
     }
 }

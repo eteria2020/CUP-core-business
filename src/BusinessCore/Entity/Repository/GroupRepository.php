@@ -5,8 +5,8 @@ namespace BusinessCore\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * BusinessRepository
+ * GroupRepository
  */
-class BusinessEmployeeRepository extends EntityRepository
+class GroupRepository extends EntityRepository
 {
 }

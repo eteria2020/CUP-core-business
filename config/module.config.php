@@ -29,12 +29,18 @@ return [
     'service_manager' => [
         'factories' => [
             'BusinessCore\Service\BusinessService' => 'BusinessCore\Service\BusinessServiceFactory',
-            'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory'
+            'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory',
+            'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory'
         ]
     ],
     'view_helpers'    => [
         'factories' => [
-            'BusinessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
+            'businessEmployeeStatus' => 'BusinessCore\View\Helper\BusinessEmployeeStatusHelperFactory',
+        ],
+        'invokables' => [
+            'groupLink' => 'BusinessCore\View\Helper\GroupLinkHelper',
+            'businessEmployeeAvailableActionButtons' =>
+                'BusinessCore\View\Helper\BusinessEmployeeAvailableActionButtonHelper',
         ]
     ],
 ];

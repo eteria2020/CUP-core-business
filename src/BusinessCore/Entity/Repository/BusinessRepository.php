@@ -3,11 +3,12 @@
 namespace BusinessCore\Entity\Repository;
 
 use BusinessCore\Service\Helper\SearchCriteria;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * BusinessRepository
  */
-class BusinessRepository extends \Doctrine\ORM\EntityRepository
+class BusinessRepository extends EntityRepository
 {
     public function countAll()
     {
