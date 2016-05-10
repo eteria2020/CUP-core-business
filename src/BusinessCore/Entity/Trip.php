@@ -215,7 +215,4 @@ class Trip
     {
         return $this->addressBeginning;
     }
-
-
-
 }

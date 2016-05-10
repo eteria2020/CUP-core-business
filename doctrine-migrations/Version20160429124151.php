@@ -19,7 +19,7 @@ class Version20160429124151 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-       $this->addSql("ALTER TYPE business.employee_status ADD VALUE 'deleted';");
+        $this->addSql("ALTER TYPE business.employee_status ADD VALUE 'deleted';");
     }
 
     /**

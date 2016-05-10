@@ -2,13 +2,8 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Business;
-use BusinessCore\Entity\BusinessEmployee;
 use BusinessCore\Entity\BusinessInvoice;
-use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessInvoiceRepository;
-use BusinessCore\Entity\Repository\BusinessRepository;
-use BusinessCore\Service\Helper\SearchCriteria;
 
 use Doctrine\ORM\EntityManager;
 

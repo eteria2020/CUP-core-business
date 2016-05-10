@@ -26,9 +26,7 @@ class BusinessInvoice
     /**
      * @var Business
      * @ORM\ManyToOne(targetEntity="Business")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
-     * })
+     * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;
 
