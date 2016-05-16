@@ -21,7 +21,7 @@ class Version20160428114826 extends AbstractMigration
         $schema->createSequence(self::SEQUENCE_NAME);
         $table = $schema->createTable(self::TABLE);
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
-        $table->addColumn("invoice_number", "integer", ["notnull" => true]);
+        $table->addColumn("invoice_number", "string", ["notnull" => true]);
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
         $table->addColumn("generated_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
         $table->addColumn("content", "json_array", ["notnull" => true]);
