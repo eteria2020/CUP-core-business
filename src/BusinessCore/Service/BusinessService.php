@@ -60,6 +60,11 @@ class BusinessService
         return $this->businessRepository->countAll();
     }
 
+    public function findBySearchValue($value)
+    {
+        return $this->businessRepository->findBySearchValue($value);
+    }
+
     public function searchBusinesses(SearchCriteria $searchCriteria)
     {
         return $this->businessRepository->searchBusinesses($searchCriteria);
