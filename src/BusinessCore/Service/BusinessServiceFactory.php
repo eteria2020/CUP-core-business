@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Service;
 
+use Zend\EventManager\EventManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -12,13 +13,18 @@ class BusinessServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessRepository = $entityManager->getRepository('BusinessCore\Entity\Business');
         $businessEmployeeRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessEmployee');
+        $employeeRepository = $entityManager->getRepository('BusinessCore\Entity\Employee');
         $translator = $serviceLocator->get('translator');
+        $eventManager = new EventManager('BusinessService');
+
 
         return new BusinessService(
             $entityManager,
             $businessRepository,
             $businessEmployeeRepository,
-            $translator
+            $employeeRepository,
+            $translator,
+            $eventManager
         );
     }
 }

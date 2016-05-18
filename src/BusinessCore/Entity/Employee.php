@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Business
  *
  * @ORM\Table(name="employee", schema="business")
- * @ORM\Entity(readOnly=true)
+ * @ORM\Entity(readOnly=true, repositoryClass="BusinessCore\Entity\Repository\EmployeeRepository")
  */
 
 class Employee

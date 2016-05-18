@@ -30,7 +30,9 @@ return [
         'factories' => [
             'BusinessCore\Service\BusinessService' => 'BusinessCore\Service\BusinessServiceFactory',
             'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory',
-            'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory'
+            'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory',
+            'BusinessCore\Service\BusinessEmailService' => 'BusinessCore\Service\BusinessEmailServiceFactory',
+            'BusinessCore\Listener\EmployeeApprovedListener' => 'BusinessCore\Listener\EmployeeApprovedListenerFactory'
         ]
     ],
     'view_helpers'    => [
