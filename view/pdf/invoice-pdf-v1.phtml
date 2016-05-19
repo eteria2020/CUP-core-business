@@ -1,5 +1,6 @@
 <?php
     $invoiceContent = $this->invoiceContent;
+
     // Customer data
     $name = ucwords(strtolower($invoiceContent['customer']['name'] . ' ' . $invoiceContent['customer']['surname']));
     $mail = $invoiceContent['customer']['email'];
@@ -10,15 +11,63 @@
     $country = $invoiceContent['customer']['country'];
     $cf = $invoiceContent['customer']['cf'];
     $piva = $invoiceContent['customer']['piva'];
+
     // Invoice data
     $docN = $this->invoiceNumber;
     $invoiceDate = $invoiceContent['invoice_date'];
     $totalAmount = $invoiceContent['amounts']['grand_total'];
     $partialAmount = $invoiceContent['amounts']['total'];
     $iva = $invoiceContent['amounts']['iva'];
-    $type = $invoiceContent['type'];
-    // Table data
+    $ivaPercentage = $invoiceContent['iva'];
+
+    // Invoice header
+    $header = $invoiceContent['header'];
+
+    // Table formatting
     $alignmentFormat = $invoiceContent['body']['contents']['body-format']['alignment'];
+
+    // Multipage
+    $bodyContents = $invoiceContent['body']['contents'];
+    $pagedContents = [];
+    $row = 0;
+    $page = 0;
+
+    // calculate max rows per page (depends on lines per row inserted)
+    $firstLineHeight = 26; // this is a fixed value based on the font and table
+    $additionalLineHeight = 10; // this is a fixed value based on the font
+
+    $totalLineHeight = $firstLineHeight; // assume there is atleast one row
+    $maxNumberOfRows = 0;
+    // find row with most lines
+    foreach ($bodyContents['body'][0] as $value) {
+        $numberOfRows = count($value);
+        if ($numberOfRows > $maxNumberOfRows) {
+            $maxNumberOfRows = $numberOfRows;
+        }
+    }
+    // calculate height of row with most lines
+    $totalLineHeight += ($maxNumberOfRows - 1) * $additionalLineHeight;
+    $maxRowsPerPage = (integer) floor(541 / $totalLineHeight);
+
+    // loop through rows and divide them into arrays, one for each page
+    foreach ($bodyContents['body'] as $value) {
+
+        // if new page, add array for that page
+        if ($row == 0) {
+            array_push($pagedContents, []);
+        }
+
+        // push the row into the page array
+        array_push($pagedContents[$page], $value);
+
+        $row ++;
+
+        // if the max number of rows per page is reached, reset rows and add a page
+        if ($row == $maxRowsPerPage) {
+            $row = 0;
+            $page ++;
+        }
+    }
 ?>
 
 <!-- Main container -->
@@ -26,7 +75,7 @@
 
     <?php
         // loop through pages
-        for ($i = 1; $i <= 2; $i++) {
+        for ($i = 0; $i <= count($pagedContents); $i++) {
     ?>
 
     <!-- Page container -->
@@ -49,20 +98,14 @@
             <p><?= $zipCode . ', ' . $town ?><?php if ($province != null) echo ', ' . $province; if ($country != null) echo ', ' . $country ?></p>
             <p>CF: <?= $cf ?></p>
             <?php if ($piva != null) echo '<p>P.IVA: ' . $piva . '</p>'?>
+            <p><?= $mail ?></p>
         </div>
         <!-- customer data -->
 
         <!-- Header -->
         <div class="header font">
             <p class="header-text">
-                <span class="name">CS Milano SRL</span><br>
-                Sede legale<br>
-                Via dei Pelaghi, 162 – 57121 Livorno (LI)<br>
-                P.IVA: 01808470494<br>
-                Sede operativa<br>
-                Via Casati Felice 1/A – 20124 Milano (MI)<br>
-                Tel: 0586.1975772<br>
-                Email: servizioclienti@sharengo.eu
+                <?= $header ?>
             </p>
         </div>
         <!-- header -->
@@ -72,8 +115,11 @@
 
         <?php
             // if first page
-            if ($i == 1) {
+            if ($i == 0) {
         ?>
+
+            <!-- Line -->
+            <div class="line"></div>
 
             <!-- Message -->
             <div class="message font">
@@ -81,7 +127,7 @@
                 <p>La ringraziamo per aver usufruito dei nostri servizi.</p>
                 <?= $invoiceContent['body']['greeting_message'] ?>
                 <p>Potrà trovare tutte le sue fatture nell'Area Riservata insieme alle altre informazioni del suo profilo.</p>
-                <p>Se vuole ricevere informazioni sul servizio Share 'N Go,
+                <p>Se vuole ricevere informazioni sul servizio Share’nGo,
                     può contattarci al numero 0586 1975772 oppure all’indirizzo email servizioclienti@sharengo.eu.</p>
                 <p>Cordiali saluti</p>
             </div>
@@ -90,6 +136,7 @@
         <?php
             // if not first page
             } else {
+                $tableHeight = 0;
         ?>
 
         <!-- Transactions table -->
@@ -102,26 +149,53 @@
                         // populate transactions table's header
                         foreach ($invoiceContent['body']['contents']['header'] as $value) { ?>
                             <th class="table2-031e"><?= $value ?></th>
-                        <?php } ?>
+                    <?php } ?>
 
                 </tr>
 
                 <?php
                     // generate transactions table's rows
-                    foreach ($invoiceContent['body']['contents']['body'] as $row) { ?>
-                        <tr>
-                        <?php foreach ($row as $key => $value) { ?>
-                            <td class="table2-031e <?= $alignmentFormat[$key] ?>"><?= $value ?></td>
-                        <?php } ?>
-                        </tr>
-                    <?php } ?>
+                    foreach ($pagedContents[$i - 1] as $row) {
+                ?>
+                    <tr>
+                    <?php
+                        $maxRowHeight = 0;
+                        foreach ($row as $key => $values) {
+                    ?>
+                        <td class="table2-031e <?= $alignmentFormat[$key] ?>">
+                            <?php
+                                $valueRow = 0;
+                                $rowHeight = 0;
+                                foreach ($values as $key => $value) {
+                                    if ($valueRow != 0) {
+                                        echo '<br><br>';
+                                        $rowHeight += 10;
+                                    } else {
+                                        $rowHeight += 26;
+                                    }
+                                    echo $value;
+                                    $valueRow++;
+                                }
+                                if ($rowHeight > $maxRowHeight) {
+                                    $maxRowHeight = $rowHeight;
+                                }
+                            ?>
+                        </td>
+                    <?php
+                        }
+                        $tableHeight += $maxRowHeight;
+                    ?>
+                    </tr>
+                <?php
+                    }
+                ?>
 
             </table>
         </div>
         <!-- transactions table -->
 
         <!-- Spacing -->
-        <div class="spacing" style="height:<?= 570 - 26 * count($invoiceContent['body']['contents']['body']);?>px;"></div>
+        <div class="spacing" style="height:<?= 570 - $tableHeight; ?>px;"></div>
 
         <!-- Summary table -->
         <table class="table table1 font">
@@ -130,7 +204,7 @@
                 <td class="table1-031e right"><?= $partialAmount ?> €</td>
             </tr>
             <tr>
-                <td class="table1-031e">IVA 22%</td>
+                <td class="table1-031e">IVA <?= $ivaPercentage ?>%</td>
                 <td class="table1-031e right"><?= $iva ?> €</td>
             </tr>
             <tr>
@@ -139,6 +213,13 @@
             </tr>
         </table>
         <!-- summary table -->
+
+        <?php if (array_key_exists('bottom_note', $invoiceContent['body'])): ?>
+            <div class="bottom-note">
+                <div class="bottom-note-line"></div>
+                <p><?= $invoiceContent['body']['bottom_note'] ?></p>
+            </div>
+        <?php endif; ?>
 
         <?php
             // close pages if else

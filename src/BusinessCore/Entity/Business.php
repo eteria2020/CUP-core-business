@@ -166,11 +166,18 @@ class Business
      */
     private $businessFares;
 
+    /**
+     * @var BusinessFleet
+     *
+     * @ORM\ManyToOne(targetEntity="BusinessFleet")
+     * @ORM\JoinColumn(name="fleet_id", referencedColumnName="id", nullable=false)
+     */
+    private $fleet;
+
     public function __construct($code)
     {
         $this->code = $code;
         $this->insertedTs = date_create();
-
     }
 
     public static function fromBusinessDetailsAndParams(
@@ -391,6 +398,14 @@ class Business
     public function getBusinessGroups()
     {
         return $this->businessGroups;
+    }
+
+    /**
+     * @return BusinessFleet
+     */
+    public function getFleet()
+    {
+        return $this->fleet;
     }
 
     /**

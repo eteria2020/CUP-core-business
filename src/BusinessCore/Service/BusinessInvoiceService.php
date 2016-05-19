@@ -5,8 +5,14 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Entity\Repository\BusinessInvoiceRepository;
 
+use Doctrine\ORM\EntityManager;
+
 class BusinessInvoiceService
 {
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
     /**
      * @var BusinessInvoiceRepository
      */
@@ -14,11 +20,14 @@ class BusinessInvoiceService
 
     /**
      * BusinessInvoiceService constructor.
+     * @param EntityManager $entityManager
      * @param BusinessInvoiceRepository $businessInvoiceRepository
      */
     public function __construct(
+        EntityManager $entityManager,
         BusinessInvoiceRepository $businessInvoiceRepository
     ) {
+        $this->entityManager = $entityManager;
         $this->businessInvoiceRepository = $businessInvoiceRepository;
     }
 
@@ -40,7 +49,7 @@ class BusinessInvoiceService
     public function findOneByIdAndBusiness($invoiceId, $business)
     {
         return $this->businessInvoiceRepository->findOneBy([
-                'invoice' => $invoiceId,
+                'id' => $invoiceId,
                 'business' => $business
         ]);
     }

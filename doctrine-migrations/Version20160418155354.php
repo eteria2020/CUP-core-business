@@ -95,7 +95,8 @@ class Version20160418155354 extends AbstractMigration
                 customers.fax,
                 customers.inserted_ts,
                 customers.update_ts
-                ;");
+                 FROM customers
+                  JOIN business.business_employee be ON customers.id = be.employee_id;");
 
         $this->addSql("ALTER TABLE business.employee
               OWNER TO sharengo;

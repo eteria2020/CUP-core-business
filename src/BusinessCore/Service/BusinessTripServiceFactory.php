@@ -12,6 +12,9 @@ class BusinessTripServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessTripRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessTrip');
 
-        return new BusinessTripService($businessTripRepository);
+        return new BusinessTripService(
+            $entityManager,
+            $businessTripRepository
+        );
     }
 }

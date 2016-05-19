@@ -9,7 +9,7 @@ use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Entity\Repository\GroupRepository;
 
-use BusinessCore\Exception\InvalidGroupFormException;
+use BusinessCore\Form\InputData\GroupDataFactory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Zend\Mvc\I18n\Translator;
@@ -101,10 +101,7 @@ class GroupService
 
     public function createNewGroup(Business $business, $data)
     {
-        $name = $data['name'];
-        $description = $data['description'];
-
-        $group = new Group($business, $name, $description);
+        $group = GroupDataFactory::groupfromArray($business, $data);
 
         $this->entityManager->persist($group);
         $this->entityManager->flush();

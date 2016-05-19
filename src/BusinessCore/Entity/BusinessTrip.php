@@ -17,9 +17,7 @@ class BusinessTrip
      * @var Trip
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Trip")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="trip_id", referencedColumnName="id", nullable=false)
-     * })
+     * @ORM\JoinColumn(name="trip_id", referencedColumnName="id", nullable=false)
      */
     private $trip;
 
@@ -27,9 +25,7 @@ class BusinessTrip
      * @var Business
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Business")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
-     * })
+     * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;
 
@@ -37,9 +33,7 @@ class BusinessTrip
      * @var Group
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Group")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
-     * })
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
      */
     private $group;
 

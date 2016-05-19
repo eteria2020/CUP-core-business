@@ -2,7 +2,7 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Invoice;
+use BusinessCore\Entity\BusinessInvoice;
 use Knp\Snappy\Pdf;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
@@ -31,7 +31,7 @@ class InvoicePdfService
         $this->pdfService = $pdfService;
     }
 
-    public function generatePdfFromInvoice(Invoice $invoice)
+    public function generatePdfFromInvoice(BusinessInvoice $invoice)
     {
         $this->pdfService->setOptions([
             'footer-right' => '[page]/[topage]',
