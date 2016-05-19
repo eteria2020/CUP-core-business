@@ -8,12 +8,10 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20160419110340 extends AbstractMigration
+class Version20160428114826 extends AbstractMigration
 {
-    const TABLE = 'business.employee_group';
-    const SEQUENCE_NAME = 'business.group_id_seq';
-
-    const BUSINESS_EMPLOYEE_TABLE = 'business.business_employee';
+    const TABLE = 'business.business_invoice';
+    const SEQUENCE_NAME = 'business.business_invoice_id_seq';
 
     /**
      * @param Schema $schema
@@ -23,18 +21,18 @@ class Version20160419110340 extends AbstractMigration
         $schema->createSequence(self::SEQUENCE_NAME);
         $table = $schema->createTable(self::TABLE);
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
+        $table->addColumn("invoice_number", "string", ["notnull" => true]);
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
-        $table->addColumn("name", "string", ["notnull" => true]);
-        $table->addColumn("description", "string", ["notnull" => true ]);
-        $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
+        $table->addColumn("generated_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
+        $table->addColumn("content", "json_array", ["notnull" => true]);
+        $table->addColumn("version", "integer", ["notnull" => true]);
+        $table->addColumn("type", "string", ["notnull" => true]);
+        $table->addColumn("invoice_date", "integer", ["notnull" => true]);
+        $table->addColumn("amount", "integer", ["notnull" => true]);
+        $table->addColumn("iva", "integer", ["notnull" => true]);
+
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
-        $table->addUniqueIndex(["business_code", "name"]);
-
-        $businessEmployeeTable = $schema->getTable(self::BUSINESS_EMPLOYEE_TABLE);
-
-        $businessEmployeeTable->addColumn("group_id", "integer", ["notnull" => false]);
-        $businessEmployeeTable->addForeignKeyConstraint(self::TABLE, ['group_id'], ['id']);
     }
 
     /**
@@ -42,8 +40,6 @@ class Version20160419110340 extends AbstractMigration
      */
     public function down(Schema $schema)
     {
-        $businessEmployeeTable = $schema->getTable(self::BUSINESS_EMPLOYEE_TABLE);
-        $businessEmployeeTable->dropColumn("group_id");
         $schema->dropSequence(self::SEQUENCE_NAME);
         $schema->dropTable(self::TABLE);
     }

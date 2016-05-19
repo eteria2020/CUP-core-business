@@ -152,6 +152,14 @@ class Business
      */
     private $businessGroups;
 
+    /**
+     * @var BusinessFleet
+     *
+     * @ORM\ManyToOne(targetEntity="BusinessFleet")
+     * @ORM\JoinColumn(name="fleet_id", referencedColumnName="id", nullable=false)
+     */
+    private $fleet;
+
     public function __construct($code)
     {
         $this->code = $code;
@@ -351,7 +359,7 @@ class Business
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if (!$be->isPending()) {
+            if ($be->isApproved() || $be->isBlocked()) {
                 $result[] = $be;
             }
         }
@@ -376,5 +384,13 @@ class Business
     public function getBusinessGroups()
     {
         return $this->businessGroups;
+    }
+
+    /**
+     * @return BusinessFleet
+     */
+    public function getFleet()
+    {
+        return $this->fleet;
     }
 }

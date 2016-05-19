@@ -30,7 +30,10 @@ return [
         'factories' => [
             'BusinessCore\Service\BusinessService' => 'BusinessCore\Service\BusinessServiceFactory',
             'BusinessCore\Service\DatatableService' => 'BusinessCore\Service\DatatableServiceFactory',
-            'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory'
+            'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory',
+            'BusinessCore\Service\BusinessTripService' => 'BusinessCore\Service\BusinessTripServiceFactory',
+            'BusinessCore\Service\BusinessInvoiceService' => 'BusinessCore\Service\BusinessInvoiceServiceFactory',
+            'BusinessCore\Service\InvoicePdfService' => 'BusinessCore\Service\InvoicePdfServiceFactory',
         ]
     ],
     'view_helpers'    => [
@@ -43,4 +46,22 @@ return [
                 'BusinessCore\View\Helper\BusinessEmployeeAvailableActionButtonHelper',
         ]
     ],
+    'mvlabs-snappy' => [
+        'pdf' => [
+            'binary'  => __DIR__ . '/../../../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64',
+            'options' => [],
+        ]
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__ . '/../view',
+        ],
+    ],
+    'asset_manager' => [
+        'resolver_configs' => [
+            'paths' => [
+                __DIR__ . '/../public/assets-modules/business-core',
+            ]
+        ]
+    ]
 ];
