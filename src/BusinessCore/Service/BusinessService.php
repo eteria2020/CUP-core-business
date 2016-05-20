@@ -80,6 +80,7 @@ class BusinessService
         try {
             $code = $this->getUniqueCode();
             $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
+            //get the base fare, there is only one for now
             $baseFare = $this->fareRepository->findOne();
             $businessFare = new BusinessFare($business, $baseFare);
 

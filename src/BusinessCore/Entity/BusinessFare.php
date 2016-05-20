@@ -113,5 +113,4 @@ class BusinessFare
     {
         return $this->insertedTs;
     }
-
 }
