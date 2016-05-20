@@ -8,6 +8,7 @@ use BusinessCore\Entity\BusinessFare;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Entity\Repository\FareRepository;
+use BusinessCore\Exception\InvalidFormDataException;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Service\Helper\SearchCriteria;
@@ -153,6 +154,18 @@ class BusinessService
         $this->entityManager->persist($business);
         $this->entityManager->flush();
         return $business;
+    }
+
+    public function newBusinessFare(Business $business, $motionDiscount, $parkDiscount)
+    {
+        if ($motionDiscount < 0 || $motionDiscount > 100 || $parkDiscount < 0 || $parkDiscount > 100) {
+            throw new InvalidFormDataException();
+        }
+        $baseFare = $this->fareRepository->findOne();
+        $businessFare = new BusinessFare($business, $baseFare, $motionDiscount, $parkDiscount);
+
+        $this->entityManager->persist($businessFare);
+        $this->entityManager->flush();
     }
 
     public function getUniqueCode()
