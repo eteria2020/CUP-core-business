@@ -3,9 +3,11 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessPayment;
 use BusinessCore\Entity\Repository\BusinessPaymentRepository;
-
+use BusinessCore\Exception\InvalidFormDataException;
 use BusinessCore\Service\Helper\SearchCriteria;
+
 use Doctrine\ORM\EntityManager;
 
 class BusinessPaymentService
@@ -50,5 +52,22 @@ class BusinessPaymentService
     public function getTotalPaymentsByBusiness(Business $business)
     {
         return $this->businessPaymentRepository->getTotalPaymentsByBusiness($business);
+    }
+
+    public function addPenaltyOrExtra(Business $business, $amount, $type)
+    {
+        if (is_nan($amount) || ($type != BusinessPayment::PENALTY_TYPE && $type != BusinessPayment::EXTRA_TYPE)) {
+            throw new InvalidFormDataException();
+        }
+        $amount = floor($amount * 100);
+        $businessPayment = new BusinessPayment(
+            $business,
+            $amount,
+            'EUR',
+            $type
+        );
+
+        $this->entityManager->persist($businessPayment);
+        $this->entityManager->flush();
     }
 }
