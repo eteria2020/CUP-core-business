@@ -17,6 +17,7 @@ class BusinessEmployee
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_BLOCKED = 'blocked';
+    const STATUS_DELETED = 'deleted';
 
     /**
      * @var Employee
@@ -112,6 +113,14 @@ class BusinessEmployee
     public function isPending()
     {
         return $this->status == self::STATUS_PENDING;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDeleted()
+    {
+        return $this->status == self::STATUS_DELETED;
     }
 
     /**
