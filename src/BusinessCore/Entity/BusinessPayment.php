@@ -14,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class BusinessPayment
 {
     const TIME_PACKAGE_TYPE = 'time_package';
+    const TRIP_TYPE = 'trip';
+    const PENALTY_TYPE = 'penalty';
+    const EXTRA_TYPE = 'extra';
 
     /**
      * @var integer
