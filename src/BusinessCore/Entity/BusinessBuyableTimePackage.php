@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BusinessBuyableTimePackage
  *
+ * Association between a business and a PURCHASABLE package
+ *
  * @ORM\Table(name="business_buyable_time_package", schema="business")
  * @ORM\Entity()
  */
@@ -45,5 +47,21 @@ class BusinessBuyableTimePackage
         $this->business = $business;
         $this->timePackage = $timePackage;
         $this->insertedTs = date_create();
+    }
+
+    /**
+     * @return TimePackage
+     */
+    public function getTimePackage()
+    {
+        return $this->timePackage;
+    }
+
+    /**
+     * @return Business
+     */
+    public function getBusiness()
+    {
+        return $this->business;
     }
 }

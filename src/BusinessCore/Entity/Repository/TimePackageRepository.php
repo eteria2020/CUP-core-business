@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use BusinessCore\Entity\Business;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -9,7 +10,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class TimePackageRepository extends EntityRepository
 {
-    public function findBuyableByBusiness($business)
+    public function findBuyableByBusiness(Business $business)
     {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
@@ -22,4 +23,5 @@ class TimePackageRepository extends EntityRepository
 
         return $query->getResult();
     }
+
 }

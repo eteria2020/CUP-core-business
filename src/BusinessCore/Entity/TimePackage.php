@@ -52,6 +52,19 @@ class TimePackage
     private $currency;
 
     /**
+     * TimePackage constructor.
+     * @param int $minutes
+     * @param int $cost
+     */
+    public function __construct($minutes, $cost)
+    {
+        $this->minutes = $minutes;
+        $this->cost = $cost;
+        $this->currency = 'EUR';
+        $this->insertedTs = date_create();
+    }
+
+    /**
      * @return int
      */
     public function getId()

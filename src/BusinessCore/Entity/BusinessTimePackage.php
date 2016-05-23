@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BusinessTimePackage
  *
+ * Association between a business and a PURCHASED time package
+ *
  * @ORM\Table(name="business_time_package", schema="business")
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessTimePackageRepository")
  */
