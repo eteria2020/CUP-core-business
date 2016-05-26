@@ -4,7 +4,8 @@ namespace BusinessCore\Service\Helper;
 
 class SearchCriteria
 {
-    private $searchColoumn;
+    private $searchColumnNull;
+    private $searchColumn;
     private $searchValue;
     private $paginationStart;
     private $paginationLength;
@@ -18,7 +19,8 @@ class SearchCriteria
     /**
      * SearchCriteria constructor.
      *
-     * @param $searchColoumn
+     * @param $searchColumnNull
+     * @param $searchColumn
      * @param $searchValue
      * @param $paginationStart
      * @param $paginationLength
@@ -30,7 +32,8 @@ class SearchCriteria
      * @param $columnToDate
      */
     public function __construct(
-        $searchColoumn,
+        $searchColumnNull,
+        $searchColumn,
         $searchValue,
         $paginationStart,
         $paginationLength,
@@ -41,7 +44,7 @@ class SearchCriteria
         $columnFromDate,
         $columnToDate
     ) {
-        $this->searchColoumn = $searchColoumn;
+        $this->searchColumn = $searchColumn;
         $this->searchValue = $searchValue;
         $this->paginationStart = $paginationStart;
         $this->paginationLength = $paginationLength;
@@ -51,14 +54,15 @@ class SearchCriteria
         $this->toDate = $toDate;
         $this->columnFromDate = $columnFromDate;
         $this->columnToDate = $columnToDate;
+        $this->searchColumnNull = $searchColumnNull;
     }
 
     /**
      * @return string
      */
-    public function getSearchColoumn()
+    public function getSearchColumn()
     {
-        return $this->searchColoumn;
+        return $this->searchColumn;
     }
 
     /**
@@ -131,5 +135,13 @@ class SearchCriteria
     public function getColumnToDate()
     {
         return $this->columnToDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSearchColumnNull()
+    {
+        return $this->searchColumnNull;
     }
 }
