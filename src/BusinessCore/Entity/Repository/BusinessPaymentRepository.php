@@ -2,46 +2,40 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use BusinessCore\Entity\Business;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * BusinessRepository
+ * BusinessPaymentRepository
  */
-class BusinessRepository extends EntityRepository
+class BusinessPaymentRepository extends EntityRepository
 {
-    public function findBySearchValue($value)
+    public function getTotalPaymentsByBusiness($business)
     {
         $em = $this->getEntityManager();
-        $query = $em->createQuery(
-            'SELECT e FROM \BusinessCore\Entity\Business e '.
-            'WHERE lower(e.code) LIKE :value OR lower(e.name) LIKE :value'
-        );
-        $likeValue = strtolower("%" . $value . "%");
-        $query->setParameter('value', $likeValue);
-        return $query->getResult();
-    }
-
-    public function countAll()
-    {
-        $em = $this->getEntityManager();
-        $query = $em->createQuery('SELECT COUNT(e.code) FROM \BusinessCore\Entity\Business e');
+        $query = $em->createQuery('SELECT COUNT(bp.id) FROM \BusinessCore\Entity\BusinessPayment bp WHERE bp.business = :business');
+        $query->setParameter('business', $business);
         return $query->getSingleScalarResult();
     }
 
-    public function searchBusinesses(SearchCriteria $searchCriteria)
+    public function searchPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
-        $dql = 'SELECT e FROM \BusinessCore\Entity\Business e ';
+        $dql = 'SELECT bp
+                FROM \BusinessCore\Entity\BusinessPayment bp
+                WHERE bp.business = :business ';
 
         $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
 
         $searchColumn = $searchCriteria->getSearchColoumn();
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
-            $dql .= 'WHERE LOWER(' . $searchColumn . ') LIKE :value ';
+            $dql .= 'AND LOWER(' . $searchColumn . ') LIKE :value ';
             $query->setParameter('value', $likeValue);
         }
+
         $sortColumn = $searchCriteria->getSortColumn();
         $sortOrder = $searchCriteria->getSortOrder();
         if (!empty($sortColumn) && !empty($sortOrder)) {
