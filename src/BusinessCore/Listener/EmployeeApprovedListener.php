@@ -6,6 +6,7 @@ use BusinessCore\Service\BusinessEmailService;
 use Zend\EventManager\SharedListenerAggregateInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\EventInterface;
+use Zend\Mvc\I18n\Translator;
 
 class EmployeeApprovedListener implements SharedListenerAggregateInterface
 {
@@ -18,11 +19,16 @@ class EmployeeApprovedListener implements SharedListenerAggregateInterface
      * @var BusinessEmailService
      */
     private $emailService;
+    /**
+     * @var Translator
+     */
+    private $translator;
 
 
-    public function __construct($emailService)
+    public function __construct(BusinessEmailService $emailService, Translator $translator)
     {
         $this->emailService = $emailService;
+        $this->translator = $translator;
     }
 
     public function attachShared(SharedEventManagerInterface $events)
@@ -50,8 +56,8 @@ class EmployeeApprovedListener implements SharedListenerAggregateInterface
 
         $this->emailService->sendEmail(
             $employee->getEmail(),
-            "TEST",
-            "TEST CONTENT"
+            $this->translator->translate("SHARENGO - ecco il tuo PIN aziendale"),
+            $this->translator->translate("Sei stato approvato dall'azienda, questo è il tuo PIN aziendale: ") . $employee->getBusinessPin()
         );
     }
 }

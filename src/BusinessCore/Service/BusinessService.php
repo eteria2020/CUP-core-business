@@ -124,11 +124,21 @@ class BusinessService
     public function approveEmployee(Business $business, $employeeId)
     {
         $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
+
+        $employee = $this->employeeRepository->find($employeeId);
+        $this->eventManager->trigger('employeeApproved', $this, [
+            'employee' => $employee
+        ]);
     }
 
     public function blockEmployee(Business $business, $employeeId)
     {
         $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_BLOCKED);
+    }
+
+    public function unblockEmployee(Business $business, $employeeId)
+    {
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
     }
 
     private function setEmployeeStatus(Business $business, $employeeId, $status)
@@ -180,7 +190,7 @@ class BusinessService
             throw new EntityNotFoundException();
         }
         /** @var Employee $employee */
-        $employee = $this->employeeRepository->find($employeeId);
+        $employee = $this->employeeRepository->findOneById($employeeId);
 
         $businessEmployee = $this->businessEmployeeRepository->findOneBy(['employee' => $employee, 'business' => $business]);
         if ($businessEmployee instanceof BusinessEmployee) {
@@ -198,7 +208,13 @@ class BusinessService
             $businessEmployee = new BusinessEmployee($employee, $business);
             $this->entityManager->persist($businessEmployee);
             $this->entityManager->flush();
+            $this->eventManager->trigger('newEmployeeAssociated', $this, [
+                'employee' => $employee
+            ]);
+
             if ($businessEmployee->isApproved()) {
+                $this->entityManager->detach($employee); //clear doctrine cached entity
+                $employee = $this->employeeRepository->findOneById($employeeId);
                 $this->eventManager->trigger('employeeApproved', $this, [
                     'employee' => $employee
                 ]);

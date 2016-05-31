@@ -17,7 +17,6 @@ class BusinessServiceFactory implements FactoryInterface
         $translator = $serviceLocator->get('translator');
         $eventManager = new EventManager('BusinessService');
 
-
         return new BusinessService(
             $entityManager,
             $businessRepository,

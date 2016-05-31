@@ -31,6 +31,7 @@ class Version20160511110125 extends AbstractMigration
                 customers.birth_province,
                 customers.birth_country,
                 customers.vat,
+                customers.pin,
                 customers.tax_code,
                 customers.language,
                 customers.country,

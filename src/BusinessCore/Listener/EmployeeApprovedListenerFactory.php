@@ -10,6 +10,7 @@ class EmployeeApprovedListenerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $emailService = $serviceLocator->get('BusinessCore\Service\BusinessEmailService');
-        return new EmployeeApprovedListener($emailService);
+        $translator = $serviceLocator->get('Translator');
+        return new EmployeeApprovedListener($emailService, $translator);
     }
 }
