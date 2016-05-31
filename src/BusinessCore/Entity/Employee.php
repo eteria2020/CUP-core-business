@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Employee
  *
  * @ORM\Table(name="employee", schema="business")
- * @ORM\Entity(readOnly=true)
+ * @ORM\Entity(readOnly=true, repositoryClass="BusinessCore\Entity\Repository\EmployeeRepository")
  */
 
 class Employee
@@ -176,6 +176,13 @@ class Employee
     private $updateTs;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="pin", type="text", nullable=false)
+     */
+    private $pin;
+
+    /**
      * Bidirectional - One-To-Many (INVERSE SIDE)
      *
      * @ORM\OneToMany(targetEntity="BusinessEmployee", mappedBy="employee")
@@ -228,5 +235,11 @@ class Employee
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getBusinessPin()
+    {
+        $pins = json_decode($this->pin, true);
+        return $pins['company'];
     }
 }

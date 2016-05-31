@@ -68,11 +68,30 @@ class BusinessEmployee
      */
     private $group;
 
-
     public function __construct(Employee $employee, Business $business)
     {
         $this->employee = $employee;
         $this->business = $business;
+        $this->insertedTs = date_create();
+        if ($this->isEmailControlEnabledAndEmailApproved($employee, $business)) {
+            $this->status = self::STATUS_APPROVED;
+            $this->confirmedTs = date_create();
+        } else {
+            $this->status = self::STATUS_PENDING;
+        }
+    }
+
+    private function isEmailControlEnabledAndEmailApproved(Employee $employee, Business $business)
+    {
+        if ($business->isBusinessMailControlEnabled()) {
+            $employeeEmailDomain = substr(strrchr($employee->getEmail(), "@"), 1);
+
+            foreach ($business->getDomains() as $domain) {
+                if ($employeeEmailDomain == $domain)
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**

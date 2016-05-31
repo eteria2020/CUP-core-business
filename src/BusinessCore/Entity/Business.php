@@ -139,6 +139,13 @@ class Business
     private $updatedTs;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="employee_association_code", type="string", length=12, nullable=true)
+     */
+    private $associationCode;
+
+    /**
      * Bidirectional - One-To-Many (INVERSE SIDE)
      *
      * @ORM\OneToMany(targetEntity="BusinessEmployee", mappedBy="business")
@@ -232,7 +239,7 @@ class Business
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getDomains()
     {

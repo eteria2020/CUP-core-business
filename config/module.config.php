@@ -36,6 +36,8 @@ return [
             'BusinessCore\Service\InvoicePdfService' => 'BusinessCore\Service\InvoicePdfServiceFactory',
             'BusinessCore\Service\BusinessTimePackageService' => 'BusinessCore\Service\BusinessTimePackageServiceFactory',
             'BusinessCore\Service\BusinessPaymentService' => 'BusinessCore\Service\BusinessPaymentServiceFactory',
+            'BusinessCore\Service\BusinessEmailService' => 'BusinessCore\Service\BusinessEmailServiceFactory',
+            'BusinessCore\Listener\EmployeeApprovedListener' => 'BusinessCore\Listener\EmployeeApprovedListenerFactory'
         ]
     ],
     'view_helpers'    => [
