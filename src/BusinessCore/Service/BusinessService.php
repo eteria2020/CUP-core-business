@@ -142,4 +142,9 @@ class BusinessService
         }
         return $code;
     }
+
+    public function getBusinessStatsData()
+    {
+        return $this->businessRepository->getBusinessStatsData();
+    }
 }

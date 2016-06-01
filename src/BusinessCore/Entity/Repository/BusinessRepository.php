@@ -47,4 +47,17 @@ class BusinessRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function getBusinessStatsData()
+    {
+        $dql = 'SELECT b.name, COUNT(bt.business) as minutes
+                FROM \BusinessCore\Entity\BusinessTrip bt
+                JOIN bt.business b
+                JOIN bt.trip t
+                GROUP BY b.name';
+
+        $query = $this->getEntityManager()->createQuery($dql);
+
+        return $query->getResult();
+    }
 }
