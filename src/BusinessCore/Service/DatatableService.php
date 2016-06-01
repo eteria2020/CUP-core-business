@@ -13,6 +13,7 @@ class DatatableService
      */
     public function getSearchCriteria(array $filters)
     {
+        $searchColumnNull = isset($filters['columnNull']) ? $filters['columnNull'] : null;
         $searchColumn = isset($filters['column']) && $filters['column'] != 'select' ? $filters['column'] : null;
         $searchValue = isset($filters['searchValue']) ? $filters['searchValue'] : null;
         $displayStart = isset($filters['iDisplayStart']) ? $filters['iDisplayStart'] : null;
@@ -26,6 +27,7 @@ class DatatableService
         $columnToDate = isset($filters['columnToDate']) ? $filters['columnToDate'] : null;
 
         return new SearchCriteria(
+            $searchColumnNull,
             $searchColumn,
             $searchValue,
             $displayStart,

@@ -11,14 +11,12 @@ class GroupServiceFactory implements FactoryInterface
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $groupRepository = $entityManager->getRepository('BusinessCore\Entity\Group');
-        $businessRepository = $entityManager->getRepository('BusinessCore\Entity\Business');
         $businessEmployeeRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessEmployee');
         $translator = $serviceLocator->get('translator');
 
         return new GroupService(
             $entityManager,
             $groupRepository,
-            $businessRepository,
             $businessEmployeeRepository,
             $translator
         );

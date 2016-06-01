@@ -5,13 +5,16 @@ namespace BusinessCore\Service;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class BusinessInvoiceServiceFactory implements FactoryInterface
+class BusinessTimePackageServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
-        $businessInvoiceRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessInvoice');
+        $timePackageRepository = $entityManager->getRepository('BusinessCore\Entity\TimePackage');
 
-        return new BusinessInvoiceService($entityManager, $businessInvoiceRepository);
+        return new BusinessTimePackageService(
+            $entityManager,
+            $timePackageRepository
+        );
     }
 }

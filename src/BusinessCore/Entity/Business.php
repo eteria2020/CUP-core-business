@@ -153,6 +153,20 @@ class Business
     private $businessGroups;
 
     /**
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="BusinessTimePackage", mappedBy="business")
+     */
+    private $businessTimePackages;
+
+    /**
+     * Bidirectional - One-To-One
+     *
+     * @ORM\OneToMany(targetEntity="BusinessFare", mappedBy="business")
+     */
+    private $businessFares;
+
+    /**
      * @var BusinessFleet
      *
      * @ORM\ManyToOne(targetEntity="BusinessFleet")
@@ -392,5 +406,29 @@ class Business
     public function getFleet()
     {
         return $this->fleet;
+    }
+
+    /**
+     * @return BusinessTimePackage[]
+     */
+    public function getBusinessTimePackages()
+    {
+        return $this->businessTimePackages;
+    }
+
+    /**
+     * @return BusinessFare
+     */
+    public function getActiveBusinessFare()
+    {
+        /** @var BusinessFare $latestFare */
+        $latestFare = $this->businessFares[0];
+        /** @var BusinessFare $businessFare */
+        foreach ($this->businessFares as $businessFare) {
+            if ($businessFare->getInsertedTs() > $latestFare->getInsertedTs()) {
+                $latestFare = $businessFare;
+            }
+        }
+        return $latestFare;
     }
 }
