@@ -15,6 +15,10 @@ class BusinessPayment
 {
     const TIME_PACKAGE_TYPE = 'time_package';
 
+    const STATUS_PENDING = 'pending';
+    const STATUS_EXPECTED_PAYED = 'expected_payed';
+    const STATUS_CONFIRMED_PAYED = 'confirmed_payed';
+
     /**
      * @var integer
      *
@@ -44,14 +48,14 @@ class BusinessPayment
     /**
      * @var string
      *
-     * @ORM\Column(name="currency", type="text", nullable=true)
+     * @ORM\Column(name="currency", type="text", nullable=false)
      */
     private $currency;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="text", nullable=true)
+     * @ORM\Column(name="type", type="text", nullable=false)
      */
     private $type;
 
@@ -70,6 +74,28 @@ class BusinessPayment
     private $payedOnTs;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="text", nullable=false)
+     */
+    private $status;
+
+    /**
+     * @var BusinessInvoice
+     * @ORM\ManyToOne(targetEntity="BusinessInvoice")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="invoice_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $businessInvoice;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Transaction", inversedBy="payments")
+     * @ORM\JoinTable(name="business.payment_transaction")
+     */
+    private $transactions;
+
+    /**
      * BusinessPayment constructor.
      * @param Business $business
      * @param int $amount
@@ -83,6 +109,8 @@ class BusinessPayment
         $this->currency = $currency;
         $this->type = $type;
         $this->createdTs = date_create();
+        $this->status = self::STATUS_PENDING;
+        $this->transactions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -123,5 +151,21 @@ class BusinessPayment
     public function getPayedOnTs()
     {
         return $this->payedOnTs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return BusinessInvoice
+     */
+    public function getBusinessInvoice()
+    {
+        return $this->businessInvoice;
     }
 }
