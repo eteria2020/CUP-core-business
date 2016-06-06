@@ -51,4 +51,9 @@ class BusinessPaymentService
     {
         return $this->businessPaymentRepository->getTotalPaymentsByBusiness($business);
     }
+
+    public function countFilteredPaymentsByBusiness($business, $searchCriteria)
+    {
+        return $this->businessPaymentRepository->searchPaymentsByBusiness($business, $searchCriteria, true);
+    }
 }

@@ -42,4 +42,9 @@ class BusinessTripService
     {
         return $this->businessTripRepository->countAllByBusiness($business);
     }
+
+    public function countFilteredTripsByBusiness(Business $business, SearchCriteria $searchCriteria)
+    {
+        return $this->businessTripRepository->searchTripsByBusiness($business, $searchCriteria, true);
+    }
 }
