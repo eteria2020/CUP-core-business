@@ -169,8 +169,33 @@ class BusinessService
         return $code;
     }
 
-    public function getBusinessStatsData()
+    public function getBusinessStatsData($filters)
     {
-        return $this->businessRepository->getBusinessStatsData();
+        $businessName = !empty($filters['filters']['business']) ? $filters['filters']['business'] : null;
+        $from = !empty($filters['filters']['from']) ? $filters['filters']['from'] : null;
+        $to = !empty($filters['filters']['to']) ? $filters['filters']['to'] : null;
+
+        $labels = [];
+        $data = [];
+
+        if (empty($businessName)) {
+            $stats = $this->businessRepository->getBusinessStatsData($from, $to);
+            foreach ($stats as $row) {
+                $labels[] = $row['name'];
+                $data[] = $row['minutes'];
+            }
+        } else {
+            $stats = $this->businessRepository->getBusinessGroupStatsData($businessName, $from, $to);
+            foreach ($stats as $row) {
+                $groupName = empty($row['name']) ? $this->translator->translate('Senza gruppo') : $row['name'];
+                $labels[] = $groupName;
+                $data[] = $row['minutes'];
+            }
+        }
+
+        return [
+            "labels" => $labels,
+            "data" =>  $data
+        ];
     }
 }

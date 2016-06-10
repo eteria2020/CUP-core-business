@@ -60,16 +60,62 @@ class BusinessRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getBusinessStatsData()
+    public function getBusinessStatsData($from, $to)
     {
-        $dql = 'SELECT b.name, COUNT(bt.business) as minutes
-                FROM \BusinessCore\Entity\BusinessTrip bt
-                JOIN bt.business b
-                JOIN bt.trip t
-                GROUP BY b.name';
+        $count = "SUM((DATE_PART('day', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) * 24 +
+    DATE_PART('hour', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
+    DATE_PART('minute', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
+    DATE_PART('second', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) as seconds ";
 
-        $query = $this->getEntityManager()->createQuery($dql);
+        $dql = 'SELECT b.name, ' . $count .
+                ' FROM \BusinessCore\Entity\BusinessTrip bt
+                JOIN bt.business b
+                JOIN bt.trip t ';
+        $query = $this->getEntityManager()->createQuery();
+        if (!empty($from) && !empty($to)) {
+            $dql .= 'WHERE t.timestampBeginning >= :from AND t.timestampBeginning <= :to ';
+            $query->setParameter('from', $from . ' 00:00:00');
+            $query->setParameter('to', $to . ' 23:59:59');
+        }
+
+        $dql .=  'GROUP BY b.name';
+
+        $query->setDQL($dql);
+        echo "<pre>"; print_r($query->getSQL()); echo "</pre>";die();
+        echo "<pre>"; print_r($dql); echo "</pre>";die();
 
         return $query->getResult();
+    }
+
+    public function getBusinessGroupStatsData($businessName, $from, $to)
+    {
+        $count = "SUM((DATE_PART('day', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) * 24 +
+    DATE_PART('hour', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
+    DATE_PART('minute', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
+    DATE_PART('second', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) as seconds ";
+
+        $dql = 'SELECT g.name, ' . $count .
+                ' FROM \BusinessCore\Entity\BusinessTrip bt
+                JOIN bt.business b
+                LEFT JOIN bt.group g
+                JOIN bt.trip t
+                WHERE b.name = :name ';
+
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('name', $businessName);
+
+        if (!empty($from) && !empty($to)) {
+            $dql .= 'AND t.timestampBeginning >= :from AND t.timestampBeginning <= :to ';
+            $query->setParameter('from', $from . ' 00:00:00');
+            $query->setParameter('to', $to . ' 23:59:59');
+        }
+
+        $dql .= 'GROUP BY g.name';
+        $query->setDQL($dql);
+
+        return $query->getResult();
+
+
+
     }
 }
