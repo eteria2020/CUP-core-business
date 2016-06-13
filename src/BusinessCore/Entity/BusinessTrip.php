@@ -14,8 +14,16 @@ use Doctrine\ORM\Mapping as ORM;
 class BusinessTrip
 {
     /**
-     * @var Trip
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="business.business_trip_id_seq", allocationSize=1, initialValue=1)
+     */
+    private $id;
+    /**
+     * @var Trip
      * @ORM\ManyToOne(targetEntity="Trip")
      * @ORM\JoinColumn(name="trip_id", referencedColumnName="id", nullable=false)
      */
@@ -23,7 +31,6 @@ class BusinessTrip
 
     /**
      * @var Business
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Business")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
@@ -31,7 +38,6 @@ class BusinessTrip
 
     /**
      * @var Group
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Group")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
      */

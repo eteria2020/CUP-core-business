@@ -31,8 +31,10 @@ class Module
         ServiceLocatorInterface $serviceManager
     ) {
         $employeeApprovedListener = $serviceManager->get('BusinessCore\Listener\EmployeeApprovedListener');
+        $paymentListener = $serviceManager->get('BusinessCore\Listener\PaymentListener');
 
         $sharedEventManager->attachAggregate($employeeApprovedListener);
+        $sharedEventManager->attachAggregate($paymentListener);
     }
 
     public function getConfig()

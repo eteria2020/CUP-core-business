@@ -8,6 +8,8 @@ use BusinessCore\Entity\BusinessTimePackage;
 use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
 
+use BusinessCore\Entity\TimePackagePayment;
+use BusinessCore\Payments\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
 
 class BusinessTimePackageService
@@ -21,18 +23,25 @@ class BusinessTimePackageService
      * @var TimePackageRepository
      */
     private $timePackageRepository;
+    /**
+     * @var MockExternalPaymentService
+     */
+    private $mockExternalPaymentService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param TimePackageRepository $timePackageRepository
+     * @param MockExternalPaymentService $mockExternalPaymentService
      */
     public function __construct(
         EntityManager $entityManager,
-        TimePackageRepository $timePackageRepository
+        TimePackageRepository $timePackageRepository,
+        MockExternalPaymentService $mockExternalPaymentService
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageRepository = $timePackageRepository;
+        $this->mockExternalPaymentService = $mockExternalPaymentService;
     }
 
     /**
@@ -46,26 +55,28 @@ class BusinessTimePackageService
 
     public function buyTimePackage(Business $business, $timePackageId)
     {
-        $this->entityManager->beginTransaction();
-        try {
-            /** @var TimePackage $timePackage */
-            $timePackage = $this->timePackageRepository->find($timePackageId);
-            $businessTimePackage = new BusinessTimePackage($business, $timePackage);
+        /** @var TimePackage $timePackage */
+        $timePackage = $this->timePackageRepository->find($timePackageId);
 
-            $businessPayment = new BusinessPayment(
-                $business,
-                $timePackage->getCost(),
-                $timePackage->getCurrency(),
-                BusinessPayment::TIME_PACKAGE_TYPE
-            );
+        $timePackagePayment = new TimePackagePayment(
+            $business,
+            $timePackage,
+            $timePackage->getCost(),
+            $timePackage->getCurrency()
+        );
 
-            $this->entityManager->persist($businessTimePackage);
-            $this->entityManager->persist($businessPayment);
-            $this->entityManager->flush();
-            $this->entityManager->commit();
-        } catch (\Exception $e) {
-            $this->entityManager->rollback();
-            throw $e;
-        }
+        $this->entityManager->persist($timePackagePayment);
+        $this->entityManager->flush();
+
+        $businessPaymentRequest = new BusinessPaymentRequest($business, [$timePackagePayment]);
+
+        $this->mockExternalPaymentService->pay($businessPaymentRequest);
+    }
+
+    public function enableTimePackage(Business $business, TimePackage $timePackage)
+    {
+        $businessTimePackage = new BusinessTimePackage($business, $timePackage);
+        $this->entityManager->persist($businessTimePackage);
+        $this->entityManager->flush();
     }
 }

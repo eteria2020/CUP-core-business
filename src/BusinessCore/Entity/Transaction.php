@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,15 +60,84 @@ class Transaction
     private $outcomeTs;
 
     /**
-     * @ORM\ManyToMany(targetEntity="BusinessPayment", mappedBy="transactions")
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="TimePackagePayment", mappedBy="transactions")
      */
-    private $payments;
+    private $timePackagePayments;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="BusinessTripPayment", mappedBy="transactions")
+     */
+    private $businessTripPayments;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="ExtraPayment", mappedBy="transactions")
+     */
+    private $extraPayments;
 
     /**
      * Transaction constructor.
+     * @param int $amount
+     * @param string $currency
      */
-    public function __construct()
+    public function __construct($amount, $currency)
     {
-        $this->payments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->createdTs = date_create();
+        $this->timePackagePayments = new ArrayCollection();
+    }
+
+    public function success()
+    {
+        $this->outcome = "OK";
+        $this->outcomeTs = date_create();
+    }
+
+    public function failed()
+    {
+        $this->outcome = "KO";
+        $this->outcomeTs = date_create();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTimePackagePayments()
+    {
+        return $this->timePackagePayments;
+    }
+
+    public function addTimePackagePayment(TimePackagePayment $timePackagePayment)
+    {
+        $this->timePackagePayments->add($timePackagePayment);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBusinessTripPayments()
+    {
+        return $this->businessTripPayments;
+    }
+
+    public function addBusinessTripPayment(BusinessTripPayment $businessTripPayment)
+    {
+        $this->businessTripPayments->add($businessTripPayment);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getExtraPayments()
+    {
+        return $this->businessTripPayments;
+    }
+
+    public function addExtraPayment(ExtraPayment $extraPayment)
+    {
+        $this->extraPayments->add($extraPayment);
     }
 }
