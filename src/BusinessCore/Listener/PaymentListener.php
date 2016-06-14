@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Listener;
 
+use BusinessCore\Service\ContractService;
 use BusinessCore\Service\TransactionService;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface;
@@ -17,11 +18,17 @@ class PaymentListener implements SharedListenerAggregateInterface
      * @var TransactionService
      */
     private $transactionService;
+    /**
+     * @var ContractService
+     */
+    private $contractService;
 
-    public function __construct(TransactionService $transactionService)
-    {
-
+    public function __construct(
+        TransactionService $transactionService,
+        ContractService $contractService
+    ) {
         $this->transactionService = $transactionService;
+        $this->contractService = $contractService;
     }
 
     public function attachShared(SharedEventManagerInterface $events)
@@ -36,6 +43,18 @@ class PaymentListener implements SharedListenerAggregateInterface
             'Transaction',
             'paymentOutcome',
             [$this, 'paymentOutcome']
+        );
+
+        $this->listeners[] = $events->attach(
+            'Transaction',
+            'contractInitiated',
+            [$this, 'contractInitiated']
+        );
+
+        $this->listeners[] = $events->attach(
+            'Transaction',
+            'contractFinalized',
+            [$this, 'contractFinalized']
         );
     }
 
@@ -63,5 +82,19 @@ class PaymentListener implements SharedListenerAggregateInterface
         $transaction = $params['transaction'];
         $outcome = $params['outcome'];
         $this->transactionService->transactionCompleted($outcome, $transaction);
+    }
+
+    public function contractInitiated(EventInterface $e)
+    {
+        $params = $e->getParams();
+        $contract = $params['contract'];
+        $this->contractService->createContract($contract);
+    }
+
+    public function contractFinalized(EventInterface $e)
+    {
+        $params = $e->getParams();
+        $contract = $params['contract'];
+        $this->contractService->createContract($contract);
     }
 }

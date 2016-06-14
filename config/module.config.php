@@ -39,6 +39,7 @@ return [
             'BusinessCore\Service\BusinessEmailService' => 'BusinessCore\Service\BusinessEmailServiceFactory',
             'BusinessCore\Service\TransactionService' => 'BusinessCore\Service\TransactionServiceFactory',
             'BusinessCore\Service\SubscriptionService' => 'BusinessCore\Service\SubscriptionServiceFactory',
+            'BusinessCore\Service\ContractService' => 'BusinessCore\Service\ContractServiceFactory',
             'BusinessCore\Listener\EmployeeApprovedListener' => 'BusinessCore\Listener\EmployeeApprovedListenerFactory',
             'BusinessCore\Listener\PaymentListener' => 'BusinessCore\Listener\PaymentListenerFactory'
         ],
