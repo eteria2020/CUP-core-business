@@ -7,20 +7,24 @@ class BusinessConfigParams
     private $paymentType;
     private $paymentFrequence;
     private $businessMailControl;
+    private $subscriptionFeeCents;
 
     /**
      * @param $paymentType
      * @param $paymentFrequence
      * @param $businessMailControl
+     * @param $subscriptionFeeCents
      */
     public function __construct(
         $paymentType,
         $paymentFrequence,
-        $businessMailControl
+        $businessMailControl,
+        $subscriptionFeeCents
     ) {
         $this->paymentType = $paymentType;
         $this->paymentFrequence = $paymentFrequence;
         $this->businessMailControl = $businessMailControl;
+        $this->subscriptionFeeCents = $subscriptionFeeCents;
     }
 
     /**
@@ -45,5 +49,13 @@ class BusinessConfigParams
     public function getBusinessMailControl()
     {
         return $this->businessMailControl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubscriptionFeeCents()
+    {
+        return $this->subscriptionFeeCents;
     }
 }

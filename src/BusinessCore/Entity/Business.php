@@ -146,6 +146,20 @@ class Business
     private $associationCode;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="subscription_fee_cents", type="integer", nullable=false)
+     */
+    private $subscriptionFeeCents = 50000;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_enabled", type="boolean", nullable=false)
+     */
+    private $isEnabled = false;
+
+    /**
      * Bidirectional - One-To-Many (INVERSE SIDE)
      *
      * @ORM\OneToMany(targetEntity="BusinessEmployee", mappedBy="business")
@@ -342,6 +356,16 @@ class Business
         return $this->businessEmployee;
     }
 
+    public function isEnabled()
+    {
+        return $this->isEnabled;
+    }
+
+    public function enableAfterFirstPayment()
+    {
+        $this->isEnabled = true;
+    }
+
     public function updateDetails(BusinessDetails $data)
     {
         $this->name = $data->getName();
@@ -361,6 +385,7 @@ class Business
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();
         $this->businessMailControl = $data->getBusinessMailControl();
+        $this->subscriptionFeeCents = $data->getSubscriptionFeeCents();
     }
 
     public function getPendingBusinessEmployees()
@@ -437,5 +462,18 @@ class Business
             }
         }
         return $latestFare;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubscriptionFeeCents()
+    {
+        return $this->subscriptionFeeCents;
+    }
+
+    public function getReadableSubscriptionFee()
+    {
+        return number_format($this->subscriptionFeeCents / 100, 2, '.', '');
     }
 }

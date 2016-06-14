@@ -19,9 +19,13 @@ class MockExternalPaymentService
     public function pay(PaymentRequest $request)
     {
         $transaction = new Transaction($request->amount()->cents(), $request->amount()->currency());
+
+        if ($request->isFirstPayment()) {
+
+        }
         $this->eventManager->trigger('paymentInitiated', $this, [
             'transaction' => $transaction,
-            'requestPpayment' => $request
+            'requestPayment' => $request
         ]);
 
         //try to pay transaction (possibly async)

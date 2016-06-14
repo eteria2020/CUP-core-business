@@ -5,6 +5,7 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\Base\BusinessPayment;
 use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
+use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Entity\Transaction;
 
@@ -66,6 +67,7 @@ class TransactionService
 
     private function successfullTransaction(Transaction $transaction)
     {
+        $this->subscriptionSuccessfullyPayed($transaction->getSubscriptionPayments());
         $this->timePackagesSuccessfullyPayed($transaction->getTimePackagePayments());
         $this->extrasSuccessfullyPayed($transaction->getExtraPayments());
         $this->tripsSuccessfullyPayed($transaction->getBusinessTripPayments());
@@ -76,6 +78,8 @@ class TransactionService
         /** @var TimePackagePayment $timePackagePayment */
         foreach ($timePackagePayments as $timePackagePayment) {
             $timePackagePayment->confirmPayed();
+            $this->entityManager->persist($timePackagePayment);
+            $this->entityManager->flush();
             $this->timePackageService->enableTimePackage(
                 $timePackagePayment->getBusiness(),
                 $timePackagePayment->getTimePackage()
@@ -88,6 +92,8 @@ class TransactionService
         /** @var ExtraPayment $extraPayment */
         foreach ($extraPayments as $extraPayment) {
             $extraPayment->confirmPayed();
+            $this->entityManager->persist($extraPayment);
+            $this->entityManager->flush();
         }
     }
 
@@ -96,6 +102,19 @@ class TransactionService
         /** @var BusinessTripPayment $businessTripPayment */
         foreach ($businessTripPayments as $businessTripPayment) {
             $businessTripPayment->confirmPayed();
+            $this->entityManager->persist($businessTripPayment);
+            $this->entityManager->flush();
+
+        }
+    }
+
+    private function subscriptionSuccessfullyPayed($subscriptionPayments)
+    {
+        /** @var SubscriptionPayment $subscriptionPayment */
+        foreach ($subscriptionPayments as $subscriptionPayment) {
+            $subscriptionPayment->confirmPayed();
+            $this->entityManager->persist($subscriptionPayment);
+            $this->entityManager->flush();
         }
     }
 }

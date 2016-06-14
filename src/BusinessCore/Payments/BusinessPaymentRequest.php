@@ -14,16 +14,20 @@ class BusinessPaymentRequest implements PaymentRequest
 
     private $amount;
 
+    private $firstPayment;
+
     /**
      * BusinessPaymentRequest constructor.
      * @param $customer
-     * @param $payments
+     * @param array $payments
+     * @param bool $firstPayment
      */
-    public function __construct($customer, array $payments)
+    public function __construct($customer, array $payments, $firstPayment = false)
     {
         $this->customer = $customer;
         $this->payments = $payments;
-        $this->amount = $this->getAmountFromPayments($payments);
+        $this->setAmountFromPayments($payments);
+        $this->firstPayment = $firstPayment;
     }
 
     /**
@@ -31,7 +35,7 @@ class BusinessPaymentRequest implements PaymentRequest
      */
     public function customer()
     {
-        // TODO: Implement customer() method.
+        return $this->business;
     }
 
     /**
@@ -47,10 +51,10 @@ class BusinessPaymentRequest implements PaymentRequest
      */
     public function isFirstPayment()
     {
-        // TODO: Implement isFirstPayment() method.
+        return $this->firstPayment;
     }
 
-    private function getAmountFromPayments(array $payments)
+    private function setAmountFromPayments(array $payments)
     {
         $tot = 0;
         $currency = '';

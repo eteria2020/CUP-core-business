@@ -78,6 +78,12 @@ class Transaction
     private $extraPayments;
 
     /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="SubscriptionPayment", mappedBy="transactions")
+     */
+    private $subscriptionPayments;
+
+    /**
      * Transaction constructor.
      * @param int $amount
      * @param string $currency
@@ -139,5 +145,18 @@ class Transaction
     public function addExtraPayment(ExtraPayment $extraPayment)
     {
         $this->extraPayments->add($extraPayment);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSubscriptionPayments()
+    {
+        return $this->subscriptionPayments;
+    }
+
+    public function addSubscriptionPayment(SubscriptionPayment $subscriptionPayment)
+    {
+        $this->subscriptionPayments->add($subscriptionPayment);
     }
 }

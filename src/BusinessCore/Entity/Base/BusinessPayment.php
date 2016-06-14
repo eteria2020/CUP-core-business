@@ -16,6 +16,7 @@ abstract class BusinessPayment
     const TYPE_PACKAGE = 'package';
     const TYPE_TRIP = 'trip';
     const TYPE_EXTRA = 'extra';
+    const TYPE_SUBSCRIPTION = 'subscription';
 
     /**
      * @var Business

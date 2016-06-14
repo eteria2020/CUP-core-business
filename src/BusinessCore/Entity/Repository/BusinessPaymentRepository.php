@@ -24,6 +24,8 @@ class BusinessPaymentRepository extends EntityRepository
                 select business_code from business.time_package_payment
                 union all
                 select business_code from business.extra_payment
+                union all
+                select business_code from business.subscription_payment
                 ) sub
                 where business_code = :business_code';
 
@@ -58,6 +60,8 @@ class BusinessPaymentRepository extends EntityRepository
                 select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
                 select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
+                union all
+                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
                 ) sub
                 where business_code = :business_code ';
 
@@ -149,6 +153,8 @@ class BusinessPaymentRepository extends EntityRepository
                 select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
                 select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
+                union all
+                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
                 ) sub
                 where business_code = :business_code ';
 
