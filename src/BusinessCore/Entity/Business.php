@@ -160,6 +160,13 @@ class Business
     private $businessTimePackages;
 
     /**
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="BusinessBuyableTimePackage", mappedBy="business")
+     */
+    private $businessBuyableTimePackages;
+
+    /**
      * Bidirectional - One-To-One
      *
      * @ORM\OneToMany(targetEntity="BusinessFare", mappedBy="business")
@@ -430,5 +437,13 @@ class Business
             }
         }
         return $latestFare;
+    }
+
+    /**
+     * @return BusinessBuyableTimePackage[]
+     */
+    public function getBusinessBuyableTimePackages()
+    {
+        return $this->businessBuyableTimePackages;
     }
 }
