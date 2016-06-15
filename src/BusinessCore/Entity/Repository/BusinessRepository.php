@@ -35,7 +35,7 @@ class BusinessRepository extends EntityRepository
 
         $query = $this->getEntityManager()->createQuery();
 
-        $searchColumn = $searchCriteria->getSearchColoumn();
+        $searchColumn = $searchCriteria->getSearchColumn();
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");

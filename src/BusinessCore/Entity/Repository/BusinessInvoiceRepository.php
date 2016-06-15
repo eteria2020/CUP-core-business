@@ -28,7 +28,7 @@ class BusinessInvoiceRepository extends EntityRepository
         $query = $this->getEntityManager()->createQuery();
         $query->setParameter('business', $business);
 
-        $searchColumn = $searchCriteria->getSearchColoumn();
+        $searchColumn = $searchCriteria->getSearchColumn();
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
