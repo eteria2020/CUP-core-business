@@ -53,4 +53,9 @@ class BusinessInvoiceService
                 'business' => $business
         ]);
     }
+
+    public function countFilteredInvoicesByBusiness($business, $searchCriteria)
+    {
+        return $this->businessInvoiceRepository->searchInvoicesByBusiness($business, $searchCriteria, true);
+    }
 }

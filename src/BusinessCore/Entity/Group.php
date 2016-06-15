@@ -47,6 +47,27 @@ class Group
     private $description;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="daily_limit", type="integer", nullable=true)
+     */
+    private $dailyMinutesLimit;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="weekly_limit", type="integer", nullable=true)
+     */
+    private $weeklyMinutesLimit;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="monthly_limit", type="integer", nullable=true)
+     */
+    private $monthlyMinutesLimit;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_ts", type="datetime", nullable=false)
@@ -106,5 +127,53 @@ class Group
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDailyMinutesLimit()
+    {
+        return $this->dailyMinutesLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWeeklyMinutesLimit()
+    {
+        return $this->weeklyMinutesLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMonthlyMinutesLimit()
+    {
+        return $this->monthlyMinutesLimit;
+    }
+
+    /**
+     * @param int $dailyMinutesLimit
+     */
+    public function setDailyMinutesLimit($dailyMinutesLimit)
+    {
+        $this->dailyMinutesLimit = $dailyMinutesLimit;
+    }
+
+    /**
+     * @param int $weeklyMinutesLimit
+     */
+    public function setWeeklyMinutesLimit($weeklyMinutesLimit)
+    {
+        $this->weeklyMinutesLimit = $weeklyMinutesLimit;
+    }
+
+    /**
+     * @param int $monthlyMinutesLimit
+     */
+    public function setMonthlyMinutesLimit($monthlyMinutesLimit)
+    {
+        $this->monthlyMinutesLimit = $monthlyMinutesLimit;
     }
 }

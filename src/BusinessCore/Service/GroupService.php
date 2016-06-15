@@ -106,4 +106,18 @@ class GroupService
         $this->entityManager->persist($group);
         $this->entityManager->flush();
     }
+
+    public function setGroupLimit(Group $group, $data)
+    {
+        $dailyLimit = is_numeric($data['daily']) ? $data['daily'] : null;
+        $weeklyLimit = is_numeric($data['weekly']) ? $data['weekly'] : null;
+        $monthlyLimit = is_numeric($data['monthly']) ? $data['monthly'] : null;
+
+        $group->setDailyMinutesLimit($dailyLimit);
+        $group->setWeeklyMinutesLimit($weeklyLimit);
+        $group->setMonthlyMinutesLimit($monthlyLimit);
+
+        $this->entityManager->persist($group);
+        $this->entityManager->flush();
+    }
 }

@@ -18,6 +18,7 @@ class BusinessEmployee
     const STATUS_APPROVED = 'approved';
     const STATUS_BLOCKED = 'blocked';
     const STATUS_DELETED = 'deleted';
+    const STATUS_APPROVED_WAITING_BUSINESS_ENABLING = 'approved_waiting_for_business_enabling';
 
     /**
      * @var Employee
@@ -68,11 +69,32 @@ class BusinessEmployee
      */
     private $group;
 
-
     public function __construct(Employee $employee, Business $business)
     {
         $this->employee = $employee;
         $this->business = $business;
+        $this->insertedTs = date_create();
+        if ($this->isEmailControlEnabledAndEmailApproved($employee, $business)) {
+            $status = $business->isEnabled() ? self::STATUS_APPROVED : self::STATUS_APPROVED_WAITING_BUSINESS_ENABLING;
+            $this->status = $status;
+            $this->confirmedTs = date_create();
+        } else {
+            $this->status = self::STATUS_PENDING;
+        }
+    }
+
+    private function isEmailControlEnabledAndEmailApproved(Employee $employee, Business $business)
+    {
+        if ($business->isBusinessMailControlEnabled()) {
+            $employeeEmailDomain = substr(strrchr($employee->getEmail(), "@"), 1);
+
+            foreach ($business->getDomains() as $domain) {
+                if ($employeeEmailDomain == $domain) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -89,6 +111,14 @@ class BusinessEmployee
     public function getBusiness()
     {
         return $this->business;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isApprovedWaitingForBusinessApproval()
+    {
+        return $this->status == self::STATUS_APPROVED_WAITING_BUSINESS_ENABLING;
     }
 
     /**

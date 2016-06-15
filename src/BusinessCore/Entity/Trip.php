@@ -5,6 +5,9 @@ namespace BusinessCore\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
+const PIN_PRIMARY = 'primary';
+const PIN_COMPANY = 'company';
+
 /**
  * Trip
  *
@@ -145,6 +148,13 @@ class Trip
     private $carPlate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="pin_type", type="string", nullable=true)
+     */
+    private $pinType;
+
+    /**
      * @return Employee
      */
     public function getEmployee()
@@ -214,5 +224,13 @@ class Trip
     public function getAddressBeginning()
     {
         return $this->addressBeginning;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPinType()
+    {
+        return $this->pinType;
     }
 }

@@ -19,10 +19,15 @@ class BusinessTripRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function searchTripsByBusiness(Business $business, SearchCriteria $searchCriteria)
+    public function searchTripsByBusiness(Business $business, SearchCriteria $searchCriteria, $count = false)
     {
-        $dql = 'SELECT bt
-                FROM \BusinessCore\Entity\BusinessTrip bt
+
+        $select = 'bt';
+        if ($count) {
+            $select = 'COUNT(bt.trip)';
+        }
+        $dql = 'SELECT ' . $select .
+                ' FROM \BusinessCore\Entity\BusinessTrip bt
                 LEFT JOIN bt.group g
                 JOIN bt.trip t
                 JOIN t.employee e
@@ -53,21 +58,26 @@ class BusinessTripRepository extends EntityRepository
             $query->setParameter('to', $toDate . ' 23:59:59');
         }
 
-        $sortColumn = $searchCriteria->getSortColumn();
-        $sortOrder = $searchCriteria->getSortOrder();
-        if (!empty($sortColumn) && !empty($sortOrder)) {
-            $dql .= 'ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
-        }
+        if (!$count) {
+            $sortColumn = $searchCriteria->getSortColumn();
+            $sortOrder = $searchCriteria->getSortOrder();
+            if (!empty($sortColumn) && !empty($sortOrder)) {
+                $dql .= 'ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
+            }
 
-        $paginationLength = $searchCriteria->getPaginationLength();
-        $paginationStart = $searchCriteria->getPaginationStart();
-        if (!empty($paginationLength) && !empty($paginationStart)) {
-            $query->setMaxResults($paginationLength);
-            $query->setFirstResult($paginationStart);
+            $paginationLength = $searchCriteria->getPaginationLength();
+            $paginationStart = $searchCriteria->getPaginationStart();
+            if (!empty($paginationLength) && !empty($paginationStart)) {
+                $query->setMaxResults($paginationLength);
+                $query->setFirstResult($paginationStart);
+            }
         }
 
         $query->setDql($dql);
 
+        if ($count) {
+            return $query->getSingleScalarResult();
+        }
         return $query->getResult();
     }
 }
