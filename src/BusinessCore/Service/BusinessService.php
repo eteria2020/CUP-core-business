@@ -145,6 +145,11 @@ class BusinessService
         ]);
     }
 
+    public function approveEmployeeWithBusinessNotEnabled(Business $business, $employeeId)
+    {
+        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED_WAITING_BUSINESS_ENABLING);
+    }
+
     public function blockEmployee(Business $business, $employeeId)
     {
         $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_BLOCKED);
@@ -233,6 +238,14 @@ class BusinessService
                     'employee' => $employee
                 ]);
             }
+        }
+    }
+
+    public function approveEmployeesWaitingForBusinessEnabling(Business $business)
+    {
+        $waitingEmployees = $business->getApprovedBusinessEmployeeWaitingForBusinessEnabling();
+        foreach ($waitingEmployees as $businessEmployee) {
+            $this->approveEmployee($business, $businessEmployee->getEmployee()->getId());
         }
     }
 }

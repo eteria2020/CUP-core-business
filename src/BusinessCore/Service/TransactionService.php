@@ -9,7 +9,6 @@ use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Entity\Transaction;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 class TransactionService
@@ -22,18 +21,25 @@ class TransactionService
      * @var BusinessTimePackageService
      */
     private $timePackageService;
+    /**
+     * @var BusinessService
+     */
+    private $businessService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessTimePackageService $timePackageService
+     * @param BusinessService $businessService
      */
     public function __construct(
         EntityManager $entityManager,
-        BusinessTimePackageService $timePackageService
+        BusinessTimePackageService $timePackageService,
+        BusinessService $businessService
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageService = $timePackageService;
+        $this->businessService = $businessService;
     }
 
     public function assignTransactionToPayments(array $payments, Transaction $transaction)
@@ -104,7 +110,6 @@ class TransactionService
             $businessTripPayment->confirmPayed();
             $this->entityManager->persist($businessTripPayment);
             $this->entityManager->flush();
-
         }
     }
 
@@ -115,6 +120,7 @@ class TransactionService
             $subscriptionPayment->confirmPayed();
             $this->entityManager->persist($subscriptionPayment);
             $this->entityManager->flush();
+            $this->businessService->approveEmployeesWaitingForBusinessEnabling($subscriptionPayment->getBusiness());
         }
     }
 }

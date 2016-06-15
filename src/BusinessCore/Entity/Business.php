@@ -405,19 +405,34 @@ class Business
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if ($be->isApproved() || $be->isBlocked()) {
+            if ($be->isApproved() || $be->isBlocked() || $be->isApprovedWaitingForBusinessApproval()) {
                 $result[] = $be;
             }
         }
         return $result;
     }
 
-    public function getEnabledBusinessEmployeesWithoutGroup()
+    public function getApprovedBusinessEmployeesWithoutGroup()
     {
         $result = [];
         /** @var BusinessEmployee $be */
         foreach ($this->businessEmployee as $be) {
-            if ($be->isApproved() && is_null($be->getGroup())) {
+            if (($be->isApproved() || $be->isApprovedWaitingForBusinessApproval()) && is_null($be->getGroup())) {
+                $result[] = $be;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return BusinessEmployee[]
+     */
+    public function getApprovedBusinessEmployeeWaitingForBusinessEnabling()
+    {
+        $result = [];
+        /** @var BusinessEmployee $be */
+        foreach ($this->businessEmployee as $be) {
+            if ($be->isApprovedWaitingForBusinessApproval()) {
                 $result[] = $be;
             }
         }

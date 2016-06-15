@@ -28,6 +28,8 @@ class BusinessEmployeeStatusHelper extends AbstractHelper
                 return $this->translator->translate("Approvato");
             case BusinessEmployee::STATUS_DELETED:
                 return $this->translator->translate("Disattivato");
+            case BusinessEmployee::STATUS_APPROVED_WAITING_BUSINESS_ENABLING:
+                return $this->translator->translate("Approvato, in attesa pagamento iscrizione azienda");
             default:
                 return $status;
         }

@@ -9,6 +9,7 @@ class BusinessEmployeeAvailableActionButtonHelper extends AbstractHelper
     public function __invoke(BusinessEmployee $businessEmployee)
     {
         $html = '';
+
         if ($businessEmployee->isBlocked()) {
             $html .= '<a href="';
             $html .= $this->getView()->url('employees/employee/unblock', ['id' => $businessEmployee->getEmployee()->getId()]);
@@ -17,6 +18,7 @@ class BusinessEmployeeAvailableActionButtonHelper extends AbstractHelper
             $html .= '\')" class="btn-margin validation-btn btn btn-primary btn-xs">';
             $html .= $this->getView()->translate("Sblocca");
             $html .= '</a>';
+
         } else if ($businessEmployee->isApproved()) {
             $html .= '<a href="';
             $html .= $this->getView()->url('employees/employee/block', ['id' => $businessEmployee->getEmployee()->getId()]);
@@ -25,7 +27,7 @@ class BusinessEmployeeAvailableActionButtonHelper extends AbstractHelper
             $html .= '\')" class="btn-margin validation-btn btn btn-warning btn-xs">';
             $html .= $this->getView()->translate("Blocca");
             $html .= '</a>';
-        } else {
+        } else if ($businessEmployee->isPending()) {
             $html .= '<a href="';
             $html .= $this->getView()->url('employees/employee/approve', ['id' => $businessEmployee->getEmployee()->getId()]);
             $html .= '"onclick="return confirm(\'';
