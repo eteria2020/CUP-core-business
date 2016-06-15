@@ -65,12 +65,12 @@ class BusinessFare
      * @param $parkDiscount
      * @param $motionDiscount
      */
-    public function __construct(Business $business, Fare $baseFare, $parkDiscount = 0, $motionDiscount = 0)
+    public function __construct(Business $business, Fare $baseFare, $motionDiscount = 0, $parkDiscount = 0)
     {
         $this->business = $business;
         $this->baseFare = $baseFare;
-        $this->parkDiscount = $parkDiscount;
         $this->motionDiscount = $motionDiscount;
+        $this->parkDiscount = $parkDiscount;
         $this->insertedTs = date_create();
     }
 
