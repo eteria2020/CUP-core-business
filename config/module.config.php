@@ -45,7 +45,7 @@ return [
         ],
         //TODO (MOCK)
         'invokables' => [
-            'MockExternalPaymentService' => 'BusinessCore\Service\MockExternalPaymentService'
+            'PaymentService' => 'BusinessCore\Service\MockExternalPaymentService'
         ],
     ],
     'view_helpers'    => [

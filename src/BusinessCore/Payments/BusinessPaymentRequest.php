@@ -1,9 +1,10 @@
 <?php
+
 namespace BusinessCore\Payments;
 
 use BusinessCore\Entity\Base\BusinessPayment;
 use Payments\Customer;
-use Payments\PaymentRequest\PaymentRequest;
+use Payments\PaymentRequest;
 use Payments\Value\Amount;
 
 class BusinessPaymentRequest implements PaymentRequest
@@ -18,15 +19,15 @@ class BusinessPaymentRequest implements PaymentRequest
 
     /**
      * BusinessPaymentRequest constructor.
-     * @param $customer
+     * @param Customer $customer
      * @param array $payments
      * @param bool $firstPayment
      */
-    public function __construct($customer, array $payments, $firstPayment = false)
+    public function __construct(Customer $customer, array $payments, $firstPayment = false)
     {
         $this->customer = $customer;
         $this->payments = $payments;
-        $this->setAmountFromPayments($payments);
+        $this->setAmountFromPayments();
         $this->firstPayment = $firstPayment;
     }
 
@@ -35,7 +36,7 @@ class BusinessPaymentRequest implements PaymentRequest
      */
     public function customer()
     {
-        return $this->business;
+        return $this->customer;
     }
 
     /**
@@ -54,12 +55,13 @@ class BusinessPaymentRequest implements PaymentRequest
         return $this->firstPayment;
     }
 
-    private function setAmountFromPayments(array $payments)
+    private function setAmountFromPayments()
     {
+        //TODO how to manage different currencies?
         $tot = 0;
         $currency = '';
         /** @var BusinessPayment $payment */
-        foreach ($payments as $payment) {
+        foreach ($this->payments as $payment) {
             $tot += $payment->getAmount();
             $currency = $payment->getCurrency();
         }

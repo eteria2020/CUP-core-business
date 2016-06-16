@@ -13,12 +13,12 @@ class BusinessTimePackageServiceFactory implements FactoryInterface
         $timePackageRepository = $entityManager->getRepository('BusinessCore\Entity\TimePackage');
 
         //TODO (MOCK)
-        $externalPaymentService = $serviceLocator->get('MockExternalPaymentService');
+        $paymentService = $serviceLocator->get('PaymentService');
 
         return new BusinessTimePackageService(
             $entityManager,
             $timePackageRepository,
-            $externalPaymentService
+            $paymentService
         );
     }
 }

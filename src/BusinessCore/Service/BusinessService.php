@@ -132,12 +132,18 @@ class BusinessService
 
     public function removeEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_DELETED);
+        $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
+        $businessEmployee->delete();
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 
     public function approveEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
+        $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
+        $businessEmployee->approve();
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
 
         $employee = $this->employeeRepository->find($employeeId);
         $this->eventManager->trigger('employeeApproved', $this, [
@@ -147,30 +153,41 @@ class BusinessService
 
     public function approveEmployeeWithBusinessNotEnabled(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED_WAITING_BUSINESS_ENABLING);
+        $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
+        $businessEmployee->approveWaitingForBusinessEnabling();
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 
     public function blockEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_BLOCKED);
+        $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
+        $businessEmployee->block();
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 
     public function unblockEmployee(Business $business, $employeeId)
     {
-        $this->setEmployeeStatus($business, $employeeId, BusinessEmployee::STATUS_APPROVED);
+        $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
+        $businessEmployee->approve();
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 
-    private function setEmployeeStatus(Business $business, $employeeId, $status)
+    /**
+     * @param Business $business
+     * @param $employeeId
+     * @return BusinessEmployee
+     */
+    private function getBusinessEmployee(Business $business, $employeeId)
     {
-        $businessEmployee = $this->businessEmployeeRepository->find(
+        return $this->businessEmployeeRepository->find(
             [
                 'employee' => $employeeId,
                 'business' => $business
             ]
         );
-        $businessEmployee->setStatus($status);
-        $this->entityManager->persist($businessEmployee);
-        $this->entityManager->flush();
     }
 
     public function updateBusinessDetails(Business $business, BusinessDetails $inputData)
@@ -211,9 +228,47 @@ class BusinessService
         /** @var Employee $employee */
         $employee = $this->employeeRepository->findOneById($employeeId);
 
-        $businessEmployee = $this->businessEmployeeRepository->findOneBy(['employee' => $employee, 'business' => $business]);
+        $this->checkPastAssociations($employee, $business);
+
+        $businessEmployee = new BusinessEmployee($employee, $business);
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
+        $this->eventManager->trigger('newEmployeeAssociated', $this, [
+            'employee' => $employee
+        ]);
+
+        if ($businessEmployee->isApproved()) {
+            $this->entityManager->detach($employee); //clear doctrine cached entity
+            $employee = $this->employeeRepository->findOneById($employeeId);
+            $this->eventManager->trigger('employeeApproved', $this, [
+                'employee' => $employee
+            ]);
+        }
+    }
+
+    public function approveEmployeesWaitingForBusinessEnabling(Business $business)
+    {
+        $waitingEmployees = $business->getApprovedBusinessEmployeeWaitingForBusinessEnabling();
+        foreach ($waitingEmployees as $businessEmployee) {
+            $this->approveEmployee($business, $businessEmployee->getEmployee()->getId());
+        }
+    }
+
+    /**
+     * @param $employee
+     * @param Business $business
+     * @throws EmployeeAlreadyAssociatedToDifferentBusinessException
+     * @throws EmployeeAlreadyAssociatedToThisBusinessException
+     * @throws EmployeeDeletedException
+     */
+    private function checkPastAssociations($employee, Business $business)
+    {
+        $businessEmployee = $this->businessEmployeeRepository->findOneBy([
+            'employee' => $employee,
+            'business' => $business
+        ]);
         if ($businessEmployee instanceof BusinessEmployee) {
-            if ($businessEmployee->getStatus() == BusinessEmployee::STATUS_DELETED) {
+            if ($businessEmployee->isDeleted()) {
                 throw new EmployeeDeletedException();
             } else {
                 throw new EmployeeAlreadyAssociatedToThisBusinessException();
@@ -223,29 +278,6 @@ class BusinessService
 
         if ($businessEmployee instanceof BusinessEmployee) {
             throw new EmployeeAlreadyAssociatedToDifferentBusinessException();
-        } else {
-            $businessEmployee = new BusinessEmployee($employee, $business);
-            $this->entityManager->persist($businessEmployee);
-            $this->entityManager->flush();
-            $this->eventManager->trigger('newEmployeeAssociated', $this, [
-                'employee' => $employee
-            ]);
-
-            if ($businessEmployee->isApproved()) {
-                $this->entityManager->detach($employee); //clear doctrine cached entity
-                $employee = $this->employeeRepository->findOneById($employeeId);
-                $this->eventManager->trigger('employeeApproved', $this, [
-                    'employee' => $employee
-                ]);
-            }
-        }
-    }
-
-    public function approveEmployeesWaitingForBusinessEnabling(Business $business)
-    {
-        $waitingEmployees = $business->getApprovedBusinessEmployeeWaitingForBusinessEnabling();
-        foreach ($waitingEmployees as $businessEmployee) {
-            $this->approveEmployee($business, $businessEmployee->getEmployee()->getId());
         }
     }
 }

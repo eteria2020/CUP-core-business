@@ -2,9 +2,11 @@
 
 namespace BusinessCore\Service;
 
+use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Entity\Repository\BusinessInvoiceRepository;
 
+use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityManager;
 
 class BusinessInvoiceService
@@ -31,22 +33,22 @@ class BusinessInvoiceService
         $this->businessInvoiceRepository = $businessInvoiceRepository;
     }
 
-    public function searchInvoicesByBusiness($business, $searchCriteria)
+    public function searchInvoicesByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessInvoiceRepository->searchInvoicesByBusiness($business, $searchCriteria);
     }
 
-    public function getTotalInvoicesByBusiness($business)
+    public function getTotalInvoicesByBusiness(Business $business)
     {
         return $this->businessInvoiceRepository->countAllByBusiness($business);
     }
 
     /**
      * @param $invoiceId
-     * @param $business
+     * @param Business $business
      * @return BusinessInvoice
      */
-    public function findOneByIdAndBusiness($invoiceId, $business)
+    public function findOneByIdAndBusiness($invoiceId, Business $business)
     {
         return $this->businessInvoiceRepository->findOneBy([
                 'id' => $invoiceId,
@@ -54,7 +56,7 @@ class BusinessInvoiceService
         ]);
     }
 
-    public function countFilteredInvoicesByBusiness($business, $searchCriteria)
+    public function countFilteredInvoicesByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessInvoiceRepository->searchInvoicesByBusiness($business, $searchCriteria, true);
     }

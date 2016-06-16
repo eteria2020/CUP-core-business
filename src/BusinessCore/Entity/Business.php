@@ -2,10 +2,10 @@
 
 namespace BusinessCore\Entity;
 
-
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use Doctrine\ORM\Mapping as ORM;
+use Payments\Customer;
 use Zend\Validator\Hostname;
 
 /**
@@ -15,7 +15,7 @@ use Zend\Validator\Hostname;
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessRepository")
 
  */
-class Business
+class Business extends Customer
 {
     const TYPE_WIRE_TRANSFER = 'wire_transfer';
     const TYPE_CREDIT_CARD = 'credit_card';
@@ -150,7 +150,7 @@ class Business
      *
      * @ORM\Column(name="subscription_fee_cents", type="integer", nullable=false)
      */
-    private $subscriptionFeeCents = 50000;
+    private $subscriptionFeeCents;
 
     /**
      * @var boolean
@@ -361,7 +361,7 @@ class Business
         return $this->isEnabled;
     }
 
-    public function enableAfterFirstPayment()
+    public function enable()
     {
         $this->isEnabled = true;
     }
@@ -400,6 +400,10 @@ class Business
         return $result;
     }
 
+    /**
+     * blocked employees are still approved
+     * @return BusinessEmployee[]
+     */
     public function getApprovedBusinessEmployees()
     {
         $result = [];
@@ -412,6 +416,11 @@ class Business
         return $result;
     }
 
+    /**
+     * Even though blocked employees are still approved I don't return them because it doesn't make
+     * much sense to be able to change group of blocked employees
+     * @return BusinessEmployee[]
+     */
     public function getApprovedBusinessEmployeesWithoutGroup()
     {
         $result = [];
@@ -490,5 +499,23 @@ class Business
     public function getReadableSubscriptionFee()
     {
         return number_format($this->subscriptionFeeCents / 100, 2, '.', '');
+    }
+
+    public function canApproveAutomatically(Employee $employee)
+    {
+        if ($this->businessMailControl) {
+            $employeeEmailDomain = substr(strrchr($employee->getEmail(), "@"), 1);
+            foreach ($this->domains as $domain) {
+                if ($employeeEmailDomain == $domain) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function payWithCreditCard()
+    {
+        return $this->paymentType == Business::TYPE_CREDIT_CARD;
     }
 }

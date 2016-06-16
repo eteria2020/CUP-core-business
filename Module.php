@@ -41,4 +41,17 @@ class Module
     {
         return include __DIR__ . '/config/module.config.php';
     }
+
+    //TODO needed for mock Payment classes
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    'Payments' => __DIR__ . '/src/Payments'
+                ),
+            ),
+        );
+    }
 }

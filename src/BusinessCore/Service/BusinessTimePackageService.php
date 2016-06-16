@@ -3,7 +3,6 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
-use BusinessCore\Entity\BusinessPayment;
 use BusinessCore\Entity\BusinessTimePackage;
 use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
@@ -11,6 +10,7 @@ use BusinessCore\Entity\TimePackage;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Payments\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
+use BusinessCore\Service\MockExternalPaymentService as PaymentService;
 
 class BusinessTimePackageService
 {
@@ -24,24 +24,24 @@ class BusinessTimePackageService
      */
     private $timePackageRepository;
     /**
-     * @var MockExternalPaymentService
+     * @var PaymentService
      */
-    private $mockExternalPaymentService;
+    private $paymentService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param TimePackageRepository $timePackageRepository
-     * @param MockExternalPaymentService $mockExternalPaymentService
+     * @param PaymentService $paymentService
      */
     public function __construct(
         EntityManager $entityManager,
         TimePackageRepository $timePackageRepository,
-        MockExternalPaymentService $mockExternalPaymentService
+        PaymentService $paymentService
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageRepository = $timePackageRepository;
-        $this->mockExternalPaymentService = $mockExternalPaymentService;
+        $this->paymentService = $paymentService;
     }
 
     /**
@@ -70,7 +70,7 @@ class BusinessTimePackageService
 
         $businessPaymentRequest = new BusinessPaymentRequest($business, [$timePackagePayment]);
 
-        $this->mockExternalPaymentService->pay($businessPaymentRequest);
+        $this->paymentService->pay($businessPaymentRequest);
     }
 
     public function enableTimePackage(Business $business, TimePackage $timePackage)

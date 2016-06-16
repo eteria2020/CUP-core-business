@@ -3,7 +3,9 @@
 namespace BusinessCore\Entity\Base;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Entity\Transaction;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 abstract class BusinessPayment
@@ -79,6 +81,21 @@ abstract class BusinessPayment
     protected $businessInvoice;
 
     /**
+     * BusinessPayment constructor.
+     * @param Business $business
+     * @param int $amount
+     * @param string $currency
+     */
+    public function __construct(Business $business, $amount, $currency)
+    {
+        $this->business = $business;
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->createdTs = date_create();
+        $this->status = self::STATUS_PENDING;
+    }
+
+    /**
      * @return Business
      */
     public function getBusiness()
@@ -132,14 +149,6 @@ abstract class BusinessPayment
     public function getBusinessInvoice()
     {
         return $this->businessInvoice;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
     }
 
     public function confirmPayed()
