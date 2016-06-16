@@ -184,17 +184,18 @@ class BusinessPaymentRepository extends EntityRepository
             $query->setParameter('to', $toDate . ' 23:59:59');
         }
 
-        if (!$sumTotal) {
+        if ($sumTotal) {
+            $sql .= ' group by sub.currency';
+        } else {
             $sortColumn = $searchCriteria->getSortColumn();
             $sortOrder = $searchCriteria->getSortOrder();
             if (!empty($sortColumn) && !empty($sortOrder)) {
                 $sql .= ' ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
             }
-        } else {
-            $sql .= ' group by sub.currency';
         }
 
         $query->setSQL($sql);
+
         return $query->getResult();
     }
 }

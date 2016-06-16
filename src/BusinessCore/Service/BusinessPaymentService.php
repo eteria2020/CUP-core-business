@@ -2,13 +2,8 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Base\BusinessPayment;
 use BusinessCore\Entity\Business;
-use BusinessCore\Entity\BusinessTripPayment;
-use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessPaymentRepository;
-
-use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityManager;
 
@@ -47,7 +42,7 @@ class BusinessPaymentService
         return $this->businessPaymentRepository->getTotalPaymentsByBusiness($business);
     }
 
-    public function countFilteredPaymentsByBusiness($business, $searchCriteria)
+    public function countFilteredPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessPaymentRepository->searchPaymentsByBusiness($business, $searchCriteria, true);
     }
