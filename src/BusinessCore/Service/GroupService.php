@@ -109,9 +109,12 @@ class GroupService
 
     public function setGroupLimit(Group $group, $data)
     {
-        $dailyLimit = is_numeric($data['daily']) ? $data['daily'] : null;
-        $weeklyLimit = is_numeric($data['weekly']) ? $data['weekly'] : null;
-        $monthlyLimit = is_numeric($data['monthly']) ? $data['monthly'] : null;
+        $daily = $data['daily'];
+        $weekly = $data['weekly'];
+        $monthly = $data['monthly'];
+        $dailyLimit = is_numeric($daily) && $daily >= 0 ? $daily : null;
+        $weeklyLimit = is_numeric($weekly) && $weekly >= 0 ? $weekly : null;
+        $monthlyLimit = is_numeric($monthly) && $monthly >= 0 ? $monthly : null;
 
         $group->setDailyMinutesLimit($dailyLimit);
         $group->setWeeklyMinutesLimit($weeklyLimit);
