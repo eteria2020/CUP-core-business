@@ -11,6 +11,7 @@ use BusinessCore\Exception\InvalidFormDataException;
 use BusinessCore\Service\Helper\SearchCriteria;
 
 use Doctrine\ORM\EntityManager;
+use Zend\Mvc\I18n\Translator;
 
 class BusinessPaymentService
 {
@@ -23,18 +24,25 @@ class BusinessPaymentService
      * @var BusinessPaymentRepository
      */
     private $businessPaymentRepository;
+    /**
+     * @var Translator
+     */
+    private $translator;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessPaymentRepository $businessPaymentRepository
+     * @param Translator $translator
      */
     public function __construct(
         EntityManager $entityManager,
-        BusinessPaymentRepository $businessPaymentRepository
+        BusinessPaymentRepository $businessPaymentRepository,
+        Translator $translator
     ) {
         $this->entityManager = $entityManager;
         $this->businessPaymentRepository = $businessPaymentRepository;
+        $this->translator = $translator;
     }
 
     public function searchPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
@@ -47,18 +55,22 @@ class BusinessPaymentService
         return $this->businessPaymentRepository->getTotalPaymentsByBusiness($business);
     }
 
-    public function addPenaltyOrExtra(Business $business, $amount, $type)
+    public function addPenaltyOrExtra($business, $amount, $reason)
     {
-        if (is_nan($amount) || ($type != BusinessPayment::PENALTY_TYPE && $type != BusinessPayment::EXTRA_TYPE)) {
-            throw new InvalidFormDataException();
+        if (is_nan($amount)) {
+            throw new InvalidFormDataException($this->translator->translate("Importo non valido"));
         }
-        //TODO FIX
+
+        if (is_null($business)) {
+            throw new InvalidFormDataException($this->translator->translate("Azienda non trovata"));
+        }
+
         $amount = floor($amount * 100);
         $businessPayment = new ExtraPayment(
             $business,
+            $reason,
             $amount,
-            'EUR',
-            $type
+            'EUR'
         );
 
         $this->entityManager->persist($businessPayment);

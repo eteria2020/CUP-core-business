@@ -15,7 +15,7 @@ class BusinessRepository extends EntityRepository
         $em = $this->getEntityManager();
         $query = $em->createQuery(
             'SELECT e FROM \BusinessCore\Entity\Business e '.
-            'WHERE lower(e.code) LIKE :value OR lower(e.name) LIKE :value'
+            'WHERE lower(e.name) LIKE :value'
         );
         $likeValue = strtolower("%" . $value . "%");
         $query->setParameter('value', $likeValue);

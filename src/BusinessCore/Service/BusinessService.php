@@ -296,4 +296,9 @@ class BusinessService
             "data" =>  $data
         ];
     }
+
+    public function findByName($businessName)
+    {
+        return $this->businessRepository->findOneBy(['name' => $businessName]);
+    }
 }
