@@ -64,4 +64,9 @@ class BusinessPaymentService
     {
         return $this->businessPaymentRepository->getPaymentReportData($business, $searchCriteria, true);
     }
+
+    public function getBusinessSubscriptionPayment(Business $business)
+    {
+        return $this->businessPaymentRepository->getBusinessSubscriptionPayment($business);
+    }
 }

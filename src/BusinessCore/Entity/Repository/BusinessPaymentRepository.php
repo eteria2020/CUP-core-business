@@ -214,4 +214,19 @@ class BusinessPaymentRepository extends EntityRepository
             $class == ExtraPayment::CLASS_NAME ||
             $class == BusinessTripPayment::CLASS_NAME;
     }
+
+    /**
+     * @param Business $business
+     * @return null|SubscriptionPayment
+     */
+    public function getBusinessSubscriptionPayment(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
+                WHERE e.business = :business';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setDql($dql);
+
+        return $query->getOneOrNullResult();
+    }
 }

@@ -2,8 +2,6 @@
 
 namespace BusinessCore\Service;
 
-
-use BusinessCore\Entity\Business;
 use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Payments\BusinessPaymentRequest;
 use BusinessCore\Service\MockExternalPaymentService as PaymentService;
@@ -34,13 +32,9 @@ class SubscriptionService
         $this->paymentService = $paymentService;
     }
 
-    public function paySubscription(Business $business)
+    public function paySubscription(SubscriptionPayment $subscriptionPayment)
     {
-        $subscriptionPayment = new SubscriptionPayment($business, $business->getSubscriptionFeeCents(), 'EUR');
-
-        $this->entityManager->persist($subscriptionPayment);
-        $this->entityManager->flush();
-
+        $business = $subscriptionPayment->getBusiness();
         if ($business->payWithCreditCard()) {
             $businessPayment = new BusinessPaymentRequest($business, [$subscriptionPayment], true);
 

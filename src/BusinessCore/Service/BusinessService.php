@@ -9,6 +9,7 @@ use BusinessCore\Entity\BusinessFare;
 use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Entity\Repository\EmployeeRepository;
+use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Exception\EmployeeAlreadyAssociatedToDifferentBusinessException;
 use BusinessCore\Exception\EmployeeAlreadyAssociatedToThisBusinessException;
 use BusinessCore\Exception\EmployeeDeletedException;
@@ -104,9 +105,12 @@ class BusinessService
             //get the base fare, there is only one for now
             $baseFare = $this->fareRepository->findOne();
             $businessFare = new BusinessFare($business, $baseFare);
+            //generate pending subscription payment
+            $subscriptionPayment = new SubscriptionPayment($business, $business->getSubscriptionFeeCents(), 'EUR');
 
             $this->entityManager->persist($business);
             $this->entityManager->persist($businessFare);
+            $this->entityManager->persist($subscriptionPayment);
 
             $this->entityManager->flush();
             $this->entityManager->commit();

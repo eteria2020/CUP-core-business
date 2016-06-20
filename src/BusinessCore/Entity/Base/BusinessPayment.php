@@ -127,6 +127,15 @@ abstract class BusinessPayment
         return $this->createdTs;
     }
 
+
+    /**
+     * @return \DateTime
+     */
+    public function getPayedOnTs()
+    {
+        return $this->payedOnTs;
+    }
+
     /**
      * @return \DateTime
      */
@@ -161,6 +170,16 @@ abstract class BusinessPayment
     {
         $this->status = self::STATUS_EXPECTED_PAYED;
         $this->expectedPayedTs = date_create();
+    }
+
+    public function isPayed()
+    {
+        return $this->status == self::STATUS_CONFIRMED_PAYED;
+    }
+
+    public function isExpectedPayed()
+    {
+        return $this->status == self::STATUS_EXPECTED_PAYED;
     }
 
     abstract public function addTransaction(Transaction $transaction);
