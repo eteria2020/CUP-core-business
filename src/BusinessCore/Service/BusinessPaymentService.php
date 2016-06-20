@@ -90,6 +90,14 @@ class BusinessPaymentService
         $this->entityManager->flush();
     }
 
+    public function flagPaymentAsConfirmedPayedByWire($className, $id)
+    {
+        $payment = $this->businessPaymentRepository->getPaymentByClassAndId($className, $id);
+        $payment->confirmPayed();
+        $this->entityManager->persist($payment);
+        $this->entityManager->flush();
+    }
+
     public function getReportData(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessPaymentRepository->getPaymentReportData($business, $searchCriteria);
