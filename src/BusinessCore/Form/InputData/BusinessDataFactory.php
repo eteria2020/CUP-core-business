@@ -84,6 +84,8 @@ class BusinessDataFactory
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
         $businessMailControl = $data['businessMailControl'];
+        $subscriptionFeeCents = $data['subscriptionFeeCents'];
+
 
         if (empty($paymentType)) {
             $paymentType = null;
@@ -92,10 +94,15 @@ class BusinessDataFactory
             $paymentFrequence = null;
         }
         if (is_nan($businessMailControl)) {
-            throw new InvalidBusinessFormException("Si è verificato un errore, riprovare");
+            throw new InvalidBusinessFormException("Si è verificato un errore");
         }
 
-        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl);
+        if (is_nan($subscriptionFeeCents) || $subscriptionFeeCents < 1) {
+            throw new InvalidBusinessFormException("La quota di iscrizione deve essere di almeno 1€");
+        }
 
+        $subscriptionFeeCents = $subscriptionFeeCents * 100;
+
+        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl, $subscriptionFeeCents);
     }
 }
