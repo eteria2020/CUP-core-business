@@ -279,13 +279,13 @@ class BusinessService
         if (empty($businessName)) {
             $stats = $this->businessRepository->getBusinessStatsData($from, $to);
             foreach ($stats as $row) {
-                $labels[] = $row['name'];
+                $labels[] = $row['business_name'];
                 $data[] = $row['minutes'];
             }
         } else {
             $stats = $this->businessRepository->getBusinessGroupStatsData($businessName, $from, $to);
             foreach ($stats as $row) {
-                $groupName = empty($row['name']) ? $this->translator->translate('Senza gruppo') : $row['name'];
+                $groupName = empty($row['group_name']) ? $this->translator->translate('Senza gruppo') : $row['group_name'];
                 $labels[] = $groupName;
                 $data[] = $row['minutes'];
             }

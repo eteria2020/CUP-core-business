@@ -4,6 +4,7 @@ namespace BusinessCore\Entity\Repository;
 
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * BusinessRepository
@@ -62,60 +63,55 @@ class BusinessRepository extends EntityRepository
 
     public function getBusinessStatsData($from, $to)
     {
-        $count = "SUM((DATE_PART('day', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) * 24 +
-    DATE_PART('hour', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
-    DATE_PART('minute', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
-    DATE_PART('second', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) as seconds ";
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('name', 'business_name');
+        $rsm->addScalarResult('minutes', 'minutes');
 
-        $dql = 'SELECT b.name, ' . $count .
-                ' FROM \BusinessCore\Entity\BusinessTrip bt
-                JOIN bt.business b
-                JOIN bt.trip t ';
-        $query = $this->getEntityManager()->createQuery();
+        $sql = 'SELECT b.name, SUM(EXTRACT(EPOCH FROM(t.timestamp_end - t.timestamp_beginning))) / 60 as minutes
+                FROM business.trip as t
+                JOIN business.business_trip AS bt ON (bt.trip_id = t.id)
+                JOIN business.business AS b ON (b.code = bt.business_code)';
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
         if (!empty($from) && !empty($to)) {
-            $dql .= 'WHERE t.timestampBeginning >= :from AND t.timestampBeginning <= :to ';
+            $sql .= ' WHERE t.timestamp_beginning >= :from AND t.timestamp_end <= :to ';
             $query->setParameter('from', $from . ' 00:00:00');
             $query->setParameter('to', $to . ' 23:59:59');
         }
 
-        $dql .=  'GROUP BY b.name';
-
-        $query->setDQL($dql);
-        echo "<pre>"; print_r($query->getSQL()); echo "</pre>";die();
-        echo "<pre>"; print_r($dql); echo "</pre>";die();
+        $sql .= 'GROUP BY b.name';
+        $query->setSQL($sql);
 
         return $query->getResult();
     }
 
     public function getBusinessGroupStatsData($businessName, $from, $to)
     {
-        $count = "SUM((DATE_PART('day', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) * 24 +
-    DATE_PART('hour', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
-    DATE_PART('minute', t.timestampBeginning::timestamp - t.timestampEnd::timestamp)) * 60 +
-    DATE_PART('second', t.timestampBeginning::timestamp - t.timestampEnd::timestamp) as seconds ";
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('name', 'group_name');
+        $rsm->addScalarResult('minutes', 'minutes');
 
-        $dql = 'SELECT g.name, ' . $count .
-                ' FROM \BusinessCore\Entity\BusinessTrip bt
-                JOIN bt.business b
-                LEFT JOIN bt.group g
-                JOIN bt.trip t
+        $sql = 'SELECT g.name, SUM(EXTRACT(EPOCH FROM(t.timestamp_end - t.timestamp_beginning))) / 60 as minutes
+                FROM business.business_trip as bt
+                JOIN business.business AS b ON (b.code = bt.business_code)
+                LEFT JOIN business.employee_group as g ON (bt.group_id = g.id)
+                JOIN business.trip AS t ON (bt.trip_id = t.id)
                 WHERE b.name = :name ';
 
-        $query = $this->getEntityManager()->createQuery();
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         $query->setParameter('name', $businessName);
 
         if (!empty($from) && !empty($to)) {
-            $dql .= 'AND t.timestampBeginning >= :from AND t.timestampBeginning <= :to ';
+            $sql .= 'AND t.timestamp_beginning >= :from AND t.timestamp_beginning <= :to ';
             $query->setParameter('from', $from . ' 00:00:00');
             $query->setParameter('to', $to . ' 23:59:59');
         }
 
-        $dql .= 'GROUP BY g.name';
-        $query->setDQL($dql);
+        $sql .= 'GROUP BY g.name';
+        $query->setSQL($sql);
 
         return $query->getResult();
-
-
 
     }
 }
