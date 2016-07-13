@@ -76,7 +76,7 @@ class BusinessPaymentService
         $this->entityManager->flush();
     }
 
-        public function countFilteredPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
+    public function countFilteredPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessPaymentRepository->searchPaymentsByBusiness($business, $searchCriteria, true);
     }
