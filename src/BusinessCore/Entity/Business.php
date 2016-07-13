@@ -393,6 +393,7 @@ class Business extends Customer
         $this->paymentFrequence = $data->getPaymentFrequence();
         $this->businessMailControl = $data->getBusinessMailControl();
         $this->subscriptionFeeCents = $data->getSubscriptionFeeCents();
+        $this->fleet = $data->getFleet();
     }
 
     public function getPendingBusinessEmployees()
@@ -469,6 +470,17 @@ class Business extends Customer
     public function getFleet()
     {
         return $this->fleet;
+    }
+
+    /**
+     * @return BusinessFleet
+     */
+    public function getFleetId()
+    {
+        if ($this->fleet instanceof BusinessFleet) {
+            return $this->fleet->getId();
+        }
+        return 0;
     }
 
     /**

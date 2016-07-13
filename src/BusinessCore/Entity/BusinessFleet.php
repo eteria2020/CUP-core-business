@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BusinessFleet
  *
- * @ORM\Table(name="business_fleet", schema="business")
- * @ORM\Entity(readOnly=true)
+ * @ORM\Table(name="fleet", schema="business")
+ * @ORM\Entity(readOnly=true, repositoryClass="BusinessCore\Entity\Repository\BusinessFleetRepository")
  */
 class BusinessFleet
 {
@@ -40,4 +40,20 @@ class BusinessFleet
      * @ORM\Column(name="invoice_header", type="text", nullable=false)
      */
     private $invoiceHeader;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }
