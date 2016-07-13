@@ -94,6 +94,9 @@ class Transaction
         $this->currency = $currency;
         $this->createdTs = date_create();
         $this->timePackagePayments = new ArrayCollection();
+        $this->extraPayments = new ArrayCollection();
+        $this->subscriptionPayments = new ArrayCollection();
+        $this->businessTripPayments = new ArrayCollection();
     }
 
     public function success()

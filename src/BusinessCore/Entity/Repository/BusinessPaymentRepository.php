@@ -4,6 +4,10 @@ namespace BusinessCore\Entity\Repository;
 
 use BusinessCore\Entity\Base\BusinessPayment;
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessTripPayment;
+use BusinessCore\Entity\ExtraPayment;
+use BusinessCore\Entity\SubscriptionPayment;
+use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -117,16 +121,19 @@ class BusinessPaymentRepository extends EntityRepository
     /**
      * @param string $class
      * @param $id
-     * @return BusinessPayment
+     * @return null|BusinessPayment
      */
     public function getPaymentByClassAndId($class, $id)
     {
-        $dql = 'SELECT e FROM ' . $class . ' e WHERE e.id = :id';
-        $query = $this->getEntityManager()->createQuery();
-        $query->setParameter('id', $id);
-        $query->setDql($dql);
+        if ($this->instanceOfBusinessPayment($class)) {
+            $dql = 'SELECT e FROM ' . $class . ' e WHERE e.id = :id';
+            $query = $this->getEntityManager()->createQuery();
+            $query->setParameter('id', $id);
+            $query->setDql($dql);
 
-        return $query->getOneOrNullResult();
+            return $query->getOneOrNullResult();
+        }
+        return null;
     }
 
     public function getPaymentReportData(Business $business, SearchCriteria $searchCriteria, $sumTotal = false)
@@ -185,17 +192,42 @@ class BusinessPaymentRepository extends EntityRepository
             $query->setParameter('to', $toDate . ' 23:59:59');
         }
 
-        if (!$sumTotal) {
+        if ($sumTotal) {
+            $sql .= ' group by sub.currency';
+        } else {
             $sortColumn = $searchCriteria->getSortColumn();
             $sortOrder = $searchCriteria->getSortOrder();
             if (!empty($sortColumn) && !empty($sortOrder)) {
                 $sql .= ' ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
             }
-        } else {
-            $sql .= ' group by sub.currency';
         }
 
         $query->setSQL($sql);
+
         return $query->getResult();
+    }
+
+    private function instanceOfBusinessPayment($class)
+    {
+        return
+            $class == TimePackagePayment::CLASS_NAME ||
+            $class == SubscriptionPayment::CLASS_NAME ||
+            $class == ExtraPayment::CLASS_NAME ||
+            $class == BusinessTripPayment::CLASS_NAME;
+    }
+
+    /**
+     * @param Business $business
+     * @return null|SubscriptionPayment
+     */
+    public function getBusinessSubscriptionPayment(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
+                WHERE e.business = :business';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setDql($dql);
+
+        return $query->getOneOrNullResult();
     }
 }

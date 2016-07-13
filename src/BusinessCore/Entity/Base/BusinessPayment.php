@@ -3,7 +3,9 @@
 namespace BusinessCore\Entity\Base;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Entity\Transaction;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 abstract class BusinessPayment
@@ -79,6 +81,21 @@ abstract class BusinessPayment
     protected $businessInvoice;
 
     /**
+     * BusinessPayment constructor.
+     * @param Business $business
+     * @param int $amount
+     * @param string $currency
+     */
+    public function __construct(Business $business, $amount, $currency)
+    {
+        $this->business = $business;
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->createdTs = date_create();
+        $this->status = self::STATUS_PENDING;
+    }
+
+    /**
      * @return Business
      */
     public function getBusiness()
@@ -110,6 +127,15 @@ abstract class BusinessPayment
         return $this->createdTs;
     }
 
+
+    /**
+     * @return \DateTime
+     */
+    public function getPayedOnTs()
+    {
+        return $this->payedOnTs;
+    }
+
     /**
      * @return \DateTime
      */
@@ -134,14 +160,6 @@ abstract class BusinessPayment
         return $this->businessInvoice;
     }
 
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
     public function confirmPayed()
     {
         $this->status = self::STATUS_CONFIRMED_PAYED;
@@ -152,6 +170,16 @@ abstract class BusinessPayment
     {
         $this->status = self::STATUS_EXPECTED_PAYED;
         $this->expectedPayedTs = date_create();
+    }
+
+    public function isPayed()
+    {
+        return $this->status == self::STATUS_CONFIRMED_PAYED;
+    }
+
+    public function isExpectedPayed()
+    {
+        return $this->status == self::STATUS_EXPECTED_PAYED;
     }
 
     abstract public function addTransaction(Transaction $transaction);

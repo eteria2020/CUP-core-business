@@ -50,13 +50,9 @@ class ExtraPayment extends BusinessPayment
      */
     public function __construct(Business $business, $reason, $amount, $currency)
     {
-        $this->business = $business;
-        $this->amount = $amount;
-        $this->currency = $currency;
-        $this->createdTs = date_create();
-        $this->status = self::STATUS_PENDING;
-        $this->transactions = new ArrayCollection();
         $this->reason = $reason;
+        $this->transactions = new ArrayCollection();
+        parent::__construct($business, $amount, $currency);
     }
 
     public function addTransaction(Transaction $transaction)

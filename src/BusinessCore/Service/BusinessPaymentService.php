@@ -2,7 +2,6 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Base\BusinessPayment;
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessPaymentRepository;
@@ -77,7 +76,7 @@ class BusinessPaymentService
         $this->entityManager->flush();
     }
 
-    public function countFilteredPaymentsByBusiness($business, $searchCriteria)
+        public function countFilteredPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessPaymentRepository->searchPaymentsByBusiness($business, $searchCriteria, true);
     }
@@ -106,5 +105,10 @@ class BusinessPaymentService
     public function getReportTotal(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessPaymentRepository->getPaymentReportData($business, $searchCriteria, true);
+    }
+
+    public function getBusinessSubscriptionPayment(Business $business)
+    {
+        return $this->businessPaymentRepository->getBusinessSubscriptionPayment($business);
     }
 }

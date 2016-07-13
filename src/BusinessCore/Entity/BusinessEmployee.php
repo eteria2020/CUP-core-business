@@ -74,27 +74,15 @@ class BusinessEmployee
         $this->employee = $employee;
         $this->business = $business;
         $this->insertedTs = date_create();
-        if ($this->isEmailControlEnabledAndEmailApproved($employee, $business)) {
-            $status = $business->isEnabled() ? self::STATUS_APPROVED : self::STATUS_APPROVED_WAITING_BUSINESS_ENABLING;
-            $this->status = $status;
-            $this->confirmedTs = date_create();
+        if ($business->canApproveAutomatically($employee)) {
+            if ($business->isEnabled()) {
+                $this->approve();
+            } else {
+                $this->approveWaitingForBusinessEnabling();
+            }
         } else {
             $this->status = self::STATUS_PENDING;
         }
-    }
-
-    private function isEmailControlEnabledAndEmailApproved(Employee $employee, Business $business)
-    {
-        if ($business->isBusinessMailControlEnabled()) {
-            $employeeEmailDomain = substr(strrchr($employee->getEmail(), "@"), 1);
-
-            foreach ($business->getDomains() as $domain) {
-                if ($employeeEmailDomain == $domain) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -162,14 +150,6 @@ class BusinessEmployee
     }
 
     /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
      * @return Group
      */
     public function getGroup()
@@ -193,5 +173,27 @@ class BusinessEmployee
     public function removeGroup()
     {
         $this->group = null;
+    }
+
+    public function approveWaitingForBusinessEnabling()
+    {
+        $this->status = self::STATUS_APPROVED_WAITING_BUSINESS_ENABLING;
+        $this->confirmedTs = date_create();
+    }
+
+    public function approve()
+    {
+        $this->status = self::STATUS_APPROVED;
+        $this->confirmedTs = date_create();
+    }
+
+    public function block()
+    {
+        $this->status = self::STATUS_BLOCKED;
+    }
+
+    public function delete()
+    {
+        $this->status = self::STATUS_DELETED;
     }
 }

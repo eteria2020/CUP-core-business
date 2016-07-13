@@ -1,6 +1,6 @@
 <?php
 
-namespace Payments\PaymentRequest;
+namespace Payments;
 
 use Payments\Customer;
 use Payments\Value\Amount;

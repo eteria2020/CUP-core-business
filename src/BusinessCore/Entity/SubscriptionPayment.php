@@ -35,21 +35,12 @@ class SubscriptionPayment extends BusinessPayment
      */
     private $transactions;
 
-    /**
-     * BusinessPayment constructor.
-     * @param Business $business
-     * @param int $amount
-     * @param string $currency
-     */
     public function __construct(Business $business, $amount, $currency)
     {
-        $this->business = $business;
-        $this->amount = $amount;
-        $this->currency = $currency;
-        $this->createdTs = date_create();
-        $this->status = self::STATUS_PENDING;
         $this->transactions = new ArrayCollection();
+        parent::__construct($business, $amount, $currency);
     }
+
 
     public function addTransaction(Transaction $transaction)
     {
@@ -59,9 +50,7 @@ class SubscriptionPayment extends BusinessPayment
 
     public function confirmPayed()
     {
-        $this->business->enableAfterFirstPayment();
+        $this->business->enable();
         parent::confirmPayed();
     }
-
-
 }

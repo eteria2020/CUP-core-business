@@ -11,11 +11,11 @@ class SubscriptionServiceFactory implements FactoryInterface
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         //TODO (MOCK)
-        $externalPaymentService = $serviceLocator->get('MockExternalPaymentService');
+        $paymentService = $serviceLocator->get('PaymentService');
 
         return new SubscriptionService(
             $entityManager,
-            $externalPaymentService
+            $paymentService
         );
     }
 }

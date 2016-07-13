@@ -2,10 +2,9 @@
 
 namespace BusinessCore\Service;
 
-
-use BusinessCore\Entity\Business;
 use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Payments\BusinessPaymentRequest;
+use BusinessCore\Service\MockExternalPaymentService as PaymentService;
 use Doctrine\ORM\EntityManager;
 
 class SubscriptionService
@@ -16,34 +15,30 @@ class SubscriptionService
     private $entityManager;
 
     /**
-     * @var MockExternalPaymentService
+     * @var PaymentService
      */
-    private $mockExternalPaymentService;
+    private $paymentService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
-     * @param MockExternalPaymentService $mockExternalPaymentService
+     * @param PaymentService $paymentService
      */
     public function __construct(
         EntityManager $entityManager,
-        MockExternalPaymentService $mockExternalPaymentService
+        PaymentService $paymentService
     ) {
         $this->entityManager = $entityManager;
-        $this->mockExternalPaymentService = $mockExternalPaymentService;
+        $this->paymentService = $paymentService;
     }
 
-    public function paySubscription(Business $business)
+    public function paySubscription(SubscriptionPayment $subscriptionPayment)
     {
-        $subscriptionPayment = new SubscriptionPayment($business, $business->getSubscriptionFeeCents(), 'EUR');
-
-        $this->entityManager->persist($subscriptionPayment);
-        $this->entityManager->flush();
-
-        if ($business->getPaymentType() == Business::TYPE_CREDIT_CARD) {
+        $business = $subscriptionPayment->getBusiness();
+        if ($business->payWithCreditCard()) {
             $businessPayment = new BusinessPaymentRequest($business, [$subscriptionPayment], true);
 
-            $this->mockExternalPaymentService->pay($businessPayment);
+            $this->paymentService->pay($businessPayment);
         }
     }
 }

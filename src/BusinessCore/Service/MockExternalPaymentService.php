@@ -4,7 +4,7 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\BusinessContract;
 use BusinessCore\Entity\Transaction;
-use Payments\PaymentRequest\PaymentRequest;
+use Payments\PaymentRequest;
 use Zend\EventManager\EventManager;
 
 class MockExternalPaymentService

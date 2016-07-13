@@ -82,9 +82,9 @@ class BusinessInvoice
     /**
      * @var integer
      *
-     * @ORM\Column(name="iva", type="integer", nullable=false)
+     * @ORM\Column(name="vat", type="integer", nullable=false)
      */
-    private $iva;
+    private $vat;
 
     /**
      * @return int
@@ -153,8 +153,8 @@ class BusinessInvoice
     /**
      * @return int
      */
-    public function getIva()
+    public function getVat()
     {
-        return $this->iva;
+        return $this->vat;
     }
 }
