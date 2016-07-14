@@ -3,9 +3,9 @@
 namespace BusinessCore\Payments;
 
 use BusinessCore\Entity\Base\BusinessPayment;
-use Payments\Customer;
-use Payments\PaymentRequest;
-use Payments\Value\Amount;
+use MvlabsPayments\Customer;
+use MvlabsPayments\PaymentRequest\PaymentRequest;
+use MvlabsPayments\Values\Amount;
 
 class BusinessPaymentRequest implements PaymentRequest
 {

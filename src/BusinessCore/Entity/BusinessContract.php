@@ -3,7 +3,7 @@
 namespace BusinessCore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Payments\Customer;
+use MvlabsPayments\Contract\Contract;
 
 /**
  * BusinessContract
@@ -11,7 +11,7 @@ use Payments\Customer;
  * @ORM\Table(name="contract", schema="business")
  * @ORM\Entity()
  */
-class BusinessContract
+class BusinessContract extends Contract
 {
     /**
      * @var integer
@@ -60,13 +60,14 @@ class BusinessContract
 
 
     /**
-     * BusinessFare constructor.
+     * BusinessContract constructor.
      * @param $business
      */
     public function __construct($business)
     {
         $this->business = $business;
         $this->createdTs = date_create();
+        parent::__construct();
     }
 
     /**
