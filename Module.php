@@ -43,7 +43,7 @@ class Module
     }
 
     //TODO needed for mock Payment classes
-    public function getAutoloaderConfig()
+    /*public function getAutoloaderConfig()
     {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
@@ -53,5 +53,5 @@ class Module
                 ),
             ),
         );
-    }
+    }*/
 }

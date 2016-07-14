@@ -15,7 +15,7 @@
             "./Module.php"
         ],
         "psr-4": {
-            "BusinessCore": "src/BusinessCore/"
+            "BusinessCore\\": "src/"
         }
     }
 }

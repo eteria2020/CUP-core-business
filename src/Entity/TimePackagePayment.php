@@ -5,9 +5,6 @@ namespace BusinessCore\Entity;
 use BusinessCore\Entity\Base\BusinessPayment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Payments\Customer;
-use Payments\PaymentRequest\PaymentRequest;
-use Payments\Value\Amount;
 
 /**
  * TimePackagePayment
