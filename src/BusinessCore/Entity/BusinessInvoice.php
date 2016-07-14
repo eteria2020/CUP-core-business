@@ -87,6 +87,13 @@ class BusinessInvoice
     private $vat;
 
     /**
+     * @var BusinessFleet
+     * @ORM\ManyToOne(targetEntity="BusinessFleet")
+     * @ORM\JoinColumn(name="fleet_id", referencedColumnName="id", nullable=false)
+     */
+    private $fleet;
+
+    /**
      * @return int
      */
     public function getId()
