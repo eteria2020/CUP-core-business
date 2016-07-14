@@ -5,7 +5,7 @@ namespace BusinessCore\Entity;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use Doctrine\ORM\Mapping as ORM;
-use Payments\Customer;
+use MvlabsPayments\Customer;
 use Zend\Validator\Hostname;
 
 /**
