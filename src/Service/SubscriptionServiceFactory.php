@@ -10,8 +10,7 @@ class SubscriptionServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
-        //TODO (MOCK)
-        $paymentService = $serviceLocator->get('PaymentService');
+        $paymentService = $serviceLocator->get('BusinessCore\Service\PaymentService');
 
         return new SubscriptionService(
             $entityManager,

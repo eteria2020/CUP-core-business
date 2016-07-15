@@ -12,8 +12,7 @@ class BusinessTimePackageServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $timePackageRepository = $entityManager->getRepository('BusinessCore\Entity\TimePackage');
 
-        //TODO (MOCK)
-        $paymentService = $serviceLocator->get('PaymentService');
+        $paymentService = $serviceLocator->get('BusinessCore\Service\PaymentService');
 
         return new BusinessTimePackageService(
             $entityManager,

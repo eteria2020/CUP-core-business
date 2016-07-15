@@ -1,6 +1,6 @@
 <?php
 
-namespace BusinessCore\Payments;
+namespace BusinessCore\Payment;
 
 use BusinessCore\Entity\Base\BusinessPayment;
 use MvlabsPayments\Customer;
@@ -57,7 +57,6 @@ class BusinessPaymentRequest implements PaymentRequest
 
     private function setAmountFromPayments()
     {
-        //TODO how to manage different currencies?
         $tot = 0;
         $currency = '';
         /** @var BusinessPayment $payment */

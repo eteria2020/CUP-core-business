@@ -5,20 +5,29 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\BusinessContract;
 use BusinessCore\Entity\Transaction;
 use MvlabsPayments\PaymentRequest\PaymentRequest;
+use MvlabsPayments\Payments\Payment;
 use Zend\EventManager\EventManager;
 
-class MockExternalPaymentService
+class PaymentService
 {
 
     private $eventManager;
+    /**
+     * @var Payment
+     */
+    private $payment;
 
-    public function __construct()
+    public function __construct(Payment $payment)
     {
-        $this->eventManager = new EventManager('Transaction');
+        $this->payment = $payment;
     }
 
     public function pay(PaymentRequest $request)
     {
+        $this->payment->pay($request);
+
+
+        $this->eventManager = new EventManager('Transaction');
         $transaction = new Transaction($request->amount()->cents(), $request->amount()->currency());
 
         if ($request->isFirstPayment()) {

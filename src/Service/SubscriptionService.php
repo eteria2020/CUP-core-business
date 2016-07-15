@@ -3,8 +3,7 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\SubscriptionPayment;
-use BusinessCore\Payments\BusinessPaymentRequest;
-use BusinessCore\Service\MockExternalPaymentService as PaymentService;
+use BusinessCore\Payment\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
 
 class SubscriptionService

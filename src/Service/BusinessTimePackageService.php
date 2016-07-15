@@ -8,9 +8,8 @@ use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
 
 use BusinessCore\Entity\TimePackagePayment;
-use BusinessCore\Payments\BusinessPaymentRequest;
+use BusinessCore\Payment\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
-use BusinessCore\Service\MockExternalPaymentService as PaymentService;
 
 class BusinessTimePackageService
 {
