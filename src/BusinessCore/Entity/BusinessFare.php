@@ -106,6 +106,22 @@ class BusinessFare
         return $this->baseFare;
     }
 
+    public function getBaseFareMotionCostPerMinute()
+    {
+        if ($this->baseFare instanceof Fare) {
+            return $this->baseFare->getMotionCostPerMinute();
+        }
+        return null;
+    }
+
+    public function getBaseFareParkCostPerMinute()
+    {
+        if ($this->baseFare instanceof Fare) {
+            return $this->baseFare->getParkCostPerMinute();
+        }
+        return null;
+    }
+
     /**
      * @return \DateTime
      */

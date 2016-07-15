@@ -477,15 +477,18 @@ class Business extends Customer
      */
     public function getActiveBusinessFare()
     {
-        /** @var BusinessFare $latestFare */
-        $latestFare = $this->businessFares[0];
-        /** @var BusinessFare $businessFare */
-        foreach ($this->businessFares as $businessFare) {
-            if ($businessFare->getInsertedTs() > $latestFare->getInsertedTs()) {
-                $latestFare = $businessFare;
+        if (count($this->businessFares) > 0) {
+            /** @var BusinessFare $latestFare */
+            $latestFare = $this->businessFares[0];
+            /** @var BusinessFare $businessFare */
+            foreach ($this->businessFares as $businessFare) {
+                if ($businessFare->getInsertedTs() > $latestFare->getInsertedTs()) {
+                    $latestFare = $businessFare;
+                }
             }
+            return $latestFare;
         }
-        return $latestFare;
+        return null;
     }
 
     /**

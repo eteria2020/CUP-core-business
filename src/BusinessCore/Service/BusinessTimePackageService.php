@@ -53,11 +53,8 @@ class BusinessTimePackageService
         return $this->timePackageRepository->findBuyableByBusiness($business);
     }
 
-    public function buyTimePackage(Business $business, $timePackageId)
+    public function buyTimePackage(Business $business, TimePackage $timePackage)
     {
-        /** @var TimePackage $timePackage */
-        $timePackage = $this->timePackageRepository->find($timePackageId);
-
         $timePackagePayment = new TimePackagePayment(
             $business,
             $timePackage,
@@ -78,5 +75,14 @@ class BusinessTimePackageService
         $businessTimePackage = new BusinessTimePackage($business, $timePackage);
         $this->entityManager->persist($businessTimePackage);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param $timePackageId
+     * @return TimePackage
+     */
+    public function findTimePackageById($timePackageId)
+    {
+        return $this->timePackageRepository->find($timePackageId);
     }
 }
