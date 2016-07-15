@@ -12,6 +12,9 @@ class FirstPaymentFactory
     public static function firstPayment(EventManagerInterface $eventManager, Parameters $parameters)
     {
         $firstPaymentGateway = new Gateway();
+        //TODO TEST
+        $firstPaymentGateway->setTestMode(true);
+
         return new FirstPayment($eventManager, $firstPaymentGateway, $parameters);
     }
 }

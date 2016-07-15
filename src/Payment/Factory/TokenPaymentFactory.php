@@ -12,6 +12,9 @@ class TokenPaymentFactory
     public static function tokenPayment(EventManagerInterface $eventManager, Parameters $parameters)
     {
         $tokenPaymentGateway = new TokenGateway();
+        //TODO TEST
+        $tokenPaymentGateway->setTestMode(true);
+
         return new TokenPayment($eventManager, $tokenPaymentGateway, $parameters);
     }
 }
