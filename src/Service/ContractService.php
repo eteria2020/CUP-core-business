@@ -2,8 +2,10 @@
 
 namespace BusinessCore\Service;
 
+use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessContract;
 use Doctrine\ORM\EntityManager;
+use MvlabsPayments\CustomerContract;
 
 class ContractService
 {
@@ -22,8 +24,9 @@ class ContractService
         $this->entityManager = $entityManager;
     }
 
-    public function createContract(BusinessContract $contract)
+    public function createContract(Business $business)
     {
+        $contract = new BusinessContract($business);
         $this->entityManager->persist($contract);
         $this->entityManager->flush();
     }

@@ -11,7 +11,7 @@ use MvlabsPayments\Contract\Contract;
  * @ORM\Table(name="contract", schema="business")
  * @ORM\Entity()
  */
-class BusinessContract extends Contract
+class BusinessContract
 {
     /**
      * @var integer
@@ -25,7 +25,7 @@ class BusinessContract extends Contract
 
     /**
      * @var Business
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="businessContracts")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;
@@ -67,7 +67,6 @@ class BusinessContract extends Contract
     {
         $this->business = $business;
         $this->createdTs = date_create();
-        parent::__construct();
     }
 
     /**
@@ -115,4 +114,13 @@ class BusinessContract extends Contract
         $this->disabledDate = date_create();
     }
 
+    public function isDisabled()
+    {
+        return !is_null($this->disabledDate);
+    }
+
+    public function getPaymentContract()
+    {
+        return new Contract($this->id);
+    }
 }

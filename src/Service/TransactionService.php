@@ -2,14 +2,16 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\Base\BusinessPayment;
 use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
-use BusinessCore\Entity\Transaction;
+use BusinessCore\Entity\BusinessTransaction;
 
+use BusinessCore\Payment\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
+use MvlabsPayments\PaymentRequest\PaymentRequest;
+use MvlabsPayments\Transaction;
 
 class TransactionService
 {
@@ -42,13 +44,15 @@ class TransactionService
         $this->businessService = $businessService;
     }
 
-    public function assignTransactionToPayments(array $payments, Transaction $transaction)
+    public function assignTransactionToPayments(BusinessPaymentRequest $request, Transaction $transaction)
     {
         $this->entityManager->beginTransaction();
         try {
-            /** @var BusinessPayment $payment */
+            $businessTransaction =
+                new BusinessTransaction($transaction->getAmountCents(), $transaction->getAmountCurrency());
+            $payments = $request->getPayments();
             foreach ($payments as $payment) {
-                $payment->addTransaction($transaction);
+                $payment->addTransaction($businessTransaction);
                 $this->entityManager->persist($payment);
             }
             $this->entityManager->flush();
@@ -59,25 +63,22 @@ class TransactionService
         }
     }
 
-    public function transactionCompleted($outcome, Transaction $transaction)
+    public function transactionCompleted(BusinessTransaction $transaction)
     {
-        if ($outcome == "OK") {
-            $transaction->success();
-            $this->successfullTransaction($transaction);
-        } else {
-            $transaction->failed();
-        }
+        $transaction->success();
+        $this->setPaymentsAsCompleted($transaction);
+
         $this->entityManager->persist($transaction);
         $this->entityManager->flush();
     }
 
-    private function successfullTransaction(Transaction $transaction)
+    public function transactionFailed(BusinessTransaction $transaction)
     {
-        $this->subscriptionSuccessfullyPayed($transaction->getSubscriptionPayments());
-        $this->timePackagesSuccessfullyPayed($transaction->getTimePackagePayments());
-        $this->extrasSuccessfullyPayed($transaction->getExtraPayments());
-        $this->tripsSuccessfullyPayed($transaction->getBusinessTripPayments());
+        $transaction->failed();
+        $this->entityManager->persist($transaction);
+        $this->entityManager->flush();
     }
+
 
     private function timePackagesSuccessfullyPayed($timePackagePayments)
     {
@@ -122,5 +123,16 @@ class TransactionService
             $this->entityManager->flush();
             $this->businessService->approveEmployeesWaitingForBusinessEnabling($subscriptionPayment->getBusiness());
         }
+    }
+
+    /**
+     * @param BusinessTransaction $transaction
+     */
+    private function setPaymentsAsCompleted(BusinessTransaction $transaction)
+    {
+        $this->subscriptionSuccessfullyPayed($transaction->getSubscriptionPayments());
+        $this->timePackagesSuccessfullyPayed($transaction->getTimePackagePayments());
+        $this->extrasSuccessfullyPayed($transaction->getExtraPayments());
+        $this->tripsSuccessfullyPayed($transaction->getBusinessTripPayments());
     }
 }

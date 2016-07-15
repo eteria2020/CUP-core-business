@@ -11,6 +11,8 @@ class PaymentListenerFactory implements FactoryInterface
     {
         $transactionService = $serviceLocator->get('BusinessCore\Service\TransactionService');
         $contractService = $serviceLocator->get('BusinessCore\Service\ContractService');
-        return new PaymentListener($transactionService, $contractService);
+        $businessService = $serviceLocator->get('BusinessCore\Service\BusinessService');
+
+        return new PaymentListener($transactionService, $contractService, $businessService);
     }
 }

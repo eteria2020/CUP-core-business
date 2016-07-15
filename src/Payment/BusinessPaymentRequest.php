@@ -69,7 +69,7 @@ class BusinessPaymentRequest implements PaymentRequest
     }
 
     /**
-     * @return array
+     * @return BusinessPayment[]
      */
     public function getPayments()
     {

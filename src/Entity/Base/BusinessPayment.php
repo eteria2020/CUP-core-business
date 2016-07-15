@@ -4,7 +4,7 @@ namespace BusinessCore\Entity\Base;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessInvoice;
-use BusinessCore\Entity\Transaction;
+use BusinessCore\Entity\BusinessTransaction;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -182,5 +182,5 @@ abstract class BusinessPayment
         return $this->status == self::STATUS_EXPECTED_PAYED;
     }
 
-    abstract public function addTransaction(Transaction $transaction);
+    abstract public function addTransaction(BusinessTransaction $transaction);
 }

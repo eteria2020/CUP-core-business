@@ -6,13 +6,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Transaction
+ * BusinessTransaction
  *
  * @ORM\Table(name="transaction", schema="business")
  * @ORM\Entity()
 
  */
-class Transaction
+class BusinessTransaction
 {
     /**
      * @var integer
@@ -84,7 +84,7 @@ class Transaction
     private $subscriptionPayments;
 
     /**
-     * Transaction constructor.
+     * BusinessTransaction constructor.
      * @param int $amount
      * @param string $currency
      */

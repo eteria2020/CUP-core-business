@@ -4,7 +4,9 @@ namespace BusinessCore\Entity;
 
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use MvlabsPayments\Contract\NoContract;
 use MvlabsPayments\Customer;
 use Zend\Validator\Hostname;
 
@@ -15,7 +17,7 @@ use Zend\Validator\Hostname;
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessRepository")
 
  */
-class Business extends Customer
+class Business
 {
     const TYPE_WIRE_TRANSFER = 'wire_transfer';
     const TYPE_CREDIT_CARD = 'credit_card';
@@ -195,10 +197,18 @@ class Business extends Customer
      */
     private $fleet;
 
+    /**
+     * @var BusinessContract[]
+     *
+     * @ORM\OneToMany(targetEntity="BusinessContract", mappedBy="business")
+     */
+    private $businessContracts;
+
     public function __construct($code)
     {
         $this->code = $code;
         $this->insertedTs = date_create();
+        $this->businessContracts = new ArrayCollection();
     }
 
     public static function fromBusinessDetailsAndParams(
@@ -517,5 +527,22 @@ class Business extends Customer
     public function payWithCreditCard()
     {
         return $this->paymentType == Business::TYPE_CREDIT_CARD;
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getPaymentCustomer()
+    {
+        $contract = null;
+        foreach ($this->businessContracts as $businessContract) {
+            if (!$businessContract->isDisabled()) {
+                $contract = $businessContract->getPaymentContract();
+            }
+        }
+        if (!$contract instanceof BusinessContract) {
+            $contract = new NoContract();
+        }
+        return new Customer($this->code, $contract);
     }
 }

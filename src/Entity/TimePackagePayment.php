@@ -36,7 +36,7 @@ class TimePackagePayment extends BusinessPayment
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Transaction", inversedBy="timePackagePayments", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="BusinessTransaction", inversedBy="timePackagePayments", cascade={"persist"})
      * @ORM\JoinTable(name="business.time_package_payment_transaction",
      *      joinColumns={@ORM\JoinColumn(name="time_package_payment_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="transaction_id", referencedColumnName="id")}
@@ -66,7 +66,7 @@ class TimePackagePayment extends BusinessPayment
         return $this->timePackage;
     }
 
-    public function addTransaction(Transaction $transaction)
+    public function addTransaction(BusinessTransaction $transaction)
     {
         $transaction->addTimePackagePayment($this);
         $this->transactions->add($transaction);

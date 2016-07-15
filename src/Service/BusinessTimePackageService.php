@@ -66,8 +66,8 @@ class BusinessTimePackageService
 
         $this->entityManager->persist($timePackagePayment);
         $this->entityManager->flush();
-
-        $businessPaymentRequest = new BusinessPaymentRequest($business, [$timePackagePayment]);
+        $customer = $business->getPaymentCustomer();
+        $businessPaymentRequest = new BusinessPaymentRequest($customer, [$timePackagePayment]);
 
         $this->paymentService->pay($businessPaymentRequest);
     }

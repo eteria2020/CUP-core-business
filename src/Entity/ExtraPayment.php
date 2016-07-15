@@ -33,7 +33,7 @@ class ExtraPayment extends BusinessPayment
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Transaction", inversedBy="businessTripPayments", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="BusinessTransaction", inversedBy="businessTripPayments", cascade={"persist"})
      * @ORM\JoinTable(name="business.business_trip_payment_transaction",
      *      joinColumns={@ORM\JoinColumn(name="business_trip_payment_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="transaction_id", referencedColumnName="id")}
@@ -55,7 +55,7 @@ class ExtraPayment extends BusinessPayment
         parent::__construct($business, $amount, $currency);
     }
 
-    public function addTransaction(Transaction $transaction)
+    public function addTransaction(BusinessTransaction $transaction)
     {
         $transaction->addExtraPayment($this);
         $this->transactions->add($transaction);

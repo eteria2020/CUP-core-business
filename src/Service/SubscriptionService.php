@@ -35,7 +35,8 @@ class SubscriptionService
     {
         $business = $subscriptionPayment->getBusiness();
         if ($business->payWithCreditCard()) {
-            $businessPayment = new BusinessPaymentRequest($business, [$subscriptionPayment], true);
+            $customer = $business->getPaymentCustomer();
+            $businessPayment = new BusinessPaymentRequest($customer, [$subscriptionPayment], true);
 
             $this->paymentService->pay($businessPayment);
         }

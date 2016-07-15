@@ -27,7 +27,7 @@ class SubscriptionPayment extends BusinessPayment
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Transaction", inversedBy="subscriptionPayments", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="BusinessTransaction", inversedBy="subscriptionPayments", cascade={"persist"})
      * @ORM\JoinTable(name="business.subscription_payment_transaction",
      *      joinColumns={@ORM\JoinColumn(name="subscription_payment_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="transaction_id", referencedColumnName="id")}
@@ -42,7 +42,7 @@ class SubscriptionPayment extends BusinessPayment
     }
 
 
-    public function addTransaction(Transaction $transaction)
+    public function addTransaction(BusinessTransaction $transaction)
     {
         $transaction->addSubscriptionPayment($this);
         $this->transactions->add($transaction);
