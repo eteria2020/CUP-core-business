@@ -12,11 +12,13 @@ class TransactionServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessTimePackageService = $serviceLocator->get('BusinessCore\Service\BusinessTimePackageService');
         $businessService = $serviceLocator->get('BusinessCore\Service\BusinessService');
+        $businessTransactionRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessTransaction');
 
         return new TransactionService(
             $entityManager,
             $businessTimePackageService,
-            $businessService
+            $businessService,
+            $businessTransactionRepository
         );
     }
 }

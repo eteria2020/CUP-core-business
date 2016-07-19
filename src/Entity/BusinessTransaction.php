@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * BusinessTransaction
  *
  * @ORM\Table(name="transaction", schema="business")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessTransactionRepository")
 
  */
 class BusinessTransaction
@@ -97,6 +97,27 @@ class BusinessTransaction
         $this->extraPayments = new ArrayCollection();
         $this->subscriptionPayments = new ArrayCollection();
         $this->businessTripPayments = new ArrayCollection();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 
     public function success()

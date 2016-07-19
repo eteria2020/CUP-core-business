@@ -17,28 +17,56 @@ class SubscriptionService
      * @var PaymentService
      */
     private $paymentService;
+    /**
+     * @var TransactionService
+     */
+    private $transactionService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param PaymentService $paymentService
+     * @param TransactionService $transactionService
      */
     public function __construct(
         EntityManager $entityManager,
-        PaymentService $paymentService
+        PaymentService $paymentService,
+        TransactionService $transactionService
     ) {
         $this->entityManager = $entityManager;
         $this->paymentService = $paymentService;
+        $this->transactionService = $transactionService;
     }
 
     public function paySubscription(SubscriptionPayment $subscriptionPayment)
     {
         $business = $subscriptionPayment->getBusiness();
-        if ($business->payWithCreditCard()) {
-            $customer = $business->getPaymentCustomer();
-            $businessPayment = new BusinessPaymentRequest($customer, [$subscriptionPayment], true);
 
-            $this->paymentService->pay($businessPayment);
+        $customer = $business->getPaymentCustomer();
+        $businessPayment = new BusinessPaymentRequest($customer, [$subscriptionPayment], true);
+
+        $this->paymentService->pay($businessPayment);
+    }
+
+    public function concludedSubscriptionPayment($params)
+    {
+        if ($params['esito'] == 'KO') {
+            $transaction = $this->transactionService->getTransactionFromId($params['codTrans']);
+            $transaction->failed();
+            $this->entityManager->persist($transaction);
+            $this->entityManager->flush();
+            return false;
+        } else {
+            $this->paymentService->completePayment();
+            return true;
         }
+    }
+
+    public function rejectedSubscriptionPayment($params)
+    {
+        $transaction = $this->transactionService->getTransactionFromId($params['codTrans']);
+        $transaction->failed();
+        $this->entityManager->persist($transaction);
+        $this->entityManager->flush();
     }
 }

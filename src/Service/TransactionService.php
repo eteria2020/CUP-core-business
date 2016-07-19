@@ -4,6 +4,7 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
+use BusinessCore\Entity\Repository\BusinessTransactionRepository;
 use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Entity\BusinessTransaction;
@@ -27,21 +28,28 @@ class TransactionService
      * @var BusinessService
      */
     private $businessService;
+    /**
+     * @var BusinessTransactionRepository
+     */
+    private $businessTransactionRepository;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessTimePackageService $timePackageService
      * @param BusinessService $businessService
+     * @param BusinessTransactionRepository $businessTransactionRepository
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessTimePackageService $timePackageService,
-        BusinessService $businessService
+        BusinessService $businessService,
+        BusinessTransactionRepository $businessTransactionRepository
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageService = $timePackageService;
         $this->businessService = $businessService;
+        $this->businessTransactionRepository = $businessTransactionRepository;
     }
 
     public function assignTransactionToPayments(BusinessPaymentRequest $request, Transaction $transaction)
@@ -49,7 +57,7 @@ class TransactionService
         $this->entityManager->beginTransaction();
         try {
             $businessTransaction =
-                new BusinessTransaction($transaction->getAmountCents(), $transaction->getAmountCurrency());
+                new BusinessTransaction($transaction->amountCents(), $transaction->currency());
             $payments = $request->getPayments();
             foreach ($payments as $payment) {
                 $payment->addTransaction($businessTransaction);
@@ -57,6 +65,7 @@ class TransactionService
             }
             $this->entityManager->flush();
             $this->entityManager->commit();
+            $transaction->setId($businessTransaction->getId());
         } catch (\Exception $e) {
             $this->entityManager->rollback();
             throw $e;
@@ -134,5 +143,28 @@ class TransactionService
         $this->timePackagesSuccessfullyPayed($transaction->getTimePackagePayments());
         $this->extrasSuccessfullyPayed($transaction->getExtraPayments());
         $this->tripsSuccessfullyPayed($transaction->getBusinessTripPayments());
+    }
+
+    /**
+     * @param $id
+     * @return BusinessTransaction
+     */
+    public function getTransactionFromId($id)
+    {
+        return $this->businessTransactionRepository->findOneBy(["id" => $id]);
+    }
+
+    public function firstTransactionCompleted(BusinessTransaction $transaction, $params)
+    {
+        $databaseTransactionAmount = $transaction->getAmount();
+        $databaseTransactionCurrency = $transaction->getCurrency();
+        $paymentAmount = $params['amount'];
+        $paymentCurrency = $params['currency'];
+
+        if ($databaseTransactionAmount != $paymentAmount || $databaseTransactionCurrency != $paymentCurrency) {
+            throw new \Exception();
+        } else {
+            $this->transactionCompleted($transaction);
+        }
     }
 }

@@ -100,14 +100,10 @@ class PaymentListener implements SharedListenerAggregateInterface
 
     public function firstTransactionCompleted(EventInterface $e)
     {
-        die("event first translaction complted");
         $params = $e->getParams();
-        $contractId = $params['contractId'];
         $transactionId = $params['transactionId'];
-        $amount = $params['amount'];
-        $currency = $params['currency'];
-        //TODO WHAT
-
+        $transaction = $this->transactionService->getTransactionFromId($transactionId);
+        $this->transactionService->firstTransactionCompleted($transaction, $params);
     }
 
     public function transactionCompleted(EventInterface $e)

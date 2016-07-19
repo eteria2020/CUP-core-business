@@ -24,4 +24,9 @@ class PaymentService
     {
         $this->payment->pay($request);
     }
+
+    public function completePayment()
+    {
+        $this->payment->completePayment();
+    }
 }
