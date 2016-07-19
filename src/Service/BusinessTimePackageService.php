@@ -57,19 +57,25 @@ class BusinessTimePackageService
         /** @var TimePackage $timePackage */
         $timePackage = $this->timePackageRepository->find($timePackageId);
 
-        $timePackagePayment = new TimePackagePayment(
-            $business,
-            $timePackage,
-            $timePackage->getCost(),
-            $timePackage->getCurrency()
-        );
+        if ($business->canBuyTimePackage($timePackage)) {
+            $timePackagePayment = new TimePackagePayment(
+                $business,
+                $timePackage,
+                $timePackage->getCost(),
+                $timePackage->getCurrency()
+            );
 
-        $this->entityManager->persist($timePackagePayment);
-        $this->entityManager->flush();
-        $customer = $business->getPaymentCustomer();
-        $businessPaymentRequest = new BusinessPaymentRequest($customer, [$timePackagePayment]);
+            $this->entityManager->persist($timePackagePayment);
+            $this->entityManager->flush();
+            if ($business->payWithCreditCard()) {
+                $customer = $business->getPaymentCustomer();
+                $businessPaymentRequest = new BusinessPaymentRequest($customer, [$timePackagePayment]);
 
-        $this->paymentService->pay($businessPaymentRequest);
+                $this->paymentService->pay($businessPaymentRequest);
+            }
+        } else {
+            throw new \Exception();
+        }
     }
 
     public function enableTimePackage(Business $business, TimePackage $timePackage)

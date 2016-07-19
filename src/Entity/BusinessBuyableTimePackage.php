@@ -46,4 +46,12 @@ class BusinessBuyableTimePackage
         $this->timePackage = $timePackage;
         $this->insertedTs = date_create();
     }
+
+    /**
+     * @return TimePackage
+     */
+    public function getTimePackage()
+    {
+        return $this->timePackage;
+    }
 }

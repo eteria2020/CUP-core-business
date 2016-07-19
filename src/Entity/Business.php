@@ -176,11 +176,22 @@ class Business
     private $businessGroups;
 
     /**
+     * @var BusinessTimePackage[]
+     *
      * Bidirectional - One-To-Many (INVERSE SIDE)
      *
      * @ORM\OneToMany(targetEntity="BusinessTimePackage", mappedBy="business")
      */
     private $businessTimePackages;
+
+    /**
+     * @var BusinessBuyableTimePackage[]
+     *
+     * Bidirectional - One-To-Many (INVERSE SIDE)
+     *
+     * @ORM\OneToMany(targetEntity="BusinessBuyableTimePackage", mappedBy="business")
+     */
+    private $busnessBuyableTimePackages;
 
     /**
      * Bidirectional - One-To-One
@@ -544,5 +555,15 @@ class Business
             $contract = new NoContract();
         }
         return new Customer($this->code, $contract);
+    }
+
+    public function canBuyTimePackage(TimePackage $timePackage)
+    {
+        foreach ($this->busnessBuyableTimePackages as $businessBuyableTimePackage) {
+            if ($businessBuyableTimePackage->getTimePackage() == $timePackage) {
+                return true;
+            }
+        }
+        return false;
     }
 }
