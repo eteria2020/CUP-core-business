@@ -52,30 +52,35 @@ class BusinessTimePackageService
         return $this->timePackageRepository->findBuyableByBusiness($business);
     }
 
-    public function buyTimePackage(Business $business, $timePackageId)
+    /**
+     * @param $timePackageId
+     * @return TimePackage
+     */
+    public function findTimePackageById($timePackageId)
     {
-        /** @var TimePackage $timePackage */
-        $timePackage = $this->timePackageRepository->find($timePackageId);
+        return $this->timePackageRepository->find($timePackageId);
+    }
 
-        if ($business->canBuyTimePackage($timePackage)) {
-            $timePackagePayment = new TimePackagePayment(
-                $business,
-                $timePackage,
-                $timePackage->getCost(),
-                $timePackage->getCurrency()
-            );
+    public function createPackagePayment(Business $business, TimePackage $timePackage)
+    {
+        $timePackagePayment = new TimePackagePayment(
+            $business,
+            $timePackage,
+            $timePackage->getCost(),
+            $timePackage->getCurrency()
+        );
 
-            $this->entityManager->persist($timePackagePayment);
-            $this->entityManager->flush();
-            if ($business->payWithCreditCard()) {
-                $customer = $business->getPaymentCustomer();
-                $businessPaymentRequest = new BusinessPaymentRequest($customer, [$timePackagePayment]);
+        $this->entityManager->persist($timePackagePayment);
+        $this->entityManager->flush();
+        return $timePackagePayment;
+    }
 
-                $this->paymentService->pay($businessPaymentRequest);
-            }
-        } else {
-            throw new \Exception();
-        }
+    public function payTimePackage(Business $business, TimePackagePayment $timePackagePayment)
+    {
+        $customer = $business->getPaymentCustomer();
+        $businessPaymentRequest = new BusinessPaymentRequest($customer, [$timePackagePayment]);
+
+        $this->paymentService->pay($businessPaymentRequest);
     }
 
     public function enableTimePackage(Business $business, TimePackage $timePackage)

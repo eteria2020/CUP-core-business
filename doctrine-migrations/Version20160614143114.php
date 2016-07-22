@@ -18,11 +18,10 @@ class Version20160614143114 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        $schema->createSequence(self::SEQUENCE_NAME);
+        $schema->createSequence(self::SEQUENCE_NAME, 1, 10000);
         $table = $schema->createTable(self::TABLE);
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
-        $table->addColumn("pan", "string", ["notnull" => false, "length" => 19]);
         $table->addColumn("pan_expiry", "string", ["notnull" => false, "length" => 6]);
         $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
         $table->addColumn("disabled_date", "datetime", ["notnull" => false]);

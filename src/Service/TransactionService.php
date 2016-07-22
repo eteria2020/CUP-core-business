@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Service;
 
+use BusinessCore\Entity\BusinessContract;
 use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessTransactionRepository;
@@ -84,6 +85,7 @@ class TransactionService
     public function transactionFailed(BusinessTransaction $transaction)
     {
         $transaction->failed();
+        $this->updatePaymentsAfterFailure($transaction);
         $this->entityManager->persist($transaction);
         $this->entityManager->flush();
     }
@@ -145,6 +147,11 @@ class TransactionService
         $this->tripsSuccessfullyPayed($transaction->getBusinessTripPayments());
     }
 
+    private function updatePaymentsAfterFailure(BusinessTransaction $transaction)
+    {
+        $this->timePackagesFailedPayment($transaction->getTimePackagePayments());
+    }
+
     /**
      * @param $id
      * @return BusinessTransaction
@@ -154,7 +161,7 @@ class TransactionService
         return $this->businessTransactionRepository->findOneBy(["id" => $id]);
     }
 
-    public function firstTransactionCompleted(BusinessTransaction $transaction, $params)
+    public function firstTransactionCompleted(BusinessTransaction $transaction, BusinessContract $contract, $params)
     {
         $databaseTransactionAmount = $transaction->getAmount();
         $databaseTransactionCurrency = $transaction->getCurrency();
@@ -164,7 +171,21 @@ class TransactionService
         if ($databaseTransactionAmount != $paymentAmount || $databaseTransactionCurrency != $paymentCurrency) {
             throw new \Exception();
         } else {
+            $cardExpiryDate = $params['cardExpiryDate'];
             $this->transactionCompleted($transaction);
+            $contract->setPanExpiry($cardExpiryDate);
+            $this->entityManager->persist($contract);
+            $this->entityManager->flush();
+        }
+    }
+
+    private function timePackagesFailedPayment($timePackagePayments)
+    {
+        /** @var TimePackagePayment $timePackagePayment */
+        foreach ($timePackagePayments as $timePackagePayment) {
+            $timePackagePayment->cancel();
+            $this->entityManager->persist($timePackagePayment);
+            $this->entityManager->flush();
         }
     }
 }

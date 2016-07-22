@@ -14,6 +14,7 @@ abstract class BusinessPayment
     const STATUS_EXPECTED_PAYED = 'expected_payed';
     const STATUS_CONFIRMED_PAYED = 'confirmed_payed';
     const STATUS_INVOICED = 'invoiced';
+    const STATUS_CANCELLED = 'cancelled';
 
     const TYPE_PACKAGE = 'package';
     const TYPE_TRIP = 'trip';
@@ -158,6 +159,11 @@ abstract class BusinessPayment
     public function getBusinessInvoice()
     {
         return $this->businessInvoice;
+    }
+
+    public function cancel()
+    {
+        $this->status = self::STATUS_CANCELLED;
     }
 
     public function confirmPayed()

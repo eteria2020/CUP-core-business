@@ -62,9 +62,9 @@ class SubscriptionService
         }
     }
 
-    public function rejectedSubscriptionPayment($params)
+    public function rejectedSubscriptionPayment($codTrans)
     {
-        $transaction = $this->transactionService->getTransactionFromId($params['codTrans']);
+        $transaction = $this->transactionService->getTransactionFromId($codTrans);
         $transaction->failed();
         $this->entityManager->persist($transaction);
         $this->entityManager->flush();

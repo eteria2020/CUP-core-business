@@ -6,6 +6,7 @@ use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use MvlabsPayments\Contract\Contract;
 use MvlabsPayments\Contract\NoContract;
 use MvlabsPayments\Customer;
 use Zend\Validator\Hostname;
@@ -547,11 +548,11 @@ class Business
     {
         $contract = null;
         foreach ($this->businessContracts as $businessContract) {
-            if (!$businessContract->isDisabled()) {
+            if ($businessContract->isActive()) {
                 $contract = $businessContract->getPaymentContract();
             }
         }
-        if (!$contract instanceof BusinessContract) {
+        if (!$contract instanceof Contract) {
             $contract = new NoContract();
         }
         return new Customer($this->code, $contract);
@@ -561,6 +562,16 @@ class Business
     {
         foreach ($this->busnessBuyableTimePackages as $businessBuyableTimePackage) {
             if ($businessBuyableTimePackage->getTimePackage() == $timePackage) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasActiveContract()
+    {
+        foreach ($this->businessContracts as $businessContract) {
+            if ($businessContract->isActive()) {
                 return true;
             }
         }

@@ -9,7 +9,7 @@ use MvlabsPayments\Contract\Contract;
  * BusinessContract
  *
  * @ORM\Table(name="contract", schema="business")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessContractRepository")
  */
 class BusinessContract
 {
@@ -19,7 +19,7 @@ class BusinessContract
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="business.contract_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="business.contract_id_seq", allocationSize=1, initialValue=10000)
      */
     private $id;
 
@@ -29,13 +29,6 @@ class BusinessContract
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="pan", type="string", length=19, nullable=true)
-     */
-    private $pan;
 
     /**
      * @var string format aaaamm
@@ -70,27 +63,19 @@ class BusinessContract
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return Business
      */
     public function getBusiness()
     {
         return $this->business;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPan()
-    {
-        return $this->pan;
-    }
-
-    /**
-     * @param string $pan
-     */
-    public function setPan($pan)
-    {
-        $this->pan = $pan;
     }
 
     /**
@@ -121,6 +106,10 @@ class BusinessContract
 
     public function getPaymentContract()
     {
-        return new Contract($this->id);
+        return new Contract($this->id, $this->panExpiry);
+    }
+    public function isActive()
+    {
+        return !is_null($this->panExpiry) && is_null($this->disabledDate);
     }
 }

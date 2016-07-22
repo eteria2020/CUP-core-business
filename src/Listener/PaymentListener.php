@@ -5,6 +5,7 @@ namespace BusinessCore\Listener;
 use BusinessCore\Service\BusinessService;
 use BusinessCore\Service\ContractService;
 use BusinessCore\Service\TransactionService;
+use MvlabsPayments\Transaction;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\SharedListenerAggregateInterface;
@@ -92,33 +93,36 @@ class PaymentListener implements SharedListenerAggregateInterface
     public function contractCreated(EventInterface $e)
     {
         $params = $e->getParams();
-        $contract = $params['customerContract'];
-        $businessCode = $contract->customer()->id();
+        $customerContract = $params['customerContract'];
+        $businessCode = $customerContract->customer()->id();
         $business = $this->businessService->getBusinessByCode($businessCode);
-        $this->contractService->createContract($business);
+        $this->contractService->createContract($customerContract, $business);
     }
 
     public function firstTransactionCompleted(EventInterface $e)
     {
         $params = $e->getParams();
         $transactionId = $params['transactionId'];
+        $contractId = $params['contractId'];
+        $contract = $this->contractService->findById($contractId);
         $transaction = $this->transactionService->getTransactionFromId($transactionId);
-        $this->transactionService->firstTransactionCompleted($transaction, $params);
+        $this->transactionService->firstTransactionCompleted($transaction, $contract, $params);
     }
 
     public function transactionCompleted(EventInterface $e)
     {
-        die("event transaction complted");
         $params = $e->getParams();
+        /** @var Transaction $transaction */
         $transaction = $params['transaction'];
-        $this->transactionService->transactionCompleted($transaction);
+        $businessTransaction = $this->transactionService->getTransactionFromId($transaction->id());
+        $this->transactionService->transactionCompleted($businessTransaction);
     }
 
     public function transactionFailed(EventInterface $e)
     {
-        die("event transaction failed");
         $params = $e->getParams();
         $transaction = $params['transaction'];
-        $this->transactionService->transactionFailed($transaction);
+        $businessTransaction = $this->transactionService->getTransactionFromId($transaction->id());
+        $this->transactionService->transactionFailed($businessTransaction);
     }
 }
