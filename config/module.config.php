@@ -41,12 +41,9 @@ return [
             'BusinessCore\Service\SubscriptionService' => 'BusinessCore\Service\SubscriptionServiceFactory',
             'BusinessCore\Service\ContractService' => 'BusinessCore\Service\ContractServiceFactory',
             'BusinessCore\Service\BusinessFleetService' => 'BusinessCore\Service\BusinessFleetServiceFactory',
+            'BusinessCore\Service\PaymentService' => 'BusinessCore\Service\PaymentServiceFactory',
             'BusinessCore\Listener\EmployeeApprovedListener' => 'BusinessCore\Listener\EmployeeApprovedListenerFactory',
             'BusinessCore\Listener\PaymentListener' => 'BusinessCore\Listener\PaymentListenerFactory'
-        ],
-        //TODO (MOCK)
-        'invokables' => [
-            'PaymentService' => 'BusinessCore\Service\MockExternalPaymentService'
         ],
     ],
     'view_helpers'    => [
