@@ -337,4 +337,14 @@ class BusinessService
     {
         return $this->businessRepository->findOneBy(['name' => $businessName]);
     }
+
+    public function disableContract(Business $business)
+    {
+        if ($business->hasActiveContract()) {
+            $contract = $business->getActiveContract();
+            $contract->disable();
+            $this->entityManager->persist($contract);
+            $this->entityManager->flush();
+        }
+    }
 }

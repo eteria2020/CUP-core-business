@@ -192,7 +192,7 @@ class Business
      *
      * @ORM\OneToMany(targetEntity="BusinessBuyableTimePackage", mappedBy="business")
      */
-    private $busnessBuyableTimePackages;
+    private $businessBuyableTimePackages;
 
     /**
      * Bidirectional - One-To-One
@@ -572,7 +572,7 @@ class Business
 
     public function canBuyTimePackage(TimePackage $timePackage)
     {
-        foreach ($this->busnessBuyableTimePackages as $businessBuyableTimePackage) {
+        foreach ($this->businessBuyableTimePackages as $businessBuyableTimePackage) {
             if ($businessBuyableTimePackage->getTimePackage() == $timePackage) {
                 return true;
             }
@@ -585,6 +585,16 @@ class Business
         foreach ($this->businessContracts as $businessContract) {
             if ($businessContract->isActive()) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public function getActiveContract()
+    {
+        foreach ($this->businessContracts as $businessContract) {
+            if ($businessContract->isActive()) {
+                return $businessContract;
             }
         }
         return false;
