@@ -242,4 +242,12 @@ class Employee
         $pins = json_decode($this->pin, true);
         return $pins['company'];
     }
+
+    /**
+     * @return BusinessEmployee[]
+     */
+    public function getBusinessEmployee()
+    {
+        return $this->businessEmployee;
+    }
 }
