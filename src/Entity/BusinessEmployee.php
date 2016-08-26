@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity;
 
+use BusinessCore\Helper\EmployeeLimits;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Validator\Hostname;
 
@@ -60,6 +61,13 @@ class BusinessEmployee
      * @ORM\Column(name="confirmed_ts", type="datetime")
      */
     private $confirmedTs;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="time_limits", type="text")
+     */
+    private $timeLimits;
 
     /**
      * @var Group
@@ -195,5 +203,42 @@ class BusinessEmployee
     public function delete()
     {
         $this->status = self::STATUS_DELETED;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadableInsertDate()
+    {
+        return $this->getReadableDate($this->insertedTs);
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadableConfirmedDate()
+    {
+        return $this->getReadableDate($this->confirmedTs);
+    }
+
+    private function getReadableDate($date)
+    {
+        if ($date instanceof \DateTime) {
+            return $date->format('d-m-Y H:i:s');
+        }
+        return '-';
+    }
+
+    public function setLimits(EmployeeLimits $limits)
+    {
+        $this->timeLimits = $limits->toString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimeLimits()
+    {
+        return $this->timeLimits;
     }
 }

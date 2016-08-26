@@ -16,6 +16,7 @@ use BusinessCore\Exception\EmployeeDeletedException;
 use BusinessCore\Entity\Repository\FareRepository;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
+use BusinessCore\Helper\EmployeeLimits;
 use BusinessCore\Service\Helper\SearchCriteria;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -184,7 +185,7 @@ class BusinessService
      * @param $employeeId
      * @return BusinessEmployee
      */
-    private function getBusinessEmployee(Business $business, $employeeId)
+    public function getBusinessEmployee(Business $business, $employeeId)
     {
         return $this->businessEmployeeRepository->find(
             [
@@ -283,5 +284,12 @@ class BusinessService
         if ($businessEmployee instanceof BusinessEmployee) {
             throw new EmployeeAlreadyAssociatedToDifferentBusinessException();
         }
+    }
+
+    public function updateEmployeeLimits(BusinessEmployee $businessEmployee, EmployeeLimits $limits)
+    {
+        $businessEmployee->setLimits($limits);
+        $this->entityManager->persist($businessEmployee);
+        $this->entityManager->flush();
     }
 }

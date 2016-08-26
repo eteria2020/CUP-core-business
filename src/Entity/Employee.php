@@ -237,6 +237,65 @@ class Employee
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getBirthDate()
+    {
+        return $this->birthDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadableBirthDate()
+    {
+        if ($this->birthDate instanceof \DateTime) {
+            return $this->birthDate->format('d-m-Y');
+        }
+        return '-';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
     public function getBusinessPin()
     {
         $pins = json_decode($this->pin, true);

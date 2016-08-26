@@ -8,8 +8,11 @@ class BusinessEmployeeAvailableActionButtonHelper extends AbstractHelper
 {
     public function __invoke(BusinessEmployee $businessEmployee)
     {
-        $html = '';
-
+        $html = '<a href="';
+        $html .= $this->getView()->url('employees/employee', ['id' => $businessEmployee->getEmployee()->getId()]);
+        $html .= '" class="btn-margin validation-btn btn btn-primary btn-xs">';
+        $html .= $this->getView()->translate("Dettagli");
+        $html .= '</a>';
         if ($businessEmployee->isBlocked()) {
             $html .= '<a href="';
             $html .= $this->getView()->url('employees/employee/unblock', ['id' => $businessEmployee->getEmployee()->getId()]);
