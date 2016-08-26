@@ -4,6 +4,7 @@ namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\Repository\BusinessTripRepository;
+use BusinessCore\Payment\BusinessPaymentRequest;
 use BusinessCore\Service\Helper\SearchCriteria;
 
 use Doctrine\ORM\EntityManager;
@@ -19,18 +20,29 @@ class BusinessTripService
      * @var BusinessTripRepository
      */
     private $businessTripRepository;
+    /**
+     * @var PaymentService
+     */
+    private $paymentService;
+    /**
+     * @var BusinessPaymentService
+     */
+    private $businessPaymentService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
-     * @param BusinessTripRepository $businessTripRepository
+     * @param BusinessPaymentService $businessPaymentService
+     * @param PaymentService $paymentService
      */
     public function __construct(
         EntityManager $entityManager,
-        BusinessTripRepository $businessTripRepository
+        BusinessPaymentService $businessPaymentService,
+        PaymentService $paymentService
     ) {
         $this->entityManager = $entityManager;
-        $this->businessTripRepository = $businessTripRepository;
+        $this->paymentService = $paymentService;
+        $this->businessPaymentService = $businessPaymentService;
     }
 
     public function searchTripsByBusiness(Business $business, SearchCriteria $searchCriteria)
@@ -46,5 +58,18 @@ class BusinessTripService
     public function countFilteredTripsByBusiness(Business $business, SearchCriteria $searchCriteria)
     {
         return $this->businessTripRepository->searchTripsByBusiness($business, $searchCriteria, true);
+    }
+
+    public function getTripsToBePayed(Business $business)
+    {
+        return $this->businessPaymentService->getPendingBusinessTripPayments($business);
+    }
+
+    public function payTrips(Business $business, array $trips)
+    {
+        $customer = $business->getPaymentCustomer();
+        $businessPaymentRequest = new BusinessPaymentRequest($customer, $trips);
+
+        $this->paymentService->pay($businessPaymentRequest);
     }
 }

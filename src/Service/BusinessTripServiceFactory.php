@@ -10,11 +10,14 @@ class BusinessTripServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
-        $businessTripRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessTrip');
+        $businessPaymentService = $serviceLocator->get('BusinessCore\Service\BusinessPaymentService');
+
+        $paymentService = $serviceLocator->get('BusinessCore\Service\PaymentService');
 
         return new BusinessTripService(
             $entityManager,
-            $businessTripRepository
+            $businessPaymentService,
+            $paymentService
         );
     }
 }
