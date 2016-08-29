@@ -116,4 +116,24 @@ class BusinessPaymentService
     {
         return $this->businessPaymentRepository->getPendingBusinessTripPayments($business);
     }
+
+    public function getTripPaymentsToBeInvoiced(Business $business)
+    {
+        return $this->businessPaymentRepository->getTripPaymentsToBeInvoiced($business);
+    }
+
+    public function getExtraPaymentsToBeInvoiced(Business $business)
+    {
+        return $this->businessPaymentRepository->getExtraPaymentsToBeInvoiced($business);
+    }
+
+    public function getTimePackagePaymentsToBeInvoiced(Business $business)
+    {
+        return $this->businessPaymentRepository->getTimePackagePaymentsToBeInvoiced($business);
+    }
+
+    public function getPendingBusinessExtraPayments(Business $business)
+    {
+        return $this->businessPaymentRepository->getPendingBusinessExtraPayments($business);
+    }
 }

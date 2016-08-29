@@ -64,4 +64,12 @@ class BusinessTripPayment extends BusinessPayment
         $transaction->addBusinessTripPayment($this);
         $this->transactions->add($transaction);
     }
+
+    /**
+     * @return BusinessTrip
+     */
+    public function getBusinessTrip()
+    {
+        return $this->businessTrip;
+    }
 }

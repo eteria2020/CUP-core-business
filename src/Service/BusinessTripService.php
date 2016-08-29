@@ -3,6 +3,9 @@
 namespace BusinessCore\Service;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\BusinessTrip;
+use BusinessCore\Entity\BusinessTripPayment;
+use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessTripRepository;
 use BusinessCore\Payment\BusinessPaymentRequest;
 use BusinessCore\Service\Helper\SearchCriteria;
@@ -60,15 +63,26 @@ class BusinessTripService
         return $this->businessTripRepository->searchTripsByBusiness($business, $searchCriteria, true);
     }
 
-    public function getTripsToBePayed(Business $business)
-    {
-        return $this->businessPaymentService->getPendingBusinessTripPayments($business);
-    }
-
+    /**
+     * @param Business $business
+     * @param BusinessTripPayment[] $trips
+     */
     public function payTrips(Business $business, array $trips)
     {
         $customer = $business->getPaymentCustomer();
         $businessPaymentRequest = new BusinessPaymentRequest($customer, $trips);
+
+        $this->paymentService->pay($businessPaymentRequest);
+    }
+
+    /**
+     * @param Business $business
+     * @param ExtraPayment[] $extras
+     */
+    public function payExtras(Business $business, array $extras)
+    {
+        $customer = $business->getPaymentCustomer();
+        $businessPaymentRequest = new BusinessPaymentRequest($customer, $extras);
 
         $this->paymentService->pay($businessPaymentRequest);
     }

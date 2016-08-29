@@ -233,4 +233,17 @@ class Trip
     {
         return $this->pinType;
     }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getTripLengthInMin()
+    {
+        return date_diff($this->timestampBeginning, $this->timestampEnd)->i;
+    }
 }

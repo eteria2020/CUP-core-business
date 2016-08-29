@@ -5,7 +5,6 @@ namespace BusinessCore\Entity\Base;
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Entity\BusinessTransaction;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 abstract class BusinessPayment
@@ -180,12 +179,21 @@ abstract class BusinessPayment
 
     public function isPayed()
     {
-        return $this->status == self::STATUS_CONFIRMED_PAYED;
+        return $this->status === self::STATUS_CONFIRMED_PAYED;
     }
 
     public function isExpectedPayed()
     {
-        return $this->status == self::STATUS_EXPECTED_PAYED;
+        return $this->status === self::STATUS_EXPECTED_PAYED;
+    }
+
+    /**
+     * @param BusinessInvoice $businessInvoice
+     */
+    public function setBusinessInvoice(BusinessInvoice $businessInvoice)
+    {
+        $this->businessInvoice = $businessInvoice;
+        $this->status = self::STATUS_INVOICED;
     }
 
     abstract public function addTransaction(BusinessTransaction $transaction);

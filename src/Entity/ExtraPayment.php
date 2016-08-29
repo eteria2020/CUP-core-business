@@ -26,7 +26,7 @@ class ExtraPayment extends BusinessPayment
     private $id;
 
     /**
-     * @var BusinessTrip
+     * @var string
      * @ORM\Column(name="reason", type="string", nullable=true)
      */
     private $reason;
@@ -59,5 +59,13 @@ class ExtraPayment extends BusinessPayment
     {
         $transaction->addExtraPayment($this);
         $this->transactions->add($transaction);
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
     }
 }

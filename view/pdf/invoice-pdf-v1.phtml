@@ -1,24 +1,23 @@
 <?php
     $invoiceContent = $this->invoiceContent;
 
-    // Customer data
-    $name = ucwords(strtolower($invoiceContent['customer']['name'] . ' ' . $invoiceContent['customer']['surname']));
-    $mail = $invoiceContent['customer']['email'];
-    $address = $invoiceContent['customer']['address'];
-    $zipCode = $invoiceContent['customer']['zip_code'];
-    $town = $invoiceContent['customer']['town'];
-    $province = $invoiceContent['customer']['province'];
-    $country = $invoiceContent['customer']['country'];
-    $cf = $invoiceContent['customer']['cf'];
-    $piva = $invoiceContent['customer']['piva'];
+    // Business data
+    $name = ucwords(strtolower($invoiceContent['business']['name']));
+    $mail = $invoiceContent['business']['email'];
+    $address = $invoiceContent['business']['address'];
+    $zipCode = $invoiceContent['business']['zip_code'];
+    $town = $invoiceContent['business']['town'];
+    $province = $invoiceContent['business']['province'];
+    $country = $invoiceContent['business']['country'];
+    $piva = $invoiceContent['business']['piva'];
 
     // Invoice data
     $docN = $this->invoiceNumber;
     $invoiceDate = $invoiceContent['invoice_date'];
     $totalAmount = $invoiceContent['amounts']['grand_total'];
     $partialAmount = $invoiceContent['amounts']['total'];
-    $iva = $invoiceContent['amounts']['iva'];
-    $ivaPercentage = $invoiceContent['iva'];
+    $iva = $invoiceContent['amounts']['vat'];
+    $ivaPercentage = $invoiceContent['vat'];
 
     // Invoice header
     $header = $invoiceContent['header'];
@@ -96,7 +95,6 @@
             <p><?= $name ?></p>
             <p><?= $address ?></p>
             <p><?= $zipCode . ', ' . $town ?><?php if ($province != null) echo ', ' . $province; if ($country != null) echo ', ' . $country ?></p>
-            <p>CF: <?= $cf ?></p>
             <?php if ($piva != null) echo '<p>P.IVA: ' . $piva . '</p>'?>
             <p><?= $mail ?></p>
         </div>
