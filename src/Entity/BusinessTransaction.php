@@ -163,7 +163,7 @@ class BusinessTransaction
      */
     public function getExtraPayments()
     {
-        return $this->businessTripPayments;
+        return $this->extraPayments;
     }
 
     public function addExtraPayment(ExtraPayment $extraPayment)
