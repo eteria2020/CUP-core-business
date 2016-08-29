@@ -21,7 +21,7 @@ class ExtraPayment extends BusinessPayment
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="business.business_trip_payment_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="business.extra_payment_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -33,9 +33,9 @@ class ExtraPayment extends BusinessPayment
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="BusinessTransaction", inversedBy="businessTripPayments", cascade={"persist"})
-     * @ORM\JoinTable(name="business.business_trip_payment_transaction",
-     *      joinColumns={@ORM\JoinColumn(name="business_trip_payment_id", referencedColumnName="id")},
+     * @ORM\ManyToMany(targetEntity="BusinessTransaction", inversedBy="extraPayments", cascade={"persist"})
+     * @ORM\JoinTable(name="business.extra_payment_transaction",
+     *      joinColumns={@ORM\JoinColumn(name="extra_payment_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="transaction_id", referencedColumnName="id")}
      *      )
      */

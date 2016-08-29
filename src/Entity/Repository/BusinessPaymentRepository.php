@@ -278,21 +278,21 @@ class BusinessPaymentRepository extends EntityRepository
                 AND e.status = :status';
         $query = $this->getEntityManager()->createQuery();
         $query->setParameter('business', $business);
-        $query->setParameter('status', BusinessTripPayment::STATUS_CONFIRMED_PAYED);
+        $query->setParameter('status', TimePackagePayment::STATUS_CONFIRMED_PAYED);
         $query->setDQL($dql);
 
         return $query->getResult();
 
     }
 
-    public function getPendingBusinessExtraPayments($business)
+    public function getPendingBusinessExtraPayments(Business $business)
     {
         $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
                 WHERE e.business = :business
                 AND e.status = :status';
         $query = $this->getEntityManager()->createQuery();
         $query->setParameter('business', $business);
-        $query->setParameter('status', BusinessTripPayment::STATUS_PENDING);
+        $query->setParameter('status', ExtraPayment::STATUS_PENDING);
         $query->setDQL($dql);
 
         return $query->getResult();
