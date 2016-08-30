@@ -9,6 +9,7 @@ use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessInvoiceRepository;
 
+use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityManager;
@@ -260,6 +261,58 @@ class BusinessInvoiceService
             $business,
             $invoiceNumber,
             $packagePayements,
+            $templateVersion,
+            [
+                'sum' => $this->calculateAmountsWithTaxesFromTotal($total),
+                'rows' => $rowAmounts,
+                'vat' => $vat
+            ]
+        );
+    }
+
+    /**
+     * @param Business $business
+     * @param SubscriptionPayment[] $subscriptionPayments
+     * @return BusinessInvoice
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     */
+    public function createInvoiceForSubscription(Business $business, array $subscriptionPayments)
+    {
+        $invoice = $this->prepareInvoiceForSubscription($business, $subscriptionPayments);
+        $this->entityManager->persist($invoice);
+        foreach ($subscriptionPayments as $subscriptionPayment) {
+            $subscriptionPayment->setBusinessInvoice($invoice);
+            $this->entityManager->persist($subscriptionPayment);
+        }
+
+        $this->entityManager->flush();
+
+        return $invoice;
+    }
+
+    /**
+     * @param $business
+     * @param SubscriptionPayment[] $subscriptionPayments
+     * @return BusinessInvoice
+     */
+    private function prepareInvoiceForSubscription(Business $business, array $subscriptionPayments)
+    {
+        $vat = $this->invoiceConfig['vat_percentage'];
+        $templateVersion = $this->invoiceConfig['template_version'];
+        $rowAmounts = [];
+        $total = 0;
+        // calculate amounts for single rows and add them to total
+        foreach ($subscriptionPayments as $subscriptionPayment) {
+            $rowAmounts[] = $this->parseDecimal($subscriptionPayment->getAmount());
+            $total += $subscriptionPayment->getAmount();
+        }
+
+        $invoiceNumber = $this->getNewInvoiceNumber($business->getFleet());
+        return BusinessInvoice::createInvoiceForSubscription(
+            $business,
+            $invoiceNumber,
+            $subscriptionPayments,
             $templateVersion,
             [
                 'sum' => $this->calculateAmountsWithTaxesFromTotal($total),

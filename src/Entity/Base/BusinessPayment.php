@@ -179,7 +179,9 @@ abstract class BusinessPayment
 
     public function isPayed()
     {
-        return $this->status === self::STATUS_CONFIRMED_PAYED;
+        return
+            $this->status === self::STATUS_CONFIRMED_PAYED ||
+            $this->status === self::STATUS_INVOICED;
     }
 
     public function isExpectedPayed()

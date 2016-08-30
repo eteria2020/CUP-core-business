@@ -297,4 +297,17 @@ class BusinessPaymentRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function getSubscriptionPaymentToBeInvoiced(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', SubscriptionPayment::STATUS_CONFIRMED_PAYED);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
 }

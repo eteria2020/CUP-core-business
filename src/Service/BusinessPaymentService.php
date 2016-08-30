@@ -136,4 +136,9 @@ class BusinessPaymentService
     {
         return $this->businessPaymentRepository->getPendingBusinessExtraPayments($business);
     }
+
+    public function getSubscriptionPaymentToBeInvoiced(Business $business)
+    {
+        return $this->businessPaymentRepository->getSubscriptionPaymentToBeInvoiced($business);
+    }
 }

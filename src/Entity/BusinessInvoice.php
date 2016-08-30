@@ -135,7 +135,6 @@ class BusinessInvoice
                 'address' => $business->getAddress(),
                 'town' => $business->getCity(),
                 'province' => $business->getProvince(),
-                'country' => $business->getProvince(),
                 'zip_code' => $business->getZipCode(),
                 'piva' => $business->getVatNumber()
             ],
@@ -201,6 +200,69 @@ class BusinessInvoice
                 'body-format' => [
                     'alignment' => [
                         'left',
+                        'left',
+                        'right'
+                    ]
+                ]
+            ]
+        ]);
+
+        return $invoice;
+    }
+
+    /**
+     * @param Business $business
+     * @param $invoiceNumber
+     * @param SubscriptionPayment[] $subscriptionPayments
+     * @param $templateVersion
+     * @param $amounts
+     * @return BusinessInvoice
+     */
+    public static function createInvoiceForSubscription(
+        Business $business,
+        $invoiceNumber,
+        array $subscriptionPayments,
+        $templateVersion,
+        $amounts
+    ) {
+        $invoiceDate = date_create();
+        $formattedInvoiceNumber = self::formatInvoiceNumber($invoiceDate, $business->getFleet(), $invoiceNumber);
+        $invoice = new BusinessInvoice(
+            $business,
+            $formattedInvoiceNumber,
+            $templateVersion,
+            self::TYPE_SUBSCRIPTION,
+            $invoiceDate->format('Ymd'),
+            $amounts
+        );
+        $total = 0;
+        foreach ($subscriptionPayments as $payment) {
+            $total += $payment->getAmount();
+        }
+
+        $invoice->amount = $total;
+        $body = [];
+
+        foreach ($subscriptionPayments as $key => $payment) {
+            $body[] = [
+                [$payment->getCreatedTs()->format('d-m-Y H:i:s')],
+                [$amounts['rows'][$key] . ' €']
+            ];
+        }
+
+        $invoice->setContentBody([
+            'greeting_message' => '<p>Nella pagina successiva troverà i dettagli del pagamento per la sottoscrizione al servizio<br>' .
+                'L\'importo totale della fattura è di EUR ' .
+                $amounts['sum']['grand_total'] .
+                '</p>',
+            'contents' => [
+                'header' => [
+                    'Data pagamento',
+                    'Totale'
+                ],
+                'body' => $body,
+                'body-format' => [
+                    'alignment' => [
                         'left',
                         'right'
                     ]
