@@ -225,10 +225,12 @@ class Business
 
     public static function fromBusinessDetailsAndParams(
         $code,
+        $associationCode,
         BusinessDetails $businessDetails,
         BusinessConfigParams $businessParams
     ) {
         $business = new Business($code);
+        $business->associationCode = $associationCode;
         $business->updateDetails($businessDetails);
         $business->updateParams($businessParams);
         return $business;
@@ -579,5 +581,13 @@ class Business
             }
         }
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssociationCode()
+    {
+        return $this->associationCode;
     }
 }

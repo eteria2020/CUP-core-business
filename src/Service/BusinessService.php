@@ -102,7 +102,8 @@ class BusinessService
         $this->entityManager->beginTransaction();
         try {
             $code = $this->getUniqueCode();
-            $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
+            $associationCode = $this->getUniqueAssociationCode();
+            $business = Business::fromBusinessDetailsAndParams($code, $associationCode, $businessDetails, $businessParams);
             //get the base fare, there is only one for now
             $baseFare = $this->fareRepository->findOne();
             $businessFare = new BusinessFare($business, $baseFare);
@@ -218,6 +219,15 @@ class BusinessService
         $code = substr(md5(uniqid(rand(), true)), 0, 6);
         while ($this->businessRepository->findOneBy(['code' => $code]) != null) {
             $code = substr(md5(uniqid(rand(), true)), 0, 6);
+        }
+        return $code;
+    }
+
+    public function getUniqueAssociationCode()
+    {
+        $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
+        while ($this->businessRepository->findOneBy(['associtationCode' => $code]) != null) {
+            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
         }
         return $code;
     }
