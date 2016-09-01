@@ -5,6 +5,8 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessBuyableTimePackage;
 use BusinessCore\Entity\BusinessTimePackage;
+use BusinessCore\Entity\BusinessTrip;
+use BusinessCore\Entity\Repository\BusinessTimePackageRepository;
 use BusinessCore\Entity\Repository\TimePackageRepository;
 use BusinessCore\Entity\TimePackage;
 
@@ -28,21 +30,28 @@ class BusinessTimePackageService
      * @var PaymentService
      */
     private $paymentService;
+    /**
+     * @var BusinessTimePackageRepository
+     */
+    private $businessTimePackageRepository;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param TimePackageRepository $timePackageRepository
+     * @param BusinessTimePackageRepository $businessTimePackageRepository
      * @param PaymentService $paymentService
      */
     public function __construct(
         EntityManager $entityManager,
         TimePackageRepository $timePackageRepository,
+        BusinessTimePackageRepository $businessTimePackageRepository,
         PaymentService $paymentService
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageRepository = $timePackageRepository;
         $this->paymentService = $paymentService;
+        $this->businessTimePackageRepository = $businessTimePackageRepository;
     }
 
     /**
@@ -113,7 +122,6 @@ class BusinessTimePackageService
     {
         $this->entityManager->beginTransaction();
         try {
-
             $buyableTimePackages = $this->timePackageRepository->findBy(['id' => $buyableIds]);
 
             $buyables = $business->getBusinessBuyableTimePackages();
@@ -135,5 +143,14 @@ class BusinessTimePackageService
             $this->entityManager->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * @param BusinessTrip $businessTrip
+     * @return BusinessTimePackage[]
+     */
+    public function getTimePackagesForBusinessTrip(BusinessTrip $businessTrip)
+    {
+        return $this->businessTimePackageRepository->getTimePackagesForBusinessTrip($businessTrip);
     }
 }

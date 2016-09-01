@@ -35,17 +35,20 @@ class BusinessTripService
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
+     * @param BusinessTripRepository $businessTripRepository
      * @param BusinessPaymentService $businessPaymentService
      * @param PaymentService $paymentService
      */
     public function __construct(
         EntityManager $entityManager,
+        BusinessTripRepository $businessTripRepository,
         BusinessPaymentService $businessPaymentService,
         PaymentService $paymentService
     ) {
         $this->entityManager = $entityManager;
         $this->paymentService = $paymentService;
         $this->businessPaymentService = $businessPaymentService;
+        $this->businessTripRepository = $businessTripRepository;
     }
 
     public function searchTripsByBusiness(Business $business, SearchCriteria $searchCriteria)
@@ -85,5 +88,14 @@ class BusinessTripService
         $businessPaymentRequest = new BusinessPaymentRequest($customer, $extras);
 
         $this->paymentService->pay($businessPaymentRequest);
+    }
+
+    /**
+     * @param $tripId
+     * @return BusinessTrip
+     */
+    public function getBusinessTripByTripId($tripId)
+    {
+        return $this->businessTripRepository->findOneBy(['trip' => $tripId]);
     }
 }
