@@ -347,4 +347,26 @@ class BusinessService
             $this->entityManager->flush();
         }
     }
+
+    /**
+     * @return Business[]
+     */
+    public function getAllBusinessesWithCreditCard()
+    {
+        return $this->businessRepository->findBy(['paymentType' => Business::TYPE_CREDIT_CARD, 'isEnabled' => true]);
+    }
+
+    /**
+     * @return Business[]
+     */
+    public function getAllBusinesses()
+    {
+        return $this->businessRepository->findAll();
+    }
+
+    public function persistBusiness(Business $business)
+    {
+        $this->entityManager->persist($business);
+        $this->entityManager->flush();
+    }
 }
