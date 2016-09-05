@@ -3,6 +3,7 @@
 namespace BusinessCore\Entity\Repository;
 
 use BusinessCore\Entity\Business;
+use BusinessCore\Entity\Group;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityRepository;
 
@@ -78,6 +79,23 @@ class BusinessTripRepository extends EntityRepository
         if ($count) {
             return $query->getSingleScalarResult();
         }
+        return $query->getResult();
+    }
+
+    public function getBusinessTripByGroup(Group $group, \DateTime $from)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT bt
+            FROM \BusinessCore\Entity\BusinessTrip bt
+            JOIN bt.trip t
+            WHERE bt.group = :group
+            AND t.timestampEnd > :from'
+        );
+
+        $query->setParameter('group', $group);
+        $query->setParameter('from', $from);
+
         return $query->getResult();
     }
 }

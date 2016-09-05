@@ -6,6 +6,7 @@ use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessTrip;
 use BusinessCore\Entity\BusinessTripPayment;
 use BusinessCore\Entity\ExtraPayment;
+use BusinessCore\Entity\Group;
 use BusinessCore\Entity\Repository\BusinessTripRepository;
 use BusinessCore\Payment\BusinessPaymentRequest;
 use BusinessCore\Service\Helper\SearchCriteria;
@@ -97,5 +98,10 @@ class BusinessTripService
     public function getBusinessTripByTripId($tripId)
     {
         return $this->businessTripRepository->findOneBy(['trip' => $tripId]);
+    }
+
+    public function getBusinessTripsByGroup(Group $group, \DateTime $from)
+    {
+        return $this->businessTripRepository->getBusinessTripByGroup($group, $from);
     }
 }

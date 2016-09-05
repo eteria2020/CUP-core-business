@@ -493,7 +493,7 @@ class Business
     }
 
     /**
-     * @return mixed
+     * @return Group[]
      */
     public function getBusinessGroups()
     {
