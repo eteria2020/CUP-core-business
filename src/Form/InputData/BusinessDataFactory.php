@@ -84,6 +84,7 @@ class BusinessDataFactory
     {
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
+        $invoiceFrequence = $data['invoiceFrequence'];
         $businessMailControl = $data['businessMailControl'];
         $subscriptionFeeCents = $data['subscriptionFeeCents'];
         $fleet = $data['fleet'];
@@ -94,6 +95,9 @@ class BusinessDataFactory
         }
         if (empty($paymentFrequence)) {
             $paymentFrequence = null;
+        }
+        if (empty($invoiceFrequence)) {
+            $invoiceFrequence = null;
         }
         if (is_nan($businessMailControl)) {
             throw new InvalidBusinessFormException("Si è verificato un errore");
@@ -109,6 +113,6 @@ class BusinessDataFactory
 
         $subscriptionFeeCents = $subscriptionFeeCents * 100;
 
-        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl, $subscriptionFeeCents, $fleet);
+        return new BusinessConfigParams($paymentType, $paymentFrequence, $invoiceFrequence, $businessMailControl, $subscriptionFeeCents, $fleet);
     }
 }

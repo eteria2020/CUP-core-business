@@ -244,7 +244,7 @@ class BusinessService
     public function getUniqueAssociationCode()
     {
         $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
-        while ($this->businessRepository->findOneBy(['associtationCode' => $code]) != null) {
+        while ($this->businessRepository->findOneBy(['associationCode' => $code]) !== null) {
             $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
         }
         return $code;
