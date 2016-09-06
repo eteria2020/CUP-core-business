@@ -192,7 +192,7 @@ class Business
      *
      * @ORM\OneToMany(targetEntity="BusinessBuyableTimePackage", mappedBy="business")
      */
-    private $busnessBuyableTimePackages;
+    private $businessBuyableTimePackages;
 
     /**
      * Bidirectional - One-To-One
@@ -410,6 +410,7 @@ class Business
         $this->paymentFrequence = $data->getPaymentFrequence();
         $this->businessMailControl = $data->getBusinessMailControl();
         $this->subscriptionFeeCents = $data->getSubscriptionFeeCents();
+        $this->fleet = $data->getFleet();
     }
 
     public function getPendingBusinessEmployees()
@@ -489,6 +490,17 @@ class Business
     }
 
     /**
+     * @return BusinessFleet
+     */
+    public function getFleetId()
+    {
+        if ($this->fleet instanceof BusinessFleet) {
+            return $this->fleet->getId();
+        }
+        return 0;
+    }
+
+    /**
      * @return BusinessTimePackage[]
      */
     public function getBusinessTimePackages()
@@ -565,7 +577,7 @@ class Business
 
     public function canBuyTimePackage(TimePackage $timePackage)
     {
-        foreach ($this->busnessBuyableTimePackages as $businessBuyableTimePackage) {
+        foreach ($this->businessBuyableTimePackages as $businessBuyableTimePackage) {
             if ($businessBuyableTimePackage->getTimePackage() == $timePackage) {
                 return true;
             }
@@ -581,6 +593,24 @@ class Business
             }
         }
         return false;
+    }
+
+    public function getActiveContract()
+    {
+        foreach ($this->businessContracts as $businessContract) {
+            if ($businessContract->isActive()) {
+                return $businessContract;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return BusinessBuyableTimePackage[]
+     */
+    public function getBusinessBuyableTimePackages()
+    {
+        return $this->businessBuyableTimePackages;
     }
 
     /**

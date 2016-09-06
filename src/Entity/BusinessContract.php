@@ -112,4 +112,9 @@ class BusinessContract
     {
         return !is_null($this->panExpiry) && is_null($this->disabledDate);
     }
+
+    public function getCreatedDate()
+    {
+        return $this->createdTs->format('Y-m-d H:i:s');
+    }
 }

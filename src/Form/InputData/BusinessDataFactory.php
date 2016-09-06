@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Form\InputData;
 
+use BusinessCore\Entity\BusinessFleet;
 use BusinessCore\Exception\InvalidBusinessFormException;
 use BusinessCore\Form\Validator\VatNumber;
 use Zend\Validator\EmailAddress;
@@ -84,6 +85,9 @@ class BusinessDataFactory
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
         $businessMailControl = $data['businessMailControl'];
+        $subscriptionFeeCents = $data['subscriptionFeeCents'];
+        $fleet = $data['fleet'];
+
 
         if (empty($paymentType)) {
             $paymentType = null;
@@ -92,10 +96,19 @@ class BusinessDataFactory
             $paymentFrequence = null;
         }
         if (is_nan($businessMailControl)) {
-            throw new InvalidBusinessFormException("Si è verificato un errore, riprovare");
+            throw new InvalidBusinessFormException("Si è verificato un errore");
         }
 
-        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl);
+        if (is_nan($subscriptionFeeCents) || $subscriptionFeeCents < 1) {
+            throw new InvalidBusinessFormException("La quota di iscrizione deve essere di almeno 1€");
+        }
 
+        if (!$fleet instanceof BusinessFleet) {
+            throw new InvalidBusinessFormException("Flotta non trovata");
+        }
+
+        $subscriptionFeeCents = $subscriptionFeeCents * 100;
+
+        return new BusinessConfigParams($paymentType, $paymentFrequence, $businessMailControl, $subscriptionFeeCents, $fleet);
     }
 }

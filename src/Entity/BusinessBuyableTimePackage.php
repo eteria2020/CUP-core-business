@@ -54,4 +54,12 @@ class BusinessBuyableTimePackage
     {
         return $this->timePackage;
     }
+
+    /**
+     * @return Business
+     */
+    public function getBusiness()
+    {
+        return $this->business;
+    }
 }

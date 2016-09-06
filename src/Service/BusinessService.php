@@ -14,6 +14,7 @@ use BusinessCore\Exception\EmployeeAlreadyAssociatedToDifferentBusinessException
 use BusinessCore\Exception\EmployeeAlreadyAssociatedToThisBusinessException;
 use BusinessCore\Exception\EmployeeDeletedException;
 use BusinessCore\Entity\Repository\FareRepository;
+use BusinessCore\Exception\InvalidFormDataException;
 use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Helper\EmployeeLimits;
@@ -90,6 +91,11 @@ class BusinessService
     public function getTotalBusinesses()
     {
         return $this->businessRepository->countAll();
+    }
+
+    public function findBySearchValue($value)
+    {
+        return $this->businessRepository->findBySearchValue($value);
     }
 
     public function searchBusinesses(SearchCriteria $searchCriteria)
@@ -214,6 +220,18 @@ class BusinessService
         return $business;
     }
 
+    public function newBusinessFare(Business $business, $motionDiscount, $parkDiscount)
+    {
+        if ($motionDiscount < 0 || $motionDiscount > 100 || $parkDiscount < 0 || $parkDiscount > 100) {
+            throw new InvalidFormDataException();
+        }
+        $baseFare = $this->fareRepository->findOne();
+        $businessFare = new BusinessFare($business, $baseFare, $motionDiscount, $parkDiscount);
+
+        $this->entityManager->persist($businessFare);
+        $this->entityManager->flush();
+    }
+
     public function getUniqueCode()
     {
         $code = substr(md5(uniqid(rand(), true)), 0, 6);
@@ -293,6 +311,51 @@ class BusinessService
 
         if ($businessEmployee instanceof BusinessEmployee) {
             throw new EmployeeAlreadyAssociatedToDifferentBusinessException();
+        }
+    }
+
+    public function getBusinessStatsData($filters)
+    {
+        $businessName = !empty($filters['filters']['business']) ? $filters['filters']['business'] : null;
+        $from = !empty($filters['filters']['from']) ? $filters['filters']['from'] : null;
+        $to = !empty($filters['filters']['to']) ? $filters['filters']['to'] : null;
+
+        $labels = [];
+        $data = [];
+
+        if (empty($businessName)) {
+            $stats = $this->businessRepository->getBusinessStatsData($from, $to);
+            foreach ($stats as $row) {
+                $labels[] = $row['business_name'];
+                $data[] = $row['minutes'];
+            }
+        } else {
+            $stats = $this->businessRepository->getBusinessGroupStatsData($businessName, $from, $to);
+            foreach ($stats as $row) {
+                $groupName = empty($row['group_name']) ? $this->translator->translate('Senza gruppo') : $row['group_name'];
+                $labels[] = $groupName;
+                $data[] = $row['minutes'];
+            }
+        }
+
+        return [
+            "labels" => $labels,
+            "data" =>  $data
+        ];
+    }
+
+    public function findByName($businessName)
+    {
+        return $this->businessRepository->findOneBy(['name' => $businessName]);
+    }
+
+    public function disableContract(Business $business)
+    {
+        if ($business->hasActiveContract()) {
+            $contract = $business->getActiveContract();
+            $contract->disable();
+            $this->entityManager->persist($contract);
+            $this->entityManager->flush();
         }
     }
 

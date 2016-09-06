@@ -52,6 +52,7 @@ class BusinessPaymentRepository extends EntityRepository
             $rsm->addScalarResult('currency', 'currency');
             $rsm->addScalarResult('created_ts', 'created_ts');
             $rsm->addScalarResult('payed_on_ts', 'payed_on_ts');
+            $rsm->addScalarResult('expected_payed_ts', 'expected_payed_ts');
             $rsm->addScalarResult('id', 'payment_id');
             $rsm->addScalarResult('status', 'status');
             $rsm->addScalarResult('invoice_id', 'invoice_id');
@@ -59,20 +60,20 @@ class BusinessPaymentRepository extends EntityRepository
         }
 
         $sql = 'select ' . $select . ' from (
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment
+                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
+                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
+                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
+                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
                 ) sub
                 where business_code = :business_code ';
 
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         $query->setParameter('business_code', $business->getCode());
 
-        $searchColumn = $searchCriteria->getSearchColoumn();
+        $searchColumn = $searchCriteria->getSearchColumn();
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
