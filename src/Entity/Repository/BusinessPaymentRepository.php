@@ -210,15 +210,16 @@ class BusinessPaymentRepository extends EntityRepository
     private function instanceOfBusinessPayment($class)
     {
         return
-            $class == TimePackagePayment::CLASS_NAME ||
-            $class == SubscriptionPayment::CLASS_NAME ||
-            $class == ExtraPayment::CLASS_NAME ||
-            $class == BusinessTripPayment::CLASS_NAME;
+            $class === TimePackagePayment::CLASS_NAME ||
+            $class === SubscriptionPayment::CLASS_NAME ||
+            $class === ExtraPayment::CLASS_NAME ||
+            $class === BusinessTripPayment::CLASS_NAME;
     }
 
     /**
      * @param Business $business
      * @return null|SubscriptionPayment
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getBusinessSubscriptionPayment(Business $business)
     {
@@ -226,8 +227,87 @@ class BusinessPaymentRepository extends EntityRepository
                 WHERE e.business = :business';
         $query = $this->getEntityManager()->createQuery();
         $query->setParameter('business', $business);
-        $query->setDql($dql);
+        $query->setDQL($dql);
 
         return $query->getOneOrNullResult();
+    }
+
+    public function getPendingBusinessTripPayments(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\BusinessTripPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', BusinessTripPayment::STATUS_PENDING);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
+
+    public function getTripPaymentsToBeInvoiced(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\BusinessTripPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', BusinessTripPayment::STATUS_CONFIRMED_PAYED);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
+
+    public function getExtraPaymentsToBeInvoiced(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', BusinessTripPayment::STATUS_CONFIRMED_PAYED);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
+
+    public function getTimePackagePaymentsToBeInvoiced(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\TimePackagePayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', TimePackagePayment::STATUS_CONFIRMED_PAYED);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+
+    }
+
+    public function getPendingBusinessExtraPayments(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', ExtraPayment::STATUS_PENDING);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
+
+    public function getSubscriptionPaymentToBeInvoiced(Business $business)
+    {
+        $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
+                WHERE e.business = :business
+                AND e.status = :status';
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', SubscriptionPayment::STATUS_CONFIRMED_PAYED);
+        $query->setDQL($dql);
+
+        return $query->getResult();
     }
 }

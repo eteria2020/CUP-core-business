@@ -21,7 +21,7 @@ class Fare
     private $id;
 
     /**
-     * @var interger cost in eurocents
+     * @var integer cost in eurocents
      *
      * @ORM\Column(name="motion_cost_per_minute", type="integer", nullable=false)
      */
@@ -45,7 +45,7 @@ class Fare
     private $costSteps;
 
     /**
-     * @return interger
+     * @return integer
      */
     public function getMotionCostPerMinute()
     {
@@ -61,10 +61,18 @@ class Fare
     }
 
     /**
-     * @return string
+     * Get cost steps
+     * in order for the algorithm to work correctly we need to return them in
+     * decreasing order
+     *
+     * @return array
      */
     public function getCostSteps()
     {
-        return $this->costSteps;
+        $costSteps = json_decode($this->costSteps, true);
+
+        krsort($costSteps);
+
+        return $costSteps;
     }
 }

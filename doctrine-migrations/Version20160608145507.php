@@ -43,7 +43,7 @@ class Version20160608145507 extends AbstractMigration
         $table->addColumn("transaction_id", "integer", ["notull" => true]);
         $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
         $table->setPrimaryKey(["extra_payment_id", "transaction_id"]);
-        $table->addForeignKeyConstraint('business.business_trip_payment', ['extra_payment_id'], ['id']);
+        $table->addForeignKeyConstraint('business.extra_payment', ['extra_payment_id'], ['id']);
         $table->addForeignKeyConstraint('business.transaction', ['transaction_id'], ['id']);
     }
 

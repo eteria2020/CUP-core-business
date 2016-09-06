@@ -56,4 +56,13 @@ class BusinessFleet
     {
         return $this->name;
     }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceHeader()
+    {
+        return $this->invoiceHeader;
+    }
+
 }

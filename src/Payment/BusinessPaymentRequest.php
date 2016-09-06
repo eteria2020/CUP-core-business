@@ -20,7 +20,7 @@ class BusinessPaymentRequest implements PaymentRequest
     /**
      * BusinessPaymentRequest constructor.
      * @param Customer $customer
-     * @param array $payments
+     * @param BusinessPayment[] $payments
      * @param bool $firstPayment
      */
     public function __construct(Customer $customer, array $payments, $firstPayment = false)
@@ -59,7 +59,6 @@ class BusinessPaymentRequest implements PaymentRequest
     {
         $tot = 0;
         $currency = '';
-        /** @var BusinessPayment $payment */
         foreach ($this->payments as $payment) {
             $tot += $payment->getAmount();
             $currency = $payment->getCurrency();

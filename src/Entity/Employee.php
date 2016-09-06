@@ -184,6 +184,7 @@ class Employee
 
     /**
      * Bidirectional - One-To-Many (INVERSE SIDE)
+     * @var BusinessEmployee[]
      *
      * @ORM\OneToMany(targetEntity="BusinessEmployee", mappedBy="employee")
      */
@@ -300,5 +301,26 @@ class Employee
     {
         $pins = json_decode($this->pin, true);
         return $pins['company'];
+    }
+
+    /**
+     * @return BusinessEmployee[]
+     */
+    public function getBusinessEmployee()
+    {
+        return $this->businessEmployee;
+    }
+
+    public function hasActiveBusinessAssociation()
+    {
+        foreach ($this->getBusinessEmployee() as $businessEmployee) {
+            if ($businessEmployee->isPending() ||
+                $businessEmployee->isBlocked() ||
+                $businessEmployee->isApprovedWaitingForBusinessApproval() ||
+                $businessEmployee->isApproved()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

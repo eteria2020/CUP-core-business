@@ -3,6 +3,10 @@
 namespace BusinessCore;
 
 return [
+    'invoice' => [
+        'template_version' => '1',
+        'vat_percentage' => 22
+    ],
     'doctrine' => [
         'driver' => [
             __NAMESPACE__ . '_driver' => [

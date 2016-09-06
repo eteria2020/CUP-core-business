@@ -121,6 +121,27 @@ class Business
     private $paymentFrequence;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="invoice_frequence", type="string")
+     */
+    private $invoiceFrequence;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_payment_execution", type="datetime", nullable=false)
+     */
+    private $lastPaymentExecution;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_invoice_execution", type="datetime", nullable=false)
+     */
+    private $lastInvoiceExecution;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="business_mail_control", type="boolean")
@@ -474,7 +495,7 @@ class Business
     }
 
     /**
-     * @return mixed
+     * @return Group[]
      */
     public function getBusinessGroups()
     {
@@ -611,6 +632,40 @@ class Business
     public function getBusinessBuyableTimePackages()
     {
         return $this->businessBuyableTimePackages;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceFrequence()
+    {
+        return $this->invoiceFrequence;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPaymentExecution()
+    {
+        return $this->lastPaymentExecution;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastInvoiceExecution()
+    {
+        return $this->lastInvoiceExecution;
+    }
+
+    public function invoiceExecuted()
+    {
+        $this->lastInvoiceExecution = date_create();
+    }
+
+    public function paymentExecuted()
+    {
+        $this->lastPaymentExecution = date_create();
     }
 
     /**

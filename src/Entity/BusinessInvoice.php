@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class BusinessInvoice
 {
+    const TYPE_SUBSCRIPTION = 'subscription';
+    const TYPE_TRIP = 'trip';
+    const TYPE_EXTRA = 'extra';
+    const TYPE_TIME_PACKAGE = 'time_package';
+
     /**
      * @var integer
      *
@@ -94,6 +99,188 @@ class BusinessInvoice
     private $fleet;
 
     /**
+     * BusinessInvoice constructor.
+     * @param Business $business
+     * @param string $invoiceNumber
+     * @param $version
+     * @param $type
+     * @param $invoiceDate
+     * @param array $amounts
+     * @param BusinessFleet $fleet
+     */
+    public function __construct(
+        Business $business,
+        $invoiceNumber,
+        $version,
+        $type,
+        $invoiceDate,
+        array $amounts,
+        BusinessFleet $fleet = null
+    ) {
+        $this->business = $business;
+        $this->invoiceNumber = $invoiceNumber;
+        $this->generatedTs = date_create();
+        $this->version = $version;
+        $this->type = $type;
+        $this->invoiceDate = $invoiceDate;
+        $this->amount = $amounts['sum']['grand_total_cents'];
+        $this->vat = $amounts['vat'];
+
+        if ($fleet instanceof BusinessFleet) {
+            $this->fleet = $fleet;
+        } else {
+            $this->fleet = $business->getFleet();
+        }
+
+        $this->content = [
+            'invoice_date' => $this->getInvoiceDate(),
+            'amounts' => $amounts['sum'],
+            'vat' => $amounts['vat'],
+            'business' => [
+                'name' => $business->getName(),
+                'email' => $business->getEmail(),
+                'address' => $business->getAddress(),
+                'town' => $business->getCity(),
+                'province' => $business->getProvince(),
+                'zip_code' => $business->getZipCode(),
+                'piva' => $business->getVatNumber()
+            ],
+            'type' => $type,
+            'template_version' => $version,
+            'header' => $this->fleet->getInvoiceHeader()
+        ];
+    }
+
+    /**
+     * @param Business $business
+     * @param $invoiceNumber
+     * @param TimePackagePayment[] $packagePayments
+     * @param $templateVersion
+     * @param array $amounts with fields grand_total_cents, grand_total, total, iva
+     * @return BusinessInvoice
+     */
+    public static function createInvoiceForTimePackage(
+        Business $business,
+        $invoiceNumber,
+        array $packagePayments,
+        $templateVersion,
+        $amounts
+    ) {
+        $invoiceDate = date_create();
+        $formattedInvoiceNumber = self::formatInvoiceNumber($invoiceDate, $business->getFleet(), $invoiceNumber);
+        $invoice = new BusinessInvoice(
+            $business,
+            $formattedInvoiceNumber,
+            $templateVersion,
+            self::TYPE_TIME_PACKAGE,
+            $invoiceDate->format('Ymd'),
+            $amounts
+        );
+        $total = 0;
+        foreach ($packagePayments as $payment) {
+            $total += $payment->getAmount();
+        }
+
+        $invoice->amount = $total;
+        $body = [];
+
+        foreach ($packagePayments as $key => $payment) {
+            $body[] = [
+                [$payment->getCreatedTs()->format('d-m-Y H:i:s')],
+                [$payment->getTimePackage()->getMinutes()],
+                [$amounts['rows'][$key] . ' €']
+            ];
+        }
+
+        $invoice->setContentBody([
+            'greeting_message' => '<p>Nella pagina successiva troverà i dettagli del pagamento per i pacchetti da lei acquistati<br>' .
+                'L\'importo totale della fattura è di EUR ' .
+                $amounts['sum']['grand_total'] .
+                '</p>',
+            'contents' => [
+                'header' => [
+                    'Data pagamento',
+                    'Totale minuti',
+                    'Totale'
+                ],
+                'body' => $body,
+                'body-format' => [
+                    'alignment' => [
+                        'left',
+                        'left',
+                        'right'
+                    ]
+                ]
+            ]
+        ]);
+
+        return $invoice;
+    }
+
+    /**
+     * @param Business $business
+     * @param $invoiceNumber
+     * @param SubscriptionPayment[] $subscriptionPayments
+     * @param $templateVersion
+     * @param $amounts
+     * @return BusinessInvoice
+     */
+    public static function createInvoiceForSubscription(
+        Business $business,
+        $invoiceNumber,
+        array $subscriptionPayments,
+        $templateVersion,
+        $amounts
+    ) {
+        $invoiceDate = date_create();
+        $formattedInvoiceNumber = self::formatInvoiceNumber($invoiceDate, $business->getFleet(), $invoiceNumber);
+        $invoice = new BusinessInvoice(
+            $business,
+            $formattedInvoiceNumber,
+            $templateVersion,
+            self::TYPE_SUBSCRIPTION,
+            $invoiceDate->format('Ymd'),
+            $amounts
+        );
+        $total = 0;
+        foreach ($subscriptionPayments as $payment) {
+            $total += $payment->getAmount();
+        }
+
+        $invoice->amount = $total;
+        $body = [];
+
+        foreach ($subscriptionPayments as $key => $payment) {
+            $body[] = [
+                [$payment->getCreatedTs()->format('d-m-Y H:i:s')],
+                [$amounts['rows'][$key] . ' €']
+            ];
+        }
+
+        $invoice->setContentBody([
+            'greeting_message' => '<p>Nella pagina successiva troverà i dettagli del pagamento per la sottoscrizione al servizio<br>' .
+                'L\'importo totale della fattura è di EUR ' .
+                $amounts['sum']['grand_total'] .
+                '</p>',
+            'contents' => [
+                'header' => [
+                    'Data pagamento',
+                    'Totale'
+                ],
+                'body' => $body,
+                'body-format' => [
+                    'alignment' => [
+                        'left',
+                        'right'
+                    ]
+                ]
+            ]
+        ]);
+
+        return $invoice;
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -163,5 +350,186 @@ class BusinessInvoice
     public function getVat()
     {
         return $this->vat;
+    }
+
+    /**
+     * @var array $body
+     * @return BusinessInvoice
+     */
+    public function setContentBody($body)
+    {
+        $this->content['body'] = $body;
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $invoiceDate
+     * @param BusinessFleet $businessFleet
+     * @param int $newInvoiceNumber
+     * @return string
+     */
+    private static function formatInvoiceNumber(\DateTime $invoiceDate, BusinessFleet $businessFleet, $newInvoiceNumber)
+    {
+        return $invoiceDate->format('Y').
+        '/A'.
+        $businessFleet->getId().
+        sprintf("%'.08d", $newInvoiceNumber);
+    }
+
+    /**
+     * Creates an invoice for a set of trips.
+     *
+     * @param Business $business
+     * @param $invoiceNumber
+     * @param BusinessTripPayment[] $tripPayments
+     * @param $templateVersion
+     * @param $amounts
+     * @return BusinessInvoice
+     */
+    public static function createInvoiceForTrips(
+        Business $business,
+        $invoiceNumber,
+        array $tripPayments,
+        $templateVersion,
+        $amounts
+    ) {
+        $invoiceDate = date_create();
+        $formattedInvoiceNumber = self::formatInvoiceNumber($invoiceDate, $business->getFleet(), $invoiceNumber);
+        $invoice = new BusinessInvoice(
+            $business,
+            $formattedInvoiceNumber,
+            $templateVersion,
+            self::TYPE_TRIP,
+            $invoiceDate->format('Ymd'),
+            $amounts
+        );
+        $total = 0;
+        foreach ($tripPayments as $tripPayment) {
+            $total += $tripPayment->getAmount();
+        }
+
+        $invoice->amount = $total;
+        $body = [];
+
+        foreach ($tripPayments as $key => $tripPayment) {
+            $trip = $tripPayment->getBusinessTrip()->getTrip();
+            /**
+             * Changing the order, structure or content of the following
+             * may interfere with $this->getInterval() function!
+             * Test by running "export registries -d -c" from console
+             */
+            $body[] = [
+                [$trip->getId()],
+                [
+                    'Inizio: ' . $trip->getTimestampBeginning()->format('d-m-Y H:i:s'),
+                    'Fine: ' . $trip->getTimestampEnd()->format('d-m-Y H:i:s')],
+                [
+                    'Da: ' . $trip->getAddressBeginning(),
+                    'A: ' . $trip->getAddressEnd()
+                ],
+                [$trip->getTripLengthInMin() . ' (min)'],
+                [$trip->getCarPlate()],
+                [$amounts['rows'][$key] . ' €']
+            ];
+        }
+        $invoice->setContentBody([
+            'greeting_message' => '',
+            'contents' => [
+                'header' => [
+                    'ID',
+                    'Data',
+                    'Partenza / Arrivo',
+                    'Durata',
+                    'Targa',
+                    'Totale'
+                ],
+                'body' => $body,
+                'body-format' => [
+                    'alignment' => [
+                        'left',
+                        'left',
+                        'left',
+                        'left',
+                        'left',
+                        'right'
+                    ]
+                ]
+            ]
+        ]);
+
+        return $invoice;
+    }
+
+    /**
+     * @param Business $business
+     * @param $invoiceNumber
+     * @param ExtraPayment[] $extraPayments
+     * @param $templateVersion
+     * @param array $amounts with fields grand_total_cents, grand_total, total, iva
+     * @return BusinessInvoice
+     */
+    public static function createInvoiceForExtraOrPenalty(
+        Business $business,
+        $invoiceNumber,
+        array $extraPayments,
+        $templateVersion,
+        $amounts
+    ) {
+        $invoiceDate = date_create();
+        $formattedInvoiceNumber = self::formatInvoiceNumber($invoiceDate, $business->getFleet(), $invoiceNumber);
+        $invoice = new BusinessInvoice(
+            $business,
+            $formattedInvoiceNumber,
+            $templateVersion,
+            self::TYPE_EXTRA,
+            $invoiceDate->format('Ymd'),
+            $amounts
+        );
+        $total = 0;
+        foreach ($extraPayments as $extraPayment) {
+            $total += $extraPayment->getAmount();
+        }
+
+        $invoice->amount = $total;
+        $body = [];
+
+        foreach ($extraPayments as $key => $extraPayment) {
+            /**
+             * Changing the order, structure or content of the following
+             * may interfere with $this->getInterval() function!
+             * Test by running "export registries -d -c" from console
+             */
+            $body[] = [
+                [$extraPayment->getCreatedTs()->format('d-m-Y H:i:s')],
+                [$extraPayment->getReason()],
+                [$amounts['rows'][$key] . ' €']
+            ];
+        }
+
+
+        $invoice->setContentBody([
+            'greeting_message' => '<p>Nella pagina successiva troverà i dettagli del pagamento<br>' .
+                'L\'importo totale della fattura è di EUR ' .
+                $amounts['sum']['grand_total'] .
+                '</p>',
+            'contents' => [
+                'header' => [
+                    'Data',
+                    'Causale',
+                    'Totale'
+                ],
+                'body' => $body,
+                'body-format' => [
+                    'alignment' => [
+                        'left',
+                        'left',
+                        'right'
+                    ]
+                ]
+            ]
+        ]);
+
+        return $invoice;
     }
 }

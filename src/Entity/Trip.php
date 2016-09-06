@@ -5,9 +5,6 @@ namespace BusinessCore\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-const PIN_PRIMARY = 'primary';
-const PIN_COMPANY = 'company';
-
 /**
  * Trip
  *
@@ -17,6 +14,8 @@ const PIN_COMPANY = 'company';
 
 class Trip
 {
+    const PIN_PRIMARY = 'primary';
+    const PIN_COMPANY = 'company';
     /**
      * @var integer
      *
@@ -232,5 +231,18 @@ class Trip
     public function getPinType()
     {
         return $this->pinType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getTripLengthInMin()
+    {
+        return date_diff($this->timestampBeginning, $this->timestampEnd)->i;
     }
 }
