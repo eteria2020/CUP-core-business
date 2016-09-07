@@ -169,7 +169,7 @@ class BusinessPaymentRepository extends EntityRepository
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         $query->setParameter('business_code', $business->getCode());
 
-        $searchColumn = $searchCriteria->getSearchColoumn();
+        $searchColumn = $searchCriteria->getSearchColumn();
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
