@@ -20,6 +20,8 @@ class Version20160511110125 extends AbstractMigration
         $table->addColumn("employee_association_code", "string", ["notnull" => false]);
         $table->addUniqueIndex(["employee_association_code"]);
 
+        $this->addSql("DROP VIEW business.employee");
+
         $this->addSql("CREATE OR REPLACE VIEW business.employee AS
              SELECT customers.id,
                 customers.email,
