@@ -243,6 +243,6 @@ class Trip
 
     public function getTripLengthInMin()
     {
-        return date_diff($this->timestampBeginning, $this->timestampEnd)->i;
+        return (int) (($this->timestampEnd->format('U') - $this->timestampBeginning->format('U')) / 60);
     }
 }
