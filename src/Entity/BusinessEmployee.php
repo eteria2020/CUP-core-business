@@ -241,4 +241,12 @@ class BusinessEmployee
     {
         return $this->timeLimits;
     }
+
+    public function isActive()
+    {
+        return $this->isPending() ||
+        $this->isBlocked() ||
+        $this->isApprovedWaitingForBusinessApproval() ||
+        $this->isApproved();
+    }
 }

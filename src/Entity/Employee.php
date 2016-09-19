@@ -314,13 +314,20 @@ class Employee
     public function hasActiveBusinessAssociation()
     {
         foreach ($this->getBusinessEmployee() as $businessEmployee) {
-            if ($businessEmployee->isPending() ||
-                $businessEmployee->isBlocked() ||
-                $businessEmployee->isApprovedWaitingForBusinessApproval() ||
-                $businessEmployee->isApproved()) {
+            if ($businessEmployee->isActive()) {
                 return true;
             }
         }
         return false;
+    }
+
+    public function getActiveBusinessEmployee()
+    {
+        foreach ($this->getBusinessEmployee() as $businessEmployee) {
+            if ($businessEmployee->isActive()) {
+                return $businessEmployee;
+            }
+        }
+        return null;
     }
 }
