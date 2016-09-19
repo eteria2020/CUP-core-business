@@ -163,13 +163,6 @@ class Business
     private $updatedTs;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="employee_association_code", type="string", length=12, nullable=true)
-     */
-    private $associationCode;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="subscription_fee_cents", type="integer", nullable=false)
@@ -246,12 +239,10 @@ class Business
 
     public static function fromBusinessDetailsAndParams(
         $code,
-        $associationCode,
         BusinessDetails $businessDetails,
         BusinessConfigParams $businessParams
     ) {
         $business = new Business($code);
-        $business->associationCode = $associationCode;
         $business->updateDetails($businessDetails);
         $business->updateParams($businessParams);
         return $business;
@@ -667,13 +658,5 @@ class Business
     public function paymentExecuted()
     {
         $this->lastPaymentExecution = date_create();
-    }
-
-    /**
-     * @return string
-     */
-    public function getAssociationCode()
-    {
-        return $this->associationCode;
     }
 }

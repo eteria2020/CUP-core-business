@@ -108,8 +108,7 @@ class BusinessService
         $this->entityManager->beginTransaction();
         try {
             $code = $this->getUniqueCode();
-            $associationCode = $this->getUniqueAssociationCode();
-            $business = Business::fromBusinessDetailsAndParams($code, $associationCode, $businessDetails, $businessParams);
+            $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
             //get the base fare, there is only one for now
             $baseFare = $this->fareRepository->findOne();
             $businessFare = new BusinessFare($business, $baseFare);
@@ -241,19 +240,10 @@ class BusinessService
         return $code;
     }
 
-    public function getUniqueAssociationCode()
-    {
-        $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
-        while ($this->businessRepository->findOneBy(['associationCode' => $code]) !== null) {
-            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
-        }
-        return $code;
-    }
-
     public function associateEmployeeToBusinessByAssociationCode($employeeId, $associationCode)
     {
         /** @var Business $business */
-        $business = $this->businessRepository->findOneBy(['associationCode' => $associationCode]);
+        $business = $this->businessRepository->findOneBy(['code' => $associationCode]);
 
         if (!$business instanceof Business) {
             throw new EntityNotFoundException();
