@@ -429,6 +429,7 @@ class Business
     {
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();
+        $this->invoiceFrequence = $data->getInvoiceFrequence();
         $this->businessMailControl = $data->getBusinessMailControl();
         $this->subscriptionFeeCents = $data->getSubscriptionFeeCents();
         $this->fleet = $data->getFleet();
