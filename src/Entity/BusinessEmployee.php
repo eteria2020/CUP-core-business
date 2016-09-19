@@ -4,7 +4,6 @@ namespace BusinessCore\Entity;
 
 use BusinessCore\Helper\EmployeeLimits;
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Validator\Hostname;
 
 /**
  * BusinessEmployee
@@ -82,6 +81,7 @@ class BusinessEmployee
         $this->employee = $employee;
         $this->business = $business;
         $this->insertedTs = date_create();
+        $this->timeLimits = 'mo()tu()we()th()fr()sa()su()'; //allow all days by default
         if ($business->canApproveAutomatically($employee)) {
             if ($business->isEnabled()) {
                 $this->approve();
@@ -240,5 +240,13 @@ class BusinessEmployee
     public function getTimeLimits()
     {
         return $this->timeLimits;
+    }
+
+    public function isActive()
+    {
+        return $this->isPending() ||
+        $this->isBlocked() ||
+        $this->isApprovedWaitingForBusinessApproval() ||
+        $this->isApproved();
     }
 }
