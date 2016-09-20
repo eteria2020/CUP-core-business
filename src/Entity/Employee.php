@@ -300,6 +300,9 @@ class Employee
     public function getBusinessPin()
     {
         $pins = json_decode($this->pin, true);
+        if (!array_key_exists('company', $pins)) {
+            return '-';
+        }
         return $pins['company'];
     }
 

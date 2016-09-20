@@ -1,6 +1,8 @@
 <?php
 namespace BusinessCore\Helper;
 
+use Application\Exception\InvalidTimeLimitsException;
+
 class EmployeeLimits
 {
     private $mondayEnabled = false;
@@ -85,31 +87,31 @@ class EmployeeLimits
         }
 
         if ($limits->mondayEnabled && array_key_exists('mo', $array)) {
-            $limits->mondayRanges = $limits->parseRanges($array['mo']);
+            $limits->mondayRanges = $limits->parseValidRanges($array['mo']);
         }
 
         if ($limits->tuesdayEnabled && array_key_exists('tu', $array)) {
-            $limits->tuesdayRanges = $limits->parseRanges($array['tu']);
+            $limits->tuesdayRanges = $limits->parseValidRanges($array['tu']);
         }
 
         if ($limits->wednesdayEnabled && array_key_exists('we', $array)) {
-            $limits->wednesdayRanges = $limits->parseRanges($array['we']);
+            $limits->wednesdayRanges = $limits->parseValidRanges($array['we']);
         }
 
         if ($limits->thursdayEnabled && array_key_exists('th', $array)) {
-            $limits->thursdayRanges = $limits->parseRanges($array['th']);
+            $limits->thursdayRanges = $limits->parseValidRanges($array['th']);
         }
 
         if ($limits->fridayEnabled && array_key_exists('fr', $array)) {
-            $limits->fridayRanges = $limits->parseRanges($array['fr']);
+            $limits->fridayRanges = $limits->parseValidRanges($array['fr']);
         }
 
         if ($limits->saturdayEnabled && array_key_exists('sa', $array)) {
-            $limits->saturdayRanges = $limits->parseRanges($array['sa']);
+            $limits->saturdayRanges = $limits->parseValidRanges($array['sa']);
         }
 
         if ($limits->sundayEnabled && array_key_exists('su', $array)) {
-            $limits->sundayRanges = $limits->parseRanges($array['su']);
+            $limits->sundayRanges = $limits->parseValidRanges($array['su']);
         }
 
         return $limits;
@@ -178,7 +180,9 @@ class EmployeeLimits
         foreach ($ranges as $range) {
             $times = explode('-', $range);
             if (count($times) === 2) {
-                $result[] = ['from' => $times[0], 'to' => $times[1]];
+                $from = $times[0];
+                $to = $times[1];
+                $result[] = ['from' => $from, 'to' => $to];
             }
         }
         return $result;
@@ -303,5 +307,17 @@ class EmployeeLimits
     public function getSundayRanges()
     {
         return $this->sundayRanges;
+    }
+
+    private function parseValidRanges($range)
+    {
+        $limits = $this->parseRanges($range);
+        $from = $limits['from'];
+        $to = $limits['to'];
+
+        if (empty($from) || empty($to) || new \DateTime($from) >= new \DateTime($to)) {
+            throw new InvalidTimeLimitsException("Time from is before time to");
+        }
+        return $limits;
     }
 }
