@@ -111,6 +111,11 @@ abstract class BusinessPayment
         return $this->amount;
     }
 
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+    }
+
     /**
      * @return string
      */

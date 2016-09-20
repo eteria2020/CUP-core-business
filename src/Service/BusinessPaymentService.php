@@ -141,4 +141,14 @@ class BusinessPaymentService
     {
         return $this->businessPaymentRepository->getSubscriptionPaymentToBeInvoiced($business);
     }
+
+    public function manageChangeInBusinessSubscriptionFee(Business $business, $newAmount)
+    {
+        $payment = $this->businessPaymentRepository->getBusinessSubscriptionPayment($business);
+        if ($payment->getAmount() !== $newAmount && (!$payment->isPayed() || !$payment->isExpectedPayed())) {
+            $payment->setAmount($newAmount);
+            $this->entityManager->persist($payment);
+            $this->entityManager->flush();
+        }
+    }
 }
