@@ -10,6 +10,7 @@ use BusinessCore\Entity\Repository\BusinessEmployeeRepository;
 use BusinessCore\Entity\Repository\BusinessRepository;
 use BusinessCore\Entity\Repository\EmployeeRepository;
 use BusinessCore\Entity\SubscriptionPayment;
+use BusinessCore\Entity\Webuser;
 use BusinessCore\Exception\EmployeeAlreadyAssociatedToDifferentBusinessException;
 use BusinessCore\Exception\EmployeeAlreadyAssociatedToThisBusinessException;
 use BusinessCore\Exception\EmployeeDeletedException;
@@ -376,5 +377,16 @@ class BusinessService
     {
         $this->entityManager->persist($business);
         $this->entityManager->flush();
+    }
+
+    public function persistBusinessUser(Webuser $user)
+    {
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    public function findBusinessWebuser(Business $business)
+    {
+        return $this->businessRepository->findBusinessWebuser($business);
     }
 }

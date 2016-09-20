@@ -2,6 +2,7 @@
 
 namespace BusinessCore\Entity\Repository;
 
+use BusinessCore\Entity\Business;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -113,5 +114,16 @@ class BusinessRepository extends EntityRepository
 
         return $query->getResult();
 
+    }
+
+    public function findBusinessWebuser(Business $business)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT e FROM \BusinessCore\Entity\Webuser e '.
+            'WHERE e.business = :business'
+        );
+        $query->setParameter('business', $business);
+        return $query->getOneOrNullResult();
     }
 }

@@ -18,6 +18,8 @@ class Webuser implements ProviderInterface
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="business.webuser_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -55,6 +57,23 @@ class Webuser implements ProviderInterface
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code")
      */
     private $business;
+
+    /**
+     * Webuser constructor.
+     * @param string $email
+     * @param string $displayName
+     * @param string $password
+     * @param Business $business
+     * @param $role
+     */
+    public function __construct($email, $displayName, $password, Business $business, $role)
+    {
+        $this->email = $email;
+        $this->displayName = $displayName;
+        $this->password = $password;
+        $this->business = $business;
+        $this->role = $role;
+    }
 
     /**
      * Get id
