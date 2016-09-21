@@ -306,6 +306,12 @@ class Employee
         return $pins['company'];
     }
 
+    public function isBusinessPinDisabled()
+    {
+        $pins = json_decode($this->pin, true);
+        return array_key_exists('companyPinDisabled', $pins) && $pins['companyPinDisabled'] === true;
+    }
+
     /**
      * @return BusinessEmployee[]
      */
