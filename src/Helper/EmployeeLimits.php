@@ -1,7 +1,7 @@
 <?php
 namespace BusinessCore\Helper;
 
-use Application\Exception\InvalidTimeLimitsException;
+use BusinessCore\Exception\InvalidTimeLimitsException;
 
 class EmployeeLimits
 {
