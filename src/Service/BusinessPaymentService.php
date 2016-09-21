@@ -5,6 +5,7 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\ExtraPayment;
 use BusinessCore\Entity\Repository\BusinessPaymentRepository;
+use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Exception\InvalidFormDataException;
 
@@ -32,24 +33,31 @@ class BusinessPaymentService
      * @var BusinessTimePackageService
      */
     private $businessTimePackageService;
+    /**
+     * @var BusinessService
+     */
+    private $businessService;
 
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessPaymentRepository $businessPaymentRepository
      * @param BusinessTimePackageService $businessTimePackageService
+     * @param BusinessService $businessService
      * @param Translator $translator
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessPaymentRepository $businessPaymentRepository,
         BusinessTimePackageService $businessTimePackageService,
+        BusinessService $businessService,
         Translator $translator
     ) {
         $this->entityManager = $entityManager;
         $this->businessPaymentRepository = $businessPaymentRepository;
         $this->translator = $translator;
         $this->businessTimePackageService = $businessTimePackageService;
+        $this->businessService = $businessService;
     }
 
     public function searchPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria)
@@ -107,6 +115,10 @@ class BusinessPaymentService
                 $payment->getTimePackage()
             );
         }
+        if ($payment instanceof SubscriptionPayment) {
+            $this->businessService->approveEmployeesWaitingForBusinessEnabling($payment->getBusiness());
+        }
+
         $this->entityManager->persist($payment);
         $this->entityManager->flush();
     }

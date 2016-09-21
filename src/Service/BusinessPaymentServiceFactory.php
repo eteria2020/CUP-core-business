@@ -13,6 +13,7 @@ class BusinessPaymentServiceFactory implements FactoryInterface
         //all payments have the same repository, so I get one from a random payment entity
         $businessPaymentRepository = $entityManager->getRepository('BusinessCore\Entity\TimePackagePayment');
         $businessTimePackageService = $serviceLocator->get('BusinessCore\Service\BusinessTimePackageService');
+        $businessService = $serviceLocator->get('BusinessCore\Service\BusinessService');
 
         $translator = $serviceLocator->get('translator');
 
@@ -20,6 +21,7 @@ class BusinessPaymentServiceFactory implements FactoryInterface
             $entityManager,
             $businessPaymentRepository,
             $businessTimePackageService,
+            $businessService,
             $translator
         );
     }
