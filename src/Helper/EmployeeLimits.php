@@ -312,12 +312,15 @@ class EmployeeLimits
     private function parseValidRanges($range)
     {
         $limits = $this->parseRanges($range);
-        $from = $limits['from'];
-        $to = $limits['to'];
+        foreach ($limits as $limit) {
+            $from = $limit['from'];
+            $to = $limit['to'];
 
-        if (empty($from) || empty($to) || new \DateTime($from) >= new \DateTime($to)) {
-            throw new InvalidTimeLimitsException("Time from is before time to");
+            if (empty($from) || empty($to) || new \DateTime($from) >= new \DateTime($to)) {
+                throw new InvalidTimeLimitsException("Time from is before time to");
+            }
         }
+
         return $limits;
     }
 }
