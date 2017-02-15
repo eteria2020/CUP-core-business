@@ -3,4 +3,4 @@ BusinessCore
 
 Introduction
 ------------
-Domain of Business functionalities
+Domain of Business areas.
