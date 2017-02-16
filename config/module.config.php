@@ -3,6 +3,10 @@
 namespace BusinessCore;
 
 return [
+    'invoice' => [
+        'template_version' => '1',
+        'vat_percentage' => 22
+    ],
     'doctrine' => [
         'driver' => [
             __NAMESPACE__ . '_driver' => [
@@ -33,8 +37,18 @@ return [
             'BusinessCore\Service\GroupService' => 'BusinessCore\Service\GroupServiceFactory',
             'BusinessCore\Service\BusinessTripService' => 'BusinessCore\Service\BusinessTripServiceFactory',
             'BusinessCore\Service\BusinessInvoiceService' => 'BusinessCore\Service\BusinessInvoiceServiceFactory',
-            'BusinessCore\Service\InvoicePdfService' => 'BusinessCore\Service\InvoicePdfServiceFactory',
-        ]
+            'BusinessCore\Service\PdfService' => 'BusinessCore\Service\PdfServiceFactory',
+            'BusinessCore\Service\BusinessTimePackageService' => 'BusinessCore\Service\BusinessTimePackageServiceFactory',
+            'BusinessCore\Service\BusinessPaymentService' => 'BusinessCore\Service\BusinessPaymentServiceFactory',
+            'BusinessCore\Service\BusinessEmailService' => 'BusinessCore\Service\BusinessEmailServiceFactory',
+            'BusinessCore\Service\TransactionService' => 'BusinessCore\Service\TransactionServiceFactory',
+            'BusinessCore\Service\SubscriptionService' => 'BusinessCore\Service\SubscriptionServiceFactory',
+            'BusinessCore\Service\ContractService' => 'BusinessCore\Service\ContractServiceFactory',
+            'BusinessCore\Service\BusinessFleetService' => 'BusinessCore\Service\BusinessFleetServiceFactory',
+            'BusinessCore\Service\PaymentService' => 'BusinessCore\Service\PaymentServiceFactory',
+            'BusinessCore\Listener\EmployeeApprovedListener' => 'BusinessCore\Listener\EmployeeApprovedListenerFactory',
+            'BusinessCore\Listener\PaymentListener' => 'BusinessCore\Listener\PaymentListenerFactory'
+        ],
     ],
     'view_helpers'    => [
         'factories' => [

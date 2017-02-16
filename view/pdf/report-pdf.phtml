@@ -1,0 +1,37 @@
+<?php
+$payments = $this->payments['payments'];
+$totals = $this->payments['totals']
+?>
+
+<div id="container">
+    <div class="page-container">
+        <img class="logo" src="<?php echo $this->serverUrl() . "/images/sharengo_logo.jpg"?>" alt="">
+
+        <div class="invoice-data data">
+            <p>Report <?= date_create()->format('d-m-Y H:i:s') ?></p>
+        </div>
+
+        <table class="table">
+            <?php foreach ($payments as $payment) { ?>
+            <tr>
+                <td class="report-created_ts"><?= $payment['created_ts'] ?></td>
+                <td class="report-type"><?= $payment['type'] ?></td>
+                <td class="report-status"><?= $payment['status'] ?></td>
+
+                <td class="report-amount"><?= $payment['amount'] ?></td>
+            </tr>
+            <? } ?>
+        </table>
+        <br>
+        <table class="table">
+            <?php foreach ($totals as $total) { ?>
+            <tr>
+                <td class="report-total-label">Tot</td>
+                <td class="report-total-amount"><?= $total?></td>
+            </tr>
+            <? } ?>
+        </table>
+    </div>
+</div>
+
+

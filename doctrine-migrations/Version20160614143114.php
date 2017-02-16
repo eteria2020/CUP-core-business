@@ -8,26 +8,26 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20160427101229 extends AbstractMigration
+class Version20160614143114 extends AbstractMigration
 {
-    const TABLE = 'business.business_trip';
-    const SEQUENCE_NAME = 'business.business_trip_id_seq';
+    const TABLE = 'business.contract';
+    const SEQUENCE_NAME = 'business.contract_id_seq';
 
     /**
      * @param Schema $schema
      */
     public function up(Schema $schema)
     {
-        $schema->createSequence(self::SEQUENCE_NAME);
+        $schema->createSequence(self::SEQUENCE_NAME, 1, 10000);
         $table = $schema->createTable(self::TABLE);
         $table->addColumn("id", "integer", ["notnull" => true, "default" => "nextval('".self::SEQUENCE_NAME."')"]);
-        $table->addColumn("trip_id", "integer");
         $table->addColumn("business_code", "string", ["notnull" => true, "length" => 6]);
-        $table->addColumn("group_id", "integer", ["notnull" => false]);
+        $table->addColumn("pan_expiry", "string", ["notnull" => false, "length" => 6]);
+        $table->addColumn("created_ts", "datetime", ["notnull" => true, "default" => 'CURRENT_TIMESTAMP']);
+        $table->addColumn("disabled_date", "datetime", ["notnull" => false]);
+
         $table->setPrimaryKey(["id"]);
         $table->addForeignKeyConstraint('business.business', ['business_code'], ['code']);
-        $table->addForeignKeyConstraint('business.employee_group', ['group_id'], ['id']);
-        $table->addForeignKeyConstraint('trips', ['trip_id'], ['id']);
     }
 
     /**
@@ -35,7 +35,7 @@ class Version20160427101229 extends AbstractMigration
      */
     public function down(Schema $schema)
     {
-        $schema->dropTable(self::TABLE);
         $schema->dropSequence(self::SEQUENCE_NAME);
+        $schema->dropTable(self::TABLE);
     }
 }
