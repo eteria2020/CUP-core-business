@@ -1,0 +1,67 @@
+.page-container {
+    overflow: auto;
+}
+.logo {
+    width: 324px;
+    height: 110px;
+}
+
+.table {
+    width: 100%;
+}
+.table tr {
+    width: 100%;
+}
+.table td, th {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px 5px;
+    border-style: solid;
+    overflow: hidden;
+}
+.table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    line-height: 12px;
+}
+.table tr td {
+    border-bottom-width: 1px;
+    border-color: #aaa;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.report-created_ts {
+    width: 170px;
+    line-break: normal;
+}
+
+.report-type {
+    width: 120px;
+    line-break: normal;
+}
+
+.report-status {
+    width: 120px;
+    line-break: normal;
+}
+
+.report-amount, .report-total-amount {
+    width: 100px;
+    line-break: normal;
+    text-align: right;
+}
+
+@media all {
+    .page-break {
+        display: none;
+    }
+}
+
+@media print {
+    .page-break {
+        display: block;
+        page-break-before: always;
+    }
+}

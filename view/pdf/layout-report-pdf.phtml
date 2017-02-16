@@ -1,0 +1,18 @@
+<?php echo $this->doctype(); ?>
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('Share \'N Go - Report')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headMeta()->appendName('description', '')?>
+        <?php echo $this->headLink()->prependStylesheet($this->serverUrl() . '/css/report.css'); ?>
+
+    </head>
+    <body>
+
+    <?php
+        echo $this->content;
+        echo $this->headScript();
+        echo $this->inlineScript();
+        echo $this->headStyle() ;
+    ?>
+    </body>
+
