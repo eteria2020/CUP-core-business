@@ -23,7 +23,7 @@ return [
         ],
         'migrations_configuration' => [
             'orm_default' => [
-                'directory' => 'module/BusinessCore/doctrine-migrations',
+                'directory' => __DIR__ . '/../doctrine-migrations',
                 'name'      => 'Doctrine Database Migrations',
                 'namespace' => 'DoctrineORMModule\Migrations',
                 'table'     => 'business.migrations',
