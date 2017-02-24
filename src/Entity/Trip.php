@@ -245,4 +245,13 @@ class Trip
     {
         return (int) (($this->timestampEnd->format('U') - $this->timestampBeginning->format('U')) / 60);
     }
+
+    public function getReadableTripLengthInMin()
+    {
+        if ($this->timestampEnd instanceof DateTime && $this->timestampBeginning instanceof DateTime) {
+            return $this->getTripLengthInMin() . "min";
+
+        }
+        return "n.d.";
+    }
 }
