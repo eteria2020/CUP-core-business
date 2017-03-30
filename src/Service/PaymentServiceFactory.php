@@ -23,8 +23,10 @@ class PaymentServiceFactory implements FactoryInterface
         $firstPaymentParameters = new Parameters($parameters['first-payment']);
         $tokenPaymentParameters = new Parameters($parameters['token-payment']);
 
-        $firstPayment = FirstPaymentFactory::firstPayment($eventManager, $firstPaymentParameters);
-        $tokenPayment = TokenPaymentFactory::tokenPayment($eventManager, $tokenPaymentParameters);
+        $testMode = $parameters['environment'] != 'production';
+
+        $firstPayment = FirstPaymentFactory::firstPayment($eventManager, $firstPaymentParameters, $testMode);
+        $tokenPayment = TokenPaymentFactory::tokenPayment($eventManager, $tokenPaymentParameters, $testMode);
         $payment = PaymentFactory::payment($firstPayment, $tokenPayment);
 
         return new PaymentService($payment);
