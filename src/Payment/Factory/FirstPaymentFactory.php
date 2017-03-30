@@ -9,11 +9,10 @@ use Zend\EventManager\EventManagerInterface;
 
 class FirstPaymentFactory
 {
-    public static function firstPayment(EventManagerInterface $eventManager, Parameters $parameters)
+    public static function firstPayment(EventManagerInterface $eventManager, Parameters $parameters, $testMode = true)
     {
         $firstPaymentGateway = new Gateway();
-        //TODO TEST
-        $firstPaymentGateway->setTestMode(true);
+        $firstPaymentGateway->setTestMode($testMode);
 
         return new FirstPayment($eventManager, $firstPaymentGateway, $parameters);
     }

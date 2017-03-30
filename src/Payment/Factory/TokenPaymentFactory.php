@@ -9,11 +9,10 @@ use Zend\EventManager\EventManagerInterface;
 
 class TokenPaymentFactory
 {
-    public static function tokenPayment(EventManagerInterface $eventManager, Parameters $parameters)
+    public static function tokenPayment(EventManagerInterface $eventManager, Parameters $parameters, $testMode = true)
     {
         $tokenPaymentGateway = new TokenGateway();
-        //TODO TEST
-        $tokenPaymentGateway->setTestMode(true);
+        $tokenPaymentGateway->setTestMode($testMode);
 
         return new TokenPayment($eventManager, $tokenPaymentGateway, $parameters);
     }
