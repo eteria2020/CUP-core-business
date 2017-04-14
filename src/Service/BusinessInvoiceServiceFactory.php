@@ -13,7 +13,7 @@ class BusinessInvoiceServiceFactory implements FactoryInterface
         $businessInvoiceRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessInvoice');
 
         $config = $serviceLocator->get('Config');
-        $invoicesConfig = $config['invoice'];
+        $invoicesConfig = $config['business-invoice'];
 
         return new BusinessInvoiceService($entityManager, $businessInvoiceRepository, $invoicesConfig);
     }

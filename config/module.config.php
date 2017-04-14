@@ -3,7 +3,7 @@
 namespace BusinessCore;
 
 return [
-    'invoice' => [
+    'business-invoice' => [
         'template_version' => '1',
         'vat_percentage' => 22
     ],
