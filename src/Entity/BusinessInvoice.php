@@ -3,6 +3,7 @@
 namespace BusinessCore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use SharengoCore\Utils\Interval;
 
 /**
  * BusinessInvoice
@@ -532,4 +533,89 @@ class BusinessInvoice
 
         return $invoice;
     }
+
+    /**
+     * @return BusinessFleet
+     */
+    public function getFleet()
+    {
+        return $this->fleet;
+    }
+
+    /**
+     * @return Business
+     */
+    public function getBusiness()
+    {
+        return $this->business;
+    }
+
+    /**
+     * @return Interval
+     */
+    public function getInterval()
+    {
+        /*
+         * For invoices of type "TRIP" the interval is defined as:
+         * - "start" the date of the beginning of the trip for
+         *   the first tripPayment of the invoice
+         * - "end" the date of the end of the trip for
+         *   the last tripPayment of the invoice
+         */
+        if ($this->getType() == $this::TYPE_TRIP) {
+            // Get the body with all the invoice rows
+            $body = $this->getContent()['body']['contents']['body'];
+            // Generate two starting dates to start comparing against
+            $startDate = date_create_from_format("d-m-Y H:i:s", substr($body[0][1][0], 8));
+            $endDate = date_create_from_format("d-m-Y H:i:s", substr($body[0][1][1], 6));
+            // Compare all dates to find highest and lowest
+            foreach ($body as $times) {
+                $start = date_create_from_format("d-m-Y H:i:s", substr($times[1][0], 8));
+                $end = date_create_from_format("d-m-Y H:i:s", substr($times[1][1], 6));
+                // Compare start dates
+                if ($start < $startDate) {
+                    $startDate = $start;
+                }
+                // Compare end dates
+                if ($end > $endDate) {
+                    $endDate = $end;
+                }
+            }
+            return new Interval($startDate, $endDate);
+
+            /*
+             * For invoices of type "FIRST_PAYMENT" and "PENALTY",
+             * the interval is defined as:
+             * - "start" the date of the invoice
+             * - "end" the date of the invoice
+             */
+        } else {
+            return new Interval($this->getDateTimeDate(), $this->getDateTimeDate());
+        }
+    }
+    /**
+     * @return \DateTime the value of invoiceDate converted to \DateTime
+     */
+    public function getDateTimeDate()
+    {
+        $date = $this->getInvoiceDate();
+        $date = ($date % 100) . "/" . (floor(($date % 10000) / 100)) . "/" . floor($date / 10000);
+        return date_create_from_format("d/m/Y", $date);
+    }
+
+    public function getTypeItalianTranslation()
+    {
+        switch ($this->getType()) {
+            case self::TYPE_SUBSCRIPTION:
+                return 'Iscrizione';
+            case self::TYPE_TRIP:
+                return 'Corse';
+            case self::TYPE_EXTRA:
+                return 'Extra';
+            case self::TYPE_TIME_PACKAGE:
+                return 'Pacchetto tempo';
+        }
+        return '';
+    }
+
 }

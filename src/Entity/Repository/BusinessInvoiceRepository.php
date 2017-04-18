@@ -4,6 +4,7 @@ namespace BusinessCore\Entity\Repository;
 
 use BusinessCore\Entity\Business;
 use BusinessCore\Entity\BusinessFleet;
+use BusinessCore\Entity\BusinessInvoice;
 use BusinessCore\Service\Helper\SearchCriteria;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
@@ -102,5 +103,51 @@ class BusinessInvoiceRepository extends EntityRepository
         }
 
         return $newInvoiceNumber;
+    }
+
+    /**
+     * @param BusinessFleet | null $fleet
+     * @return BusinessInvoice[]
+     */
+    public function findInvoicesByFleetJoinCustomers($fleet = null)
+    {
+        $em = $this->getEntityManager();
+
+        $dql = "SELECT bi, b
+        FROM \BusinessCore\Entity\BusinessInvoice bi
+        LEFT JOIN i.business b";
+        if ($fleet != null) {
+            $dql .= " WHERE bi.fleet = :fleet";
+        }
+        $dql .= " ORDER BY bi.id ASC";
+
+        $query = $em->createQuery($dql);
+        if ($fleet != null) {
+            $query->setParameter('fleet', $fleet);
+        }
+
+        return $query->getResult();
+    }
+
+    public function findInvoicesByDateAndFleetJoinCustomers($date, $fleet)
+    {
+        $em = $this->getEntityManager();
+
+        $dql = "SELECT bi, b
+        FROM \BusinessCore\Entity\BusinessInvoice bi
+        LEFT JOIN bi.business b
+        WHERE bi.invoiceDate = :invDate";
+        if ($fleet != null) {
+            $dql .= " AND bi.fleet = :fleet";
+        }
+        $dql .= " ORDER BY bi.id ASC";
+
+        $query = $em->createQuery($dql);
+        $query->setParameter('invDate', $date->format('Ymd'));
+        if ($fleet != null) {
+            $query->setParameter('fleet', $fleet);
+        }
+
+        return $query->getResult();
     }
 }

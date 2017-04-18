@@ -38,4 +38,9 @@ class BusinessFleetService
     {
         return $this->businessFleetRepository->findAll();
     }
+
+    public function getFleetByCode($filterFleet)
+    {
+        return $this->businessFleetRepository->findOneBy(['code' => $filterFleet]);
+    }
 }

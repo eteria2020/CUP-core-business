@@ -321,4 +321,95 @@ class BusinessInvoiceService
             ]
         );
     }
+
+    /**
+     * @param BusinessFleet | null $fleet
+     * @return BusinessInvoice[]
+     */
+    public function getInvoicesByFleetJoinBusiness($fleet = null)
+    {
+        return $this->businessInvoiceRepository->findInvoicesByFleetJoinCustomers($fleet);
+    }
+
+
+    /**
+     * @param \DateTime $date
+     * @param BusinessFleet | null $fleet
+     * @return BusinessInvoice[]
+     */
+    public function getInvoicesByDateAndFleetJoinBusiness(\DateTime $date, $fleet = null)
+    {
+        return $this->businessInvoiceRepository->findInvoicesByDateAndFleetJoinCustomers($date, $fleet);
+    }
+
+    public function groupByInvoiceDate($invoices)
+    {
+        $groupedInvoices = [];
+        /** @var BusinessInvoice[] $invoices */
+        foreach ($invoices as $invoice) {
+            if (array_key_exists($invoice->getInvoiceDate(), $groupedInvoices)) {
+                array_push($groupedInvoices[$invoice->getInvoiceDate()], $invoice);
+            } else {
+                $groupedInvoices[$invoice->getInvoiceDate()] = [$invoice];
+            }
+        }
+        return $groupedInvoices;
+    }
+
+    /**
+     * @param BusinessInvoice $invoice
+     * @return string
+     */
+    public function getExportDataForInvoice($invoice)
+    {
+        // get the dates depending on the type of invoice
+        $period = $invoice->getInterval();
+
+        $business = $invoice->getBusiness();
+
+        // generate the first common part between the two records
+        $partionRecord1 = [
+            "110",// 11
+            $invoice->getDateTimeDate()->format("d/m/Y"), // 10
+            substr($invoice->getInvoiceNumber(), 5), // 20
+            "TC",// 30
+            $invoice->getDateTimeDate()->format("d/m/Y"), // 50
+            substr($invoice->getInvoiceNumber(), 5), // 61
+            "", // 130
+            $business->getCode(), // 78
+            "CC001", // 241
+            $invoice->getAmount(), // 140
+        ];
+
+        // generate the second common part between the two records
+        $partionRecord2 = [
+            $invoice->getAmount(), // 930
+            $invoice->getVat(), // 1001
+            $period->start()->format("d/m/Y"), // 1020
+            $period->end()->format("d/m/Y"), // 1030
+            "FR" // 99999
+        ];
+
+        // generate the first record
+        $record1 = array_merge(
+            ["TES"], // 3
+            $partionRecord1,
+            [""], // 660
+            [""], // 681
+            $partionRecord2
+        );
+
+        // generate the second record
+        $record2 = array_merge(
+            ["RIG"], // 3
+            $partionRecord1,
+            ["40"], // 660
+            [strtoupper($invoice->getTypeItalianTranslation())], // 681
+            $partionRecord2
+        );
+
+        // return the two records combined
+        return implode(";", $record1) . "\r\n" . implode(";", $record2);
+    }
+
 }

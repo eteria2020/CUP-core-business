@@ -389,4 +389,52 @@ class BusinessService
     {
         return $this->businessRepository->findBusinessWebuser($business);
     }
+
+    public function getExportDataForBusiness(Business $business)
+    {
+        $vat = $business->getVatNumber();
+        $vat = str_replace(";", " ", $vat);
+        $vat = str_replace("it", "", strtolower($vat));
+
+        /**
+         * Every element is in a row
+         * The first value in the comments for each row is the code number
+         * The second value is the maximum length of that element
+         */
+        $registry = [
+            "GEN", // 10 - max 3
+            $business->getCode(), // 41 - max 25
+            $vat, // 60 - max 25
+            empty($vat) ? 0 : 1, // 61 - max 1
+            empty($vat) ? 1 : 0, // 358 - max 1
+            empty($vat) ? 3 : 2, // 80 - max 1
+            $this->truncateIfLonger(str_replace(";", " ", $business->getName()), 30), // 95 - max 30
+            $this->truncateIfLonger(str_replace(";", " ", $business->getAddress()), 35), // 100 - max 35
+            $this->truncateIfLonger(str_replace(";", " ", $business->getPhone()), 20), // 160 - max 20
+            str_replace(";", " ", $business->getZipCode()), // 110 - max 7
+            $this->truncateIfLonger(str_replace(";", " ", $business->getCity()), 25), // 120 - max 25
+            $business->getProvince(), // 130 - max 2
+            "C01", // 240 - max 6
+            "200", // 330 - max 6
+            "CC001" // 581 - max 25
+        ];
+        return implode(";", $registry);
+    }
+
+    /**
+     * Returns the same string if it is shorter that the specified length,
+     * returns the truncated string if it is longer
+     *
+     * @param string $string string to truncate
+     * @param integer $length maximum length
+     * @return string
+     */
+    private function truncateIfLonger($string, $length)
+    {
+        if (empty($string)) {
+            return '';
+        }
+        return substr($string, 0, $length);
+    }
+
 }
