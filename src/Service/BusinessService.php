@@ -392,9 +392,13 @@ class BusinessService
 
     public function getExportDataForBusiness(Business $business)
     {
-        $vat = $business->getVatNumber();
-        $vat = str_replace(";", " ", $vat);
+        $vat = $this->exportFormat($business->getVatNumber(), 70);
         $vat = str_replace("it", "", strtolower($vat));
+
+        $paymentType = "CC101";     // default is credit card
+        if($business->getPaymentType()==="wire_transfer"){
+            $paymentType ="BB101";
+        }
 
         /**
          * Every element is in a row
@@ -402,39 +406,58 @@ class BusinessService
          * The second value is the maximum length of that element
          */
         $registry = [
-            "GEN", // 10 - max 3
-            $business->getCode(), // 41 - max 25
-            $vat, // 60 - max 25
-            empty($vat) ? 0 : 1, // 61 - max 1
-            empty($vat) ? 1 : 0, // 358 - max 1
-            empty($vat) ? 3 : 2, // 80 - max 1
-            $this->truncateIfLonger(str_replace(";", " ", $business->getName()), 30), // 95 - max 30
-            $this->truncateIfLonger(str_replace(";", " ", $business->getAddress()), 35), // 100 - max 35
-            $this->truncateIfLonger(str_replace(";", " ", $business->getPhone()), 20), // 160 - max 20
-            str_replace(";", " ", $business->getZipCode()), // 110 - max 7
-            $this->truncateIfLonger(str_replace(";", " ", $business->getCity()), 25), // 120 - max 25
-            $business->getProvince(), // 130 - max 2
-            "C01", // 240 - max 6
-            "200", // 330 - max 6
-            "CC001" // 581 - max 25
+            "GEN",                                              // 1. 10 - max 3
+            $this->exportFormat($business->getCode(),25),       // 2. 41 - max 25
+            "",                                                 // 3. card code 50 - max 15
+            $vat,                                               // 4. 60 - max 25
+            empty($vat) ? 0 : 1,                                // 5. 61 - max 1
+            empty($vat) ? 1 : 0,                                // 6. 358 - max 1
+            $vat,                                               // 7. 70 - max 25
+            empty($vat) ? 3 : 2,                                // 8. 80 - max 1
+            $this->exportFormat($business->getName(), 30),      // 9. getSurname 90 - max 30
+            "",                                                 // 10. getName 95 - max 30
+            $this->exportFormat( $business->getAddress(), 35),  // 11. getAddress 100 - max 35
+            "",                                                 // 12. 105 - max 35
+            $this->exportFormat($business->getPhone(), 20),     // 13. 160 - max 20
+            $this->exportFormat($business->getFax(), 20),       // 14. 170 - max 20
+            $this->exportFormat($business->getZipCode(),10),    // 15. 110 - max 7
+            $this->exportFormat($business->getCity(), 25),      // 16. 120 - max 25
+            $this->exportFormat($business->getProvince(),10),   // 17. 130 - max 2
+            "",                                                 // 18. getBirthCountry 140 - max 3
+            $this->exportFormat($business->getName(), 30),      // 19. getSurname 230 - max 25
+            "",                                                 // 20. getName 231 - max 20
+            "",                                                 // 21. getBirthTown 232 - max 25
+            "",                                                 // 22. getBirthProvince 233 - max 2
+            "",                                                 // 23. getBirthDate 234 - max 10
+            "",                                                 // 24. gender 235 - max 1
+            "",                                                 // 25. BirthCountry 236 - max 3
+            "C01",                                              // 26. 240 - max 6
+            "200",                                              // 27. 330 - max 6
+            $paymentType                                        // 28. 581 - max 25
         ];
+
         return implode(";", $registry);
     }
 
     /**
-     * Returns the same string if it is shorter that the specified length,
-     * returns the truncated string if it is longer
-     *
-     * @param string $string string to truncate
-     * @param integer $length maximum length
-     * @return string
+     * Replace the character ';', and truncate the $inputString if longer of $length
+     * @param type $inputString string to truncate
+     * @param type $length maximum length
+     * @return type
      */
-    private function truncateIfLonger($string, $length)
-    {
-        if (empty($string)) {
-            return '';
-        }
-        return substr($string, 0, $length);
-    }
+    private function exportFormat($inputString, $length){
+        $result = '';
 
+        if (!empty($inputString)) {
+            $result = trim($inputString);
+            $result = str_replace(";", "", $result);
+            $result = str_replace("\n", "", $result);
+            $result = str_replace("\r", "", $result);
+            if($length>0) {
+                $result = substr($result, 0, $length);
+            }
+        }
+
+        return $result;
+    }
 }

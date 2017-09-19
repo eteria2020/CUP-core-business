@@ -364,52 +364,56 @@ class BusinessInvoiceService
     {
         // get the dates depending on the type of invoice
         $period = $invoice->getInterval();
-
         $business = $invoice->getBusiness();
+
+        $paymentType = "CC101";     // default is credit card
+        if($business->getPaymentType()==="wire_transfer"){
+            $paymentType ="BB101";
+        }
 
         // generate the first common part between the two records
         $partionRecord1 = [
-            "110",// 11
-            $invoice->getDateTimeDate()->format("d/m/Y"), // 10
-            substr($invoice->getInvoiceNumber(), 5), // 20
-            "TC",// 30
-            $invoice->getDateTimeDate()->format("d/m/Y"), // 50
-            substr($invoice->getInvoiceNumber(), 5), // 61
-            "", // 130
-            $business->getCode(), // 78
-            "CC001", // 241
-            $invoice->getAmount(), // 140
+            "110",                                          // 2. 11
+            $invoice->getDateTimeDate()->format("d/m/Y"),   // 3. 10
+            substr($invoice->getInvoiceNumber(), 5),        // 4. 20
+            "TC",                                           // 5. 30
+            $invoice->getDateTimeDate()->format("d/m/Y"),   // 6. 50
+            substr($invoice->getInvoiceNumber(), 5),        // 7. 61
+            "",                                             // 8. 130
+            $business->getCode(),                           // 9. 78
+            $paymentType,                                   // 10. 241
+            $invoice->getAmount(),                          // 11. 140
         ];
 
         // generate the second common part between the two records
         $partionRecord2 = [
-            $invoice->getAmount(), // 930
-            $invoice->getVat(), // 1001
-            $period->start()->format("d/m/Y"), // 1020
-            $period->end()->format("d/m/Y"), // 1030
-            "FR" // 99999
+            $invoice->getAmount(),                          // 14. 930
+            $invoice->getVat(),                             // 15. 1001
+            $period->start()->format("d/m/Y"),              // 16. 1020
+            $period->end()->format("d/m/Y"),                // 17. 1030
+            "FR"                                            // 18. 99999
         ];
 
         // generate the first record
-        $record1 = array_merge(
-            ["TES"], // 3
-            $partionRecord1,
-            [""], // 660
-            [""], // 681
-            $partionRecord2
+        $rowTES = array_merge(
+            ["TES"],                                        // 1. 3
+            $partionRecord1,                                // 2. - 11 .
+            [""], // 660                                    // 12.
+            [""], // 681                                    // 13.
+            $partionRecord2                                 // 14. -- 18 .
         );
 
         // generate the second record
-        $record2 = array_merge(
-            ["RIG"], // 3
-            $partionRecord1,
-            ["40"], // 660
-            [strtoupper($invoice->getTypeItalianTranslation())], // 681
-            $partionRecord2
+        $rowRIG = array_merge(
+            ["RIG"],                                        // 1. 3
+            $partionRecord1,                                // 2. - 11 .
+            ["40"],                                         // 12. 660
+            [strtoupper($invoice->getTypeItalianTranslation())], // 13. 681
+            $partionRecord2                                 // 14. -- 18 .
         );
 
         // return the two records combined
-        return implode(";", $record1) . "\r\n" . implode(";", $record2);
+        return implode(";", $rowTES) . "\r\n" . implode(";", $rowRIG);
     }
 
 }
