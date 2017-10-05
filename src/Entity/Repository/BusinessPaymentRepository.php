@@ -48,6 +48,7 @@ class BusinessPaymentRepository extends EntityRepository
             $select = 'COUNT(sub.*) as tot';
             $rsm->addScalarResult('tot', 'tot');
         } else {
+            $rsm->addScalarResult('fk_id', 'fk_id');
             $rsm->addScalarResult('amount', 'amount');
             $rsm->addScalarResult('currency', 'currency');
             $rsm->addScalarResult('created_ts', 'created_ts');
@@ -60,13 +61,15 @@ class BusinessPaymentRepository extends EntityRepository
         }
 
         $sql = 'select ' . $select . ' from (
-                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment
+                select btp.business_code, btp.id, t.id AS fk_id, t.beginning_tx created_ts, btp.payed_on_ts, btp.amount, btp.currency, btp.status, btp.invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment btp
+                    inner join business.business_trip bt on (bt.id=btp.business_trip_id ) 
+                    inner join public.trips t on (t.id=bt.trip_id ) 
                 union all
-                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, expected_payed_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
                 ) sub
                 where business_code = :business_code ';
 
@@ -145,6 +148,7 @@ class BusinessPaymentRepository extends EntityRepository
             $rsm->addScalarResult('currency', 'currency');
         } else {
             $select = 'sub.*';
+            $rsm->addScalarResult('fk_id', 'fk_id');
             $rsm->addScalarResult('amount', 'amount');
             $rsm->addScalarResult('currency', 'currency');
             $rsm->addScalarResult('created_ts', 'created_ts');
@@ -156,13 +160,15 @@ class BusinessPaymentRepository extends EntityRepository
         }
 
         $sql = 'select ' . $select . ' from (
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment
+                select btp.business_code, btp.id, t.id AS fk_id, btp.created_ts, btp.payed_on_ts, btp.amount, btp.currency, btp.status, btp.invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment btp
+                    inner join business.business_trip bt on (bt.id=btp.business_trip_id ) 
+                    inner join public.trips t on (t.id=bt.trip_id ) 
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_EXTRA . '\' AS type from business.extra_payment
                 union all
-                select business_code, id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
+                select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_SUBSCRIPTION . '\' AS type from business.subscription_payment
                 ) sub
                 where business_code = :business_code ';
 
