@@ -6,6 +6,7 @@ use BusinessCore\Entity\BusinessFleet;
 
 class BusinessConfigParams
 {
+    private $businessEnabled;
     private $paymentType;
     private $paymentFrequence;
     private $invoiceFrequence;
@@ -25,6 +26,7 @@ class BusinessConfigParams
      * @param BusinessFleet $fleet
      */
     public function __construct(
+        $businessEnabled,
         $paymentType,
         $paymentFrequence,
         $invoiceFrequence,
@@ -32,12 +34,21 @@ class BusinessConfigParams
         $subscriptionFeeCents,
         BusinessFleet $fleet
     ) {
+        $this->businessEnabled = $businessEnabled;
         $this->paymentType = $paymentType;
         $this->paymentFrequence = $paymentFrequence;
         $this->invoiceFrequence = $invoiceFrequence;
         $this->businessMailControl = $businessMailControl;
         $this->subscriptionFeeCents = $subscriptionFeeCents;
         $this->fleet = $fleet;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBusinessEnabled()
+    {
+        return $this->businessEnabled;
     }
 
     /**
