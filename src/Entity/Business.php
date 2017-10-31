@@ -418,7 +418,7 @@ class Business
 
     public function updateParams(BusinessConfigParams $data)
     {
-        $this->enable = $data->getBusinessEnabled();
+        $this->isEnabled = $data->getBusinessEnabled();
         $this->paymentType = $data->getPaymentType();
         $this->paymentFrequence = $data->getPaymentFrequence();
         $this->invoiceFrequence = $data->getInvoiceFrequence();
