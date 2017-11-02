@@ -84,6 +84,7 @@ class BusinessDataFactory
     public static function businessConfigParamsfromArray(array $data)
     {
         $translator = new \Zend\I18n\Translator\Translator;
+        $businessEnabled = $data['businessEnabled'];
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
         $invoiceFrequence = $data['invoiceFrequence'];
@@ -115,6 +116,6 @@ class BusinessDataFactory
 
         $subscriptionFeeCents = $subscriptionFeeCents * 100;
 
-        return new BusinessConfigParams($paymentType, $paymentFrequence, $invoiceFrequence, $businessMailControl, $subscriptionFeeCents, $fleet);
+        return new BusinessConfigParams($businessEnabled, $paymentType, $paymentFrequence, $invoiceFrequence, $businessMailControl, $subscriptionFeeCents, $fleet);
     }
 }
