@@ -87,7 +87,7 @@ class BusinessDataFactory
         if (array_key_exists('businessEnabled', $data)) {
             $businessEnabled = $data['businessEnabled'];
         } else {
-            $data['businessEnabled'] = true;
+            $businessEnabled = true;
         }
 
         $paymentType = $data['paymentType'];
