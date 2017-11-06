@@ -84,7 +84,12 @@ class BusinessDataFactory
     public static function businessConfigParamsfromArray(array $data)
     {
         $translator = new \Zend\I18n\Translator\Translator;
-        $businessEnabled = $data['businessEnabled'];
+        if (array_key_exists('businessEnabled', $data)) {
+            $businessEnabled = $data['businessEnabled'];
+        } else {
+            $data['businessEnabled'] = true;
+        }
+
         $paymentType = $data['paymentType'];
         $paymentFrequence = $data['paymentFrequence'];
         $invoiceFrequence = $data['invoiceFrequence'];
