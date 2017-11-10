@@ -297,6 +297,17 @@ class Employee
         return $this->phone;
     }
 
+    /**
+     * @return string
+     */
+    public function getPin()
+    {
+        return $this->pin;
+    }
+
+    /**
+     * @return string
+     */
     public function getBusinessPin()
     {
         $pins = json_decode($this->pin, true);
@@ -306,6 +317,9 @@ class Employee
         return $pins['company'];
     }
 
+    /**
+     * @return boolean
+     */
     public function isBusinessPinDisabled()
     {
         $pins = json_decode($this->pin, true);
@@ -320,6 +334,9 @@ class Employee
         return $this->businessEmployee;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasActiveBusinessAssociation()
     {
         foreach ($this->getBusinessEmployee() as $businessEmployee) {
@@ -330,6 +347,9 @@ class Employee
         return false;
     }
 
+    /**
+     * @return BusinessEmployee
+     */
     public function getActiveBusinessEmployee()
     {
         foreach ($this->getBusinessEmployee() as $businessEmployee) {
