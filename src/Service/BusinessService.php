@@ -145,7 +145,7 @@ class BusinessService
     public function removeEmployee(Business $business, $employeeId)
     {
         $businessEmployee = $this->getBusinessEmployee($business, $employeeId);
-        $this->businessEmployeeRepository->removeEmployeeAndClaenPinCompany($businessEmployee->getEmployee());
+        $this->businessEmployeeRepository->removeEmployeeAndCleanPinCompany($businessEmployee->getEmployee());
 //        $businessEmployee->delete();
 //        $this->entityManager->persist($businessEmployee);
 //        $this->entityManager->flush();

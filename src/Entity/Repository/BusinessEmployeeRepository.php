@@ -28,7 +28,7 @@ class BusinessEmployeeRepository extends EntityRepository {
      * @param Employee $employee
      * @return type
      */
-    public function removeEmployeeAndClaenPinCompany(Employee $employee) {
+    public function removeEmployeeAndCleanPinCompany(Employee $employee) {
 
         $em = $this->getEntityManager();
         $query = $em->createQuery(
