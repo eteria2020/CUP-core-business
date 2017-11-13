@@ -15,7 +15,7 @@ class BusinessBuyableTimePackage
     /**
      * @var Business
      * @ORM\ID
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="businessBuyableTimePackages")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;

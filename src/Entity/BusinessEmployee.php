@@ -23,7 +23,7 @@ class BusinessEmployee
     /**
      * @var Employee
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Employee")
+     * @ORM\ManyToOne(targetEntity="Employee", inversedBy="businessEmployee")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="employee_id", referencedColumnName="id", nullable=false)
      * })
@@ -33,7 +33,7 @@ class BusinessEmployee
     /**
      * @var Business
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="businessEmployee")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      * })
@@ -71,7 +71,7 @@ class BusinessEmployee
     /**
      * @var Group
      *
-     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="businessEmployees")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      */
     private $group;

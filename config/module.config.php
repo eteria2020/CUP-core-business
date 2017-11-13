@@ -12,7 +12,7 @@ return [
             __NAMESPACE__ . '_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => [__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity']
+                'paths' => [__DIR__ . '/../src/Entity']
             ],
             'orm_default'             => [
                 'class'   => 'Doctrine\ORM\Mapping\Driver\DriverChain',

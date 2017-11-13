@@ -24,7 +24,7 @@ class BusinessFare
 
     /**
      * @var Business
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="businessFares")
      * @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      */
     private $business;
