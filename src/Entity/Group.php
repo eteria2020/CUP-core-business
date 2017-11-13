@@ -25,7 +25,7 @@ class Group
 
     /**
      * @var Business
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="businessGroups")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="business_code", referencedColumnName="code", nullable=false)
      * })
