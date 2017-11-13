@@ -241,9 +241,19 @@ class Trip
         return $this->id;
     }
 
+    /**
+     * 
+     * @return int Trip duration in minutes
+     */
     public function getTripLengthInMin()
     {
-        return (int) (($this->timestampEnd->format('U') - $this->timestampBeginning->format('U')) / 60);
+        $result = 0;
+
+        if(!is_null($this->timestampEnd) && !is_null($this->timestampBeginning)) {
+            $result = (int) (($this->timestampEnd->format('U') - $this->timestampBeginning->format('U')) / 60);
+        }
+
+        return $result;
     }
 
     public function getReadableTripLengthInMin()
