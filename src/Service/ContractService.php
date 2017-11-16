@@ -43,6 +43,7 @@ class ContractService
 
     public function findById($contractId)
     {
+        var_dump($contractId);  //TODO: just for test
         //return $this->contractRepository->findOneBy(['id' => $contractId]);
         return $this->contractRepository->findBusinessContractById($contractId);
     }
