@@ -105,6 +105,8 @@ class PaymentListener implements SharedListenerAggregateInterface
         $transactionId = $params['transactionId'];
         $contractId = $params['contractId'];
         $contract = $this->contractService->findById($contractId);
+        $business = $this->businessService->getBusinessByCode($contract->getBusiness()->getCode());
+        $business->enable();
         $transaction = $this->transactionService->getTransactionFromId($transactionId);
         $this->transactionService->firstTransactionCompleted($transaction, $contract, $params);
     }
