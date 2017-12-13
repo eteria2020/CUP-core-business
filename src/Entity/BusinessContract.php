@@ -60,6 +60,7 @@ class BusinessContract
     {
         $this->business = $business;
         $this->createdTs = date_create();
+        $this->disabledDate = date_create();    //be careful, contract is disable
     }
 
     /**
@@ -97,6 +98,11 @@ class BusinessContract
     public function disable()
     {
         $this->disabledDate = date_create();
+    }
+
+    public function enable()
+    {
+        $this->disabledDate = null;
     }
 
     public function isDisabled()

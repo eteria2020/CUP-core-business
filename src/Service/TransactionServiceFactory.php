@@ -13,12 +13,14 @@ class TransactionServiceFactory implements FactoryInterface
         $businessTimePackageService = $serviceLocator->get('BusinessCore\Service\BusinessTimePackageService');
         $businessService = $serviceLocator->get('BusinessCore\Service\BusinessService');
         $businessTransactionRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessTransaction');
+        $businessContractRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessContract');
 
         return new TransactionService(
             $entityManager,
             $businessTimePackageService,
             $businessService,
-            $businessTransactionRepository
+            $businessTransactionRepository,
+            $businessContractRepository
         );
     }
 }

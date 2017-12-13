@@ -12,8 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\BusinessTransactionRepository")
 
  */
-class BusinessTransaction
-{
+class BusinessTransaction {
+
     /**
      * @var integer
      *
@@ -84,12 +84,28 @@ class BusinessTransaction
     private $subscriptionPayments;
 
     /**
+     * @var Contract
+     *
+     * @ORM\ManyToOne(targetEntity="BusinessContract")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $contract;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="first_transaction", type="boolean", nullable=true)
+     */
+    private $firstTransaction;
+
+    /**
      * BusinessTransaction constructor.
      * @param int $amount
      * @param string $currency
      */
-    public function __construct($amount, $currency)
-    {
+    public function __construct($amount, $currency) {
         $this->amount = $amount;
         $this->currency = $currency;
         $this->createdTs = date_create();
@@ -99,35 +115,30 @@ class BusinessTransaction
         $this->businessTripPayments = new ArrayCollection();
     }
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
      * @return int
      */
-    public function getAmount()
-    {
+    public function getAmount() {
         return $this->amount;
     }
 
     /**
      * @return string
      */
-    public function getCurrency()
-    {
+    public function getCurrency() {
         return $this->currency;
     }
 
-    public function success()
-    {
+    public function success() {
         $this->outcome = "OK";
         $this->outcomeTs = date_create();
     }
 
-    public function failed()
-    {
+    public function failed() {
         $this->outcome = "KO";
         $this->outcomeTs = date_create();
     }
@@ -135,52 +146,77 @@ class BusinessTransaction
     /**
      * @return ArrayCollection
      */
-    public function getTimePackagePayments()
-    {
+    public function getTimePackagePayments() {
         return $this->timePackagePayments;
     }
 
-    public function addTimePackagePayment(TimePackagePayment $timePackagePayment)
-    {
+    public function addTimePackagePayment(TimePackagePayment $timePackagePayment) {
         $this->timePackagePayments->add($timePackagePayment);
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getBusinessTripPayments()
-    {
+    public function getBusinessTripPayments() {
         return $this->businessTripPayments;
     }
 
-    public function addBusinessTripPayment(BusinessTripPayment $businessTripPayment)
-    {
+    public function addBusinessTripPayment(BusinessTripPayment $businessTripPayment) {
         $this->businessTripPayments->add($businessTripPayment);
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getExtraPayments()
-    {
+    public function getExtraPayments() {
         return $this->extraPayments;
     }
 
-    public function addExtraPayment(ExtraPayment $extraPayment)
-    {
+    public function addExtraPayment(ExtraPayment $extraPayment) {
         $this->extraPayments->add($extraPayment);
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getSubscriptionPayments()
-    {
+    public function getSubscriptionPayments() {
         return $this->subscriptionPayments;
     }
 
-    public function addSubscriptionPayment(SubscriptionPayment $subscriptionPayment)
-    {
+    public function addSubscriptionPayment(SubscriptionPayment $subscriptionPayment) {
         $this->subscriptionPayments->add($subscriptionPayment);
     }
+
+    /**
+     *
+     * @return \BusinessCore\Entity\BusinessContract
+     */
+    public function getContract() {
+        return $this->contract;
+    }
+
+    /**
+     *
+     * @param \BusinessCore\Entity\BusinessContract $contract
+     */
+    public function setContract(BusinessContract $contract) {
+        $this->contract = $contract;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function getFirstTransaction() {
+        return $this->firstTransaction;
+    }
+
+    /**
+     *
+     * @param string $firstTransaction
+     */
+    public function setFirstTransaction($firstTransaction) {
+        $this->firstTransaction = $firstTransaction;
+    }
+
 }

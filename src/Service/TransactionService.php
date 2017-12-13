@@ -9,6 +9,7 @@ use BusinessCore\Entity\Repository\BusinessTransactionRepository;
 use BusinessCore\Entity\SubscriptionPayment;
 use BusinessCore\Entity\TimePackagePayment;
 use BusinessCore\Entity\BusinessTransaction;
+use BusinessCore\Entity\Repository\BusinessContractRepository;
 
 use BusinessCore\Payment\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
@@ -33,24 +34,30 @@ class TransactionService
      * @var BusinessTransactionRepository
      */
     private $businessTransactionRepository;
-
+    /**
+     * @var BusinessContractRepository
+     */
+    private $businessContractRepository;
     /**
      * BusinessService constructor.
      * @param EntityManager $entityManager
      * @param BusinessTimePackageService $timePackageService
      * @param BusinessService $businessService
      * @param BusinessTransactionRepository $businessTransactionRepository
+     * @param BusinessContractRepository $businessContractRepository
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessTimePackageService $timePackageService,
         BusinessService $businessService,
-        BusinessTransactionRepository $businessTransactionRepository
+        BusinessTransactionRepository $businessTransactionRepository,
+        BusinessContractRepository $businessContractRepository
     ) {
         $this->entityManager = $entityManager;
         $this->timePackageService = $timePackageService;
         $this->businessService = $businessService;
         $this->businessTransactionRepository = $businessTransactionRepository;
+        $this->businessContractRepository = $businessContractRepository;
     }
 
     public function assignTransactionToPayments(BusinessPaymentRequest $request, Transaction $transaction)
@@ -59,6 +66,9 @@ class TransactionService
         try {
             $businessTransaction =
                 new BusinessTransaction($transaction->amountCents(), $transaction->currency());
+            $businessContract = $this->businessContractRepository->find($request->customer()->contract()->id());
+            $businessTransaction->setFirstTransaction($request->isFirstPayment());
+            $businessTransaction->setContract($businessContract);
             $payments = $request->getPayments();
             foreach ($payments as $payment) {
                 $payment->addTransaction($businessTransaction);
@@ -174,8 +184,10 @@ class TransactionService
             $cardExpiryDate = $params['cardExpiryDate'];
             $this->transactionCompleted($transaction);
             $contract->setPanExpiry($cardExpiryDate);
+            $contract->enable();
             $this->entityManager->persist($contract);
             $this->entityManager->flush();
+            $this->businessContractRepository->disableOldContractExceptCurrent($contract);
         }
     }
 
