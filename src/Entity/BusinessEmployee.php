@@ -50,21 +50,21 @@ class BusinessEmployee
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="inserted_ts", type="datetime", nullable=false)
+     * @ORM\Column(name="inserted_ts", type="datetimetz", nullable=true)
      */
     private $insertedTs;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="confirmed_ts", type="datetime")
+     * @ORM\Column(name="confirmed_ts", type="datetimetz", nullable=true)
      */
     private $confirmedTs;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="time_limits", type="text")
+     * @ORM\Column(name="time_limits", type="text", nullable=true)
      */
     private $timeLimits;
 
@@ -165,6 +165,10 @@ class BusinessEmployee
         return $this->group;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getGroupName()
     {
         if ($this->group instanceof Group) {
@@ -173,6 +177,10 @@ class BusinessEmployee
         return '-';
     }
 
+    /**
+     * 
+     * @param \BusinessCore\Entity\Group $group
+     */
     public function assignToGroup(Group $group)
     {
         $this->group = $group;
@@ -221,6 +229,11 @@ class BusinessEmployee
         return $this->getReadableDate($this->confirmedTs);
     }
 
+    /**
+     * 
+     * @param \DateTime $date
+     * @return string
+     */
     private function getReadableDate($date)
     {
         if ($date instanceof \DateTime) {
@@ -229,6 +242,10 @@ class BusinessEmployee
         return '-';
     }
 
+    /**
+     * 
+     * @param EmployeeLimits $limits
+     */
     public function setLimits(EmployeeLimits $limits)
     {
         $this->timeLimits = $limits->toString();
@@ -242,11 +259,31 @@ class BusinessEmployee
         return $this->timeLimits;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function isActive()
     {
         return $this->isPending() ||
         $this->isBlocked() ||
         $this->isApprovedWaitingForBusinessApproval() ||
         $this->isApproved();
+    }
+
+    /**
+     * 
+     * @return DateTime
+     */
+    public function getInsertedTs(){
+        return $this->insertedTs;
+    }
+
+    /**
+     * 
+     * @return DateTime
+     */
+    public function getConfirmedTs(){
+        return $this->confirmedTs;
     }
 }
