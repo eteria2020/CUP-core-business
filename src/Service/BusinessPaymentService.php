@@ -70,7 +70,7 @@ class BusinessPaymentService
         return $this->businessPaymentRepository->getTotalPaymentsByBusiness($business);
     }
 
-    public function addPenaltyOrExtra($business, $amount, $reason)
+    public function addPenaltyOrExtra($business, $amount, $reason, $fleet, $paymentType)
     {
         if (is_nan($amount)) {
             throw new InvalidFormDataException($this->translator->translate("Importo non valido"));
@@ -87,6 +87,10 @@ class BusinessPaymentService
             $amount,
             'EUR'
         );
+
+        $businessPayment->setFleet($fleet);
+        $businessPayment->setPaymentType($paymentType);
+        $businessPayment->setInvoiceAble(true);
 
         $this->entityManager->persist($businessPayment);
         $this->entityManager->flush();

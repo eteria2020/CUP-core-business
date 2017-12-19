@@ -268,6 +268,7 @@ class BusinessPaymentRepository extends EntityRepository
     {
         $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
                 WHERE e.business = :business
+                AND e.invoiceAble = true
                 AND e.status = :status';
         $query = $this->getEntityManager()->createQuery();
         $query->setParameter('business', $business);

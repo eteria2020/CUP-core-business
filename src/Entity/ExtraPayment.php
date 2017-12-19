@@ -155,7 +155,7 @@ class ExtraPayment extends BusinessPayment {
     }
 
     /**
-     * @param string $paymentType
+     * @param string $paymentTypeString
      */
     public function setPaymentType($paymentTypeString) {
         switch ($paymentTypeString) {
