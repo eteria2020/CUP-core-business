@@ -50,7 +50,7 @@ class ExtraPayment extends BusinessPayment {
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="invoice_at", type="datetime", nullable=true, options={"default": 0})
+     * @ORM\Column(name="invoice_at", type="datetime", nullable=true)
      */
     private $invoiceAt;
 
