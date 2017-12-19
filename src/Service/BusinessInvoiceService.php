@@ -177,6 +177,7 @@ class BusinessInvoiceService
         $this->entityManager->persist($invoice);
         foreach ($extraPayments as $extraPayment) {
             $extraPayment->setBusinessInvoice($invoice);
+            $extraPayment->setInvoiceAt(date_create());
             $this->entityManager->persist($extraPayment);
         }
 
