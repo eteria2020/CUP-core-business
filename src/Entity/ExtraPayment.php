@@ -50,7 +50,7 @@ class ExtraPayment extends BusinessPayment {
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="invoice_at", type="datetime", nullable=true, options={"default": 0})
+     * @ORM\Column(name="invoice_at", type="datetime", nullable=true)
      */
     private $invoiceAt;
 
@@ -88,7 +88,6 @@ class ExtraPayment extends BusinessPayment {
         $this->reason = $reason;
         $this->transactions = new ArrayCollection();
         $this->invoiceAble = true;
-        $this->invoiceAt = date_create();
         $this->paymentType = self::EXTRA_PAYMENT_TYPE_EXTRA;
         $this->fleet = $business->getFleet();
         parent::__construct($business, $amount, $currency);
