@@ -18,6 +18,7 @@ class Module
         $platform->registerDoctrineTypeMapping('employee_status', 'string');
         $platform->registerDoctrineTypeMapping('payment_frequence', 'string');
         $platform->registerDoctrineTypeMapping('payment_type', 'string');
+        $platform->registerDoctrineTypeMapping('business_extra_payment_types', 'string');
 
         $this->registerEventListeners($sharedEventManager, $serviceManager);
     }

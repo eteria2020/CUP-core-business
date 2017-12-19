@@ -46,7 +46,7 @@ abstract class BusinessPayment
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_ts", type="datetime", nullable=false)
+     * @ORM\Column(name="created_ts", type="datetime", nullable=false, options={"default": 0})
      */
     protected $createdTs;
 
