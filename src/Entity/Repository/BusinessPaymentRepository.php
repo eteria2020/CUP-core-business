@@ -15,10 +15,9 @@ use Doctrine\ORM\Query\ResultSetMapping;
 /**
  * BusinessPaymentRepository
  */
-class BusinessPaymentRepository extends EntityRepository
-{
-    public function getTotalPaymentsByBusiness(Business $business)
-    {
+class BusinessPaymentRepository extends EntityRepository {
+
+    public function getTotalPaymentsByBusiness(Business $business) {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('tot', 'tot');
 
@@ -39,8 +38,7 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function searchPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria, $count = false)
-    {
+    public function searchPaymentsByBusiness(Business $business, SearchCriteria $searchCriteria, $count = false) {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('business_code', 'business_code');
         $select = 'sub.*';
@@ -62,8 +60,8 @@ class BusinessPaymentRepository extends EntityRepository
 
         $sql = 'select ' . $select . ' from (
                 select btp.business_code, btp.id, t.id AS fk_id, t.beginning_tx created_ts, btp.payed_on_ts, btp.amount, btp.currency, btp.status, btp.invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment btp
-                    inner join business.business_trip bt on (bt.id=btp.business_trip_id ) 
-                    inner join public.trips t on (t.id=bt.trip_id ) 
+                    inner join business.business_trip bt on (bt.id=btp.business_trip_id )
+                    inner join public.trips t on (t.id=bt.trip_id )
                 union all
                 select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
@@ -89,9 +87,9 @@ class BusinessPaymentRepository extends EntityRepository
         $columnFromDate = $searchCriteria->getColumnFromDate();
         $columnToDate = $searchCriteria->getColumnToDate();
         if (!empty($fromDate) &&
-            !empty($toDate) &&
-            !empty($columnFromDate) &&
-            !empty($columnToDate)
+                !empty($toDate) &&
+                !empty($columnFromDate) &&
+                !empty($columnToDate)
         ) {
             $sql .= ' AND ' . $columnFromDate . ' >= :from ';
             $sql .= ' AND ' . $columnToDate . ' <= :to ';
@@ -126,8 +124,7 @@ class BusinessPaymentRepository extends EntityRepository
      * @param $id
      * @return null|BusinessPayment
      */
-    public function getPaymentByClassAndId($class, $id)
-    {
+    public function getPaymentByClassAndId($class, $id) {
         if ($this->instanceOfBusinessPayment($class)) {
             $dql = 'SELECT e FROM ' . $class . ' e WHERE e.id = :id';
             $query = $this->getEntityManager()->createQuery();
@@ -139,8 +136,7 @@ class BusinessPaymentRepository extends EntityRepository
         return null;
     }
 
-    public function getPaymentReportData(Business $business, SearchCriteria $searchCriteria, $sumTotal = false)
-    {
+    public function getPaymentReportData(Business $business, SearchCriteria $searchCriteria, $sumTotal = false) {
         $rsm = new ResultSetMapping();
         if ($sumTotal) {
             $select = 'sum(sub.amount) as total, currency';
@@ -161,8 +157,8 @@ class BusinessPaymentRepository extends EntityRepository
 
         $sql = 'select ' . $select . ' from (
                 select btp.business_code, btp.id, t.id AS fk_id, btp.created_ts, btp.payed_on_ts, btp.amount, btp.currency, btp.status, btp.invoice_id, \'' . BusinessPayment::TYPE_TRIP . '\' AS type from business.business_trip_payment btp
-                    inner join business.business_trip bt on (bt.id=btp.business_trip_id ) 
-                    inner join public.trips t on (t.id=bt.trip_id ) 
+                    inner join business.business_trip bt on (bt.id=btp.business_trip_id )
+                    inner join public.trips t on (t.id=bt.trip_id )
                 union all
                 select business_code, id, 0 AS fk_id, created_ts, payed_on_ts, amount, currency, status, invoice_id, \'' . BusinessPayment::TYPE_PACKAGE . '\' AS type from business.time_package_payment
                 union all
@@ -188,9 +184,9 @@ class BusinessPaymentRepository extends EntityRepository
         $columnFromDate = $searchCriteria->getColumnFromDate();
         $columnToDate = $searchCriteria->getColumnToDate();
         if (!empty($fromDate) &&
-            !empty($toDate) &&
-            !empty($columnFromDate) &&
-            !empty($columnToDate)
+                !empty($toDate) &&
+                !empty($columnFromDate) &&
+                !empty($columnToDate)
         ) {
             $sql .= ' AND ' . $columnFromDate . ' >= :from ';
             $sql .= ' AND ' . $columnToDate . ' <= :to ';
@@ -213,13 +209,12 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getResult();
     }
 
-    private function instanceOfBusinessPayment($class)
-    {
+    private function instanceOfBusinessPayment($class) {
         return
-            $class === TimePackagePayment::CLASS_NAME ||
-            $class === SubscriptionPayment::CLASS_NAME ||
-            $class === ExtraPayment::CLASS_NAME ||
-            $class === BusinessTripPayment::CLASS_NAME;
+                $class === TimePackagePayment::CLASS_NAME ||
+                $class === SubscriptionPayment::CLASS_NAME ||
+                $class === ExtraPayment::CLASS_NAME ||
+                $class === BusinessTripPayment::CLASS_NAME;
     }
 
     /**
@@ -227,8 +222,7 @@ class BusinessPaymentRepository extends EntityRepository
      * @return null|SubscriptionPayment
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getBusinessSubscriptionPayment(Business $business)
-    {
+    public function getBusinessSubscriptionPayment(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
                 WHERE e.business = :business';
         $query = $this->getEntityManager()->createQuery();
@@ -238,8 +232,18 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function getPendingBusinessTripPayments(Business $business)
-    {
+    /**
+     * Create a extra payment for credi card change.
+     * @param Business $business
+     * @return ExtraPayment
+     */
+    public function getBusinessExtraPaymentCreditCardChange(Business $business) {
+        $extraPayment = new ExtraPayment($business, "Cambio carta di credito", 1, "EUR");
+        $extraPayment->setPaymentType(ExtraPayment::EXTRA_PAYMENT_CREDIT_CARD_CHANGE);
+        return $extraPayment;
+    }
+
+    public function getPendingBusinessTripPayments(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\BusinessTripPayment e
                 WHERE e.business = :business
                 AND e.status = :status';
@@ -251,8 +255,7 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getTripPaymentsToBeInvoiced(Business $business)
-    {
+    public function getTripPaymentsToBeInvoiced(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\BusinessTripPayment e
                 WHERE e.business = :business
                 AND e.status = :status';
@@ -264,8 +267,7 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getExtraPaymentsToBeInvoiced(Business $business)
-    {
+    public function getExtraPaymentsToBeInvoiced(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
                 WHERE e.business = :business
                 AND e.invoiceAble = true
@@ -278,8 +280,7 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getTimePackagePaymentsToBeInvoiced(Business $business)
-    {
+    public function getTimePackagePaymentsToBeInvoiced(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\TimePackagePayment e
                 WHERE e.business = :business
                 AND e.status = :status';
@@ -289,11 +290,9 @@ class BusinessPaymentRepository extends EntityRepository
         $query->setDQL($dql);
 
         return $query->getResult();
-
     }
 
-    public function getPendingBusinessExtraPayments(Business $business)
-    {
+    public function getPendingBusinessExtraPayments(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
                 WHERE e.business = :business
                 AND e.status = :status';
@@ -305,8 +304,7 @@ class BusinessPaymentRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getSubscriptionPaymentToBeInvoiced(Business $business)
-    {
+    public function getSubscriptionPaymentToBeInvoiced(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
                 WHERE e.business = :business
                 AND e.status = :status';
@@ -317,4 +315,5 @@ class BusinessPaymentRepository extends EntityRepository
 
         return $query->getResult();
     }
+
 }

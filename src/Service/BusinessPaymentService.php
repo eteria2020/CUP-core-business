@@ -142,6 +142,11 @@ class BusinessPaymentService
         return $this->businessPaymentRepository->getBusinessSubscriptionPayment($business);
     }
 
+    public function getBusinessExtraPaymentCreditCardChange(Business $business)
+    {
+        return $this->businessPaymentRepository->getBusinessExtraPaymentCreditCardChange($business);
+    }
+
     public function getPendingBusinessTripPayments(Business $business)
     {
         return $this->businessPaymentRepository->getPendingBusinessTripPayments($business);
