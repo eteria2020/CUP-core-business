@@ -2,11 +2,11 @@
 
 namespace BusinessCore\Service;
 
-use BusinessCore\Entity\BusinessContract;
-use BusinessCore\Entity\BusinessTransaction;
+//use BusinessCore\Entity\BusinessContract;
+//use BusinessCore\Entity\BusinessTransaction;
 use MvlabsPayments\PaymentRequest\PaymentRequest;
 use MvlabsPayments\Payments\Payment;
-use Zend\EventManager\EventManager;
+//use Zend\EventManager\EventManager;
 
 class PaymentService
 {
