@@ -13,7 +13,7 @@ use BusinessCore\Entity\Repository\BusinessContractRepository;
 
 use BusinessCore\Payment\BusinessPaymentRequest;
 use Doctrine\ORM\EntityManager;
-use MvlabsPayments\PaymentRequest\PaymentRequest;
+
 use MvlabsPayments\Transaction;
 
 class TransactionService
@@ -94,9 +94,18 @@ class TransactionService
 
     public function transactionFailed(BusinessTransaction $transaction)
     {
+        // put outcome transaction KO
         $transaction->failed();
         $this->updatePaymentsAfterFailure($transaction);
         $this->entityManager->persist($transaction);
+        $this->entityManager->flush();
+
+        // disable the business (id_enabled=false and send a email)
+        $business = $transaction->getContract()->getBusiness();
+        $this->businessService->sendEmailNotification($business, 5, "it");  //TODO: correggere la category da 5 a 105
+
+        $business->setEnabled(false);
+        $this->entityManager->persist($business);
         $this->entityManager->flush();
     }
 

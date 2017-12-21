@@ -402,6 +402,25 @@ class Business
         $this->isEnabled = true;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
+    public function getEnabled()
+    {
+        return $this->isEnabled ;
+    }
+
+    /**
+     * 
+     * @param boolean $enabled
+     */
+        public function setEnabled($enabled)
+    {
+        $this->isEnabled =$enabled;
+    }
+
+    
     public function updateDetails(BusinessDetails $data)
     {
         $this->name = $data->getName();
