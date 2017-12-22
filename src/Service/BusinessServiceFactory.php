@@ -13,7 +13,7 @@ class BusinessServiceFactory implements FactoryInterface
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         $businessRepository = $entityManager->getRepository('BusinessCore\Entity\Business');
         $fareRepository = $entityManager->getRepository('BusinessCore\Entity\Fare');
-        $emailService = $serviceLocator->get('BusinessCore\Service\EmailService');
+        $businessEmailService = $serviceLocator->get('BusinessCore\Service\BusinessEmailService');
         $businessEmployeeRepository = $entityManager->getRepository('BusinessCore\Entity\BusinessEmployee');
         $employeeRepository = $entityManager->getRepository('BusinessCore\Entity\Employee');
         $translator = $serviceLocator->get('translator');
@@ -27,7 +27,7 @@ class BusinessServiceFactory implements FactoryInterface
             $translator,
             $eventManager,
             $fareRepository,
-            $emailService
+            $businessEmailService
         );
     }
 }

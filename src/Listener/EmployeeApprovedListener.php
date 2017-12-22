@@ -3,6 +3,7 @@
 namespace BusinessCore\Listener;
 
 use BusinessCore\Service\BusinessEmailService;
+use BusinessCore\Service\BusinessEmployeeService;
 use Zend\EventManager\SharedListenerAggregateInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\EventInterface;
@@ -24,11 +25,17 @@ class EmployeeApprovedListener implements SharedListenerAggregateInterface
      */
     private $translator;
 
+    /**
+     *
+     * @var BusinessEmployeeService 
+     */
+    private $businessEmployeeService;
 
-    public function __construct(BusinessEmailService $emailService, Translator $translator)
+    public function __construct(BusinessEmailService $emailService, Translator $translator, BusinessEmployeeService $businessEmployeeService)
     {
         $this->emailService = $emailService;
         $this->translator = $translator;
+        $this->businessEmployeeService = $businessEmployeeService;
     }
 
     public function attachShared(SharedEventManagerInterface $events)
@@ -54,10 +61,11 @@ class EmployeeApprovedListener implements SharedListenerAggregateInterface
         $params = $e->getParams();
         $employee = $params['employee'];
 
-        $this->emailService->sendEmail(
-            $employee->getEmail(),
-            $this->translator->translate("SHARENGO - ecco il tuo PIN aziendale"),
-            $this->translator->translate("Sei stato approvato dall'azienda, questo è il tuo PIN aziendale: ") . $employee->getBusinessPin()
-        );
+        $this->businessEmployeeService->sendEmailNotification($employee, 111, "it");
+//        $this->emailService->sendEmail(
+//            $employee->getEmail(),
+//            $this->translator->translate("SHARENGO - ecco il tuo PIN aziendale"),
+//            $this->translator->translate("Sei stato approvato dall'azienda, questo è il tuo PIN aziendale: ") . $employee->getBusinessPin()
+//        );
     }
 }

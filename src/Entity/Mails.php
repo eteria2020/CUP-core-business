@@ -2,13 +2,13 @@
 
 namespace BusinessCore\Entity;
 
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+//use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Mails
  *
- * @ORM\Table(name="mails", schema="business")
+ * @ORM\Table(name="mails", schema="public")
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\MailsRepository")
  */
 class Mails {
@@ -58,13 +58,13 @@ class Mails {
      */
     private $category;
 
-    /**
-     * @param DoctrineHydrator $hydrator
-     * @return mixed
-     */
-    public function toArray(DoctrineHydrator $hydrator) {
-        return $hydrator->extract($this);
-    }
+//    /**
+//     * @param DoctrineHydrator $hydrator
+//     * @return mixed
+//     */
+//    public function toArray(DoctrineHydrator $hydrator) {
+//        return $hydrator->extract($this);
+//    }
 
     /**
      * Get id

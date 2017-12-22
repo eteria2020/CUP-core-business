@@ -20,7 +20,7 @@ use BusinessCore\Form\InputData\BusinessConfigParams;
 use BusinessCore\Form\InputData\BusinessDetails;
 use BusinessCore\Helper\EmployeeLimits;
 use BusinessCore\Service\Helper\SearchCriteria;
-use BusinessCore\Service\EmailService;
+use BusinessCore\Service\BusinessEmailService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
@@ -68,7 +68,7 @@ class BusinessService {
      *
      * @var EmailService 
      */
-    private $emailService;
+    private $businessEmailService;
 
     /**
      * BusinessService constructor.
@@ -81,7 +81,7 @@ class BusinessService {
      * @param FareRepository $fareRepository
      */
     public function __construct(
-    EntityManager $entityManager, BusinessRepository $businessRepository, BusinessEmployeeRepository $businessEmployeeRepository, EmployeeRepository $employeeRepository, Translator $translator, EventManager $eventManager, FareRepository $fareRepository, EmailService $emailService
+    EntityManager $entityManager, BusinessRepository $businessRepository, BusinessEmployeeRepository $businessEmployeeRepository, EmployeeRepository $employeeRepository, Translator $translator, EventManager $eventManager, FareRepository $fareRepository, BusinessEmailService $emailService
     ) {
         $this->translator = $translator;
         $this->businessRepository = $businessRepository;
@@ -90,7 +90,7 @@ class BusinessService {
         $this->employeeRepository = $employeeRepository;
         $this->eventManager = $eventManager;
         $this->fareRepository = $fareRepository;
-        $this->emailService = $emailService;
+        $this->businessEmailService = $emailService;
     }
 
     public function getTotalBusinesses() {
@@ -444,15 +444,10 @@ class BusinessService {
      * @param string $language
      */
     public function sendEmailNotification(Business $business, $category, $language) {
-        $mail = $this->emailService->getMail($category, $language);
-        $content = sprintf(
-                $mail->getContent(), $business->getName()
-        );
-        $attachments = [];
+        $mail = $this->businessEmailService->getMail($category, $language);
+        $content = sprintf($mail->getContent(), $business->getName());
 
-        $this->emailService->sendEmail(
-                $business->getEmail(), $mail->getSubject(), $content, $attachments
-        );
+        $this->businessEmailService->sendEmail($business->getEmail(), $mail->getSubject(), $content);
     }
 
 }
