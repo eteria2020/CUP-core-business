@@ -102,7 +102,7 @@ class TransactionService
 
         // disable the business (id_enabled=false and send a email)
         $business = $transaction->getContract()->getBusiness();
-        $this->businessService->sendEmailNotification($business, 5, "it");  //TODO: correggere la category da 5 a 105
+        $this->businessService->sendEmailNotification($business, 105, "it");
 
         $business->setEnabled(false);
         $this->entityManager->persist($business);
