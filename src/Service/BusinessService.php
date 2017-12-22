@@ -66,7 +66,7 @@ class BusinessService {
 
     /**
      *
-     * @var EmailService 
+     * @var EmailService
      */
     private $businessEmailService;
 
@@ -438,16 +438,28 @@ class BusinessService {
     }
 
     /**
-     * 
+     *
      * @param Business $business
      * @param int $category
      * @param string $language
      */
     public function sendEmailNotification(Business $business, $category, $language) {
         $mail = $this->businessEmailService->getMail($category, $language);
-        $content = sprintf($mail->getContent(), $business->getName());
 
-        $this->businessEmailService->sendEmail($business->getEmail(), $mail->getSubject(), $content);
+        $to = $business->getEmail();
+        $name = $business->getName();
+        $subject = $mail->getSubject();
+        $template = $mail->getContent();
+
+        switch ($category) {
+            case 105 :  // company disabled
+                $content = sprintf($template, $name);
+                break;
+            default :
+                $content = sprintf($template, $name);
+        }
+
+        $this->businessEmailService->sendEmail($to, $subject, $content);
     }
 
 }
