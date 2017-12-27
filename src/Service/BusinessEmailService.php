@@ -5,6 +5,7 @@ namespace BusinessCore\Service;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
+use BusinessCore\Entity\Repository\MailsRepository;
 
 class BusinessEmailService
 {
@@ -18,12 +19,20 @@ class BusinessEmailService
      */
     private $emailSettings;
 
+    /**
+     *
+     * @var MailsRepository 
+     */
+    private $mailsRepository;
+
     public function __construct(
         TransportInterface $emailTransport,
-        array $emailSettings
+        array $emailSettings,
+        MailsRepository $mailsRepository
     ) {
         $this->emailTransport = $emailTransport;
         $this->emailSettings = $emailSettings;
+        $this->mailsRepository = $mailsRepository;
     }
 
     /**
@@ -59,5 +68,22 @@ class BusinessEmailService
         $mail->getHeaders()->addHeaderLine('X-Mailer', $this->emailSettings['X-Mailer']);
 
         $this->emailTransport->send($mail);
+    }
+
+    /**
+     * get Mail from database
+     *
+     * @param integer $category
+     * @param string $language
+     * @return Mails $mail
+     */
+    public function getMail($category, $language) {
+        $mail = $this->mailsRepository->findMails($category, $language);
+        $find = count($mail);
+
+        if ($find == 0) {
+            $mail = $this->mailsRepository->findMails($category, "it");
+        }
+        return $mail[0];
     }
 }
