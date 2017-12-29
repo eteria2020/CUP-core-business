@@ -10,29 +10,26 @@ use Doctrine\ORM\Query\ResultSetMapping;
 /**
  * BusinessRepository
  */
-class BusinessRepository extends EntityRepository
-{
-    public function findBySearchValue($value)
-    {
+class BusinessRepository extends EntityRepository {
+
+    public function findBySearchValue($value) {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
-            'SELECT e FROM \BusinessCore\Entity\Business e '.
-            'WHERE lower(e.name) LIKE :value'
+                'SELECT e FROM \BusinessCore\Entity\Business e ' .
+                'WHERE lower(e.name) LIKE :value'
         );
         $likeValue = strtolower("%" . $value . "%");
         $query->setParameter('value', $likeValue);
         return $query->getResult();
     }
 
-    public function countAll()
-    {
+    public function countAll() {
         $em = $this->getEntityManager();
         $query = $em->createQuery('SELECT COUNT(e.code) FROM \BusinessCore\Entity\Business e');
         return $query->getSingleScalarResult();
     }
 
-    public function searchBusinesses(SearchCriteria $searchCriteria)
-    {
+    public function searchBusinesses(SearchCriteria $searchCriteria) {
         $dql = 'SELECT e FROM \BusinessCore\Entity\Business e ';
 
         $query = $this->getEntityManager()->createQuery();
@@ -62,8 +59,7 @@ class BusinessRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getBusinessStatsData($from, $to)
-    {
+    public function getBusinessStatsData($from, $to) {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('name', 'business_name');
         $rsm->addScalarResult('minutes', 'minutes');
@@ -87,8 +83,7 @@ class BusinessRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function getBusinessGroupStatsData($businessName, $from, $to)
-    {
+    public function getBusinessGroupStatsData($businessName, $from, $to) {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('name', 'group_name');
         $rsm->addScalarResult('minutes', 'minutes');
@@ -113,17 +108,36 @@ class BusinessRepository extends EntityRepository
         $query->setSQL($sql);
 
         return $query->getResult();
-
     }
 
-    public function findBusinessWebuser(Business $business)
-    {
+    public function findBusinessWebuser(Business $business) {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
-            'SELECT e FROM \BusinessCore\Entity\Webuser e '.
-            'WHERE e.business = :business'
+                'SELECT e FROM \BusinessCore\Entity\Webuser e ' .
+                'WHERE e.business = :business'
         );
         $query->setParameter('business', $business);
         return $query->getOneOrNullResult();
     }
+
+    /**
+     * Find the business entity that have a credit card exired.
+     * 
+     * @param string $panExpired
+     * @return Business[]
+     */
+    public function findBusinessWidthCreditCardExpired($panExpired) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                'SELECT b FROM \BusinessCore\Entity\Business b ' .
+                'JOIN \BusinessCore\Entity\BusinessContract c ' .
+                'WHERE b.isEnabled = true AND ' .
+                'c.disabledDate IS NULL AND ' .
+                'c.panExpiry < :panExpired'
+        );
+        $query->setParameter('panExpired', $panExpired);
+
+        return $query->getResult();
+    }
+
 }

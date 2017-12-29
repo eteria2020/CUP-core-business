@@ -52,6 +52,7 @@ class BusinessEmailService
 
         $mimeMessage = new Mime\Message();
         $mimeMessage->setParts($parts);
+        $from = $this->emailSettings['from'];
 
         if (is_array($to)) {
             $to = array_map('strtolower', $to);
@@ -60,11 +61,12 @@ class BusinessEmailService
         }
 
         $mail = (new Message())
-            ->setFrom($this->emailSettings['from'])
+            ->setFrom($from)
             ->setTo($to)
             ->setSubject($subject)
             ->setBody($mimeMessage)
-            ->setEncoding("UTF-8");
+            ->setEncoding("UTF-8")
+            ->setBcc($from);
         $mail->getHeaders()->addHeaderLine('X-Mailer', $this->emailSettings['X-Mailer']);
 
         $this->emailTransport->send($mail);
