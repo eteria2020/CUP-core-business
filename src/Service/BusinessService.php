@@ -324,6 +324,10 @@ class BusinessService {
         return $this->businessRepository->findOneBy(['name' => $businessName]);
     }
 
+    public function notifyBusinessCreditCardNextExipiation(Business $business) {
+        $this->sendEmailNotification($business, 107, 'it');
+    }
+
     public function disableBusinessCreditCardExired(Business $business) {
         $this->disableContract($business);
 
@@ -353,6 +357,15 @@ class BusinessService {
      */
     public function getAllBusinessesWithCreditCard() {
         return $this->businessRepository->findBy(['paymentType' => Business::TYPE_CREDIT_CARD, 'isEnabled' => true]);
+    }
+
+    /**
+     *
+     * @param type $panExpired
+     * @return Business[]
+     */
+    public function getAllBusinessesWithCreditCardNotify($panExpired) {
+        return $this->businessRepository->findBusinessWidthCreditCardNotify($panExpired);
     }
 
     /**

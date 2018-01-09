@@ -120,8 +120,28 @@ class BusinessRepository extends EntityRepository {
         return $query->getOneOrNullResult();
     }
 
+     /**
+     * Find the business entities that have a credit card that expiry next month.
+     * 
+     * @param string $panExpired
+     * @return Business[]
+     */
+    public function findBusinessWidthCreditCardNotify($panExpired) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                'SELECT b FROM \BusinessCore\Entity\Business b ' .
+                'JOIN \BusinessCore\Entity\BusinessContract c ' .
+                'WHERE b.isEnabled = true AND ' .
+                'c.disabledDate IS NULL AND ' .
+                'c.panExpiry = :panExpired'
+        );
+        $query->setParameter('panExpired', $panExpired);
+
+        return $query->getResult();
+    }
+
     /**
-     * Find the business entity that have a credit card exired.
+     * Find the business entities that have a credit card exired.
      * 
      * @param string $panExpired
      * @return Business[]
