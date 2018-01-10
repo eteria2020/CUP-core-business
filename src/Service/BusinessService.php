@@ -484,7 +484,9 @@ class BusinessService {
 
         switch ($category) {
             case 105 :  // company disabled, for payment fail
+            case 107 :  // credit card notify expire
             case 108 :  // company disabled, for credit card expired
+            case 111 :  // emplyee enabled
                 $content = sprintf($template, $name);
                 break;
             default :
