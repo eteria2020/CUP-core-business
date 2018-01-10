@@ -65,8 +65,7 @@ class BusinessEmailService
             ->setTo($to)
             ->setSubject($subject)
             ->setBody($mimeMessage)
-            ->setEncoding("UTF-8")
-            ->setBcc($from);
+            ->setEncoding("UTF-8");
         $mail->getHeaders()->addHeaderLine('X-Mailer', $this->emailSettings['X-Mailer']);
 
         $this->emailTransport->send($mail);
