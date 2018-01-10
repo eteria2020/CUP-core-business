@@ -324,6 +324,19 @@ class BusinessService {
         return $this->businessRepository->findOneBy(['name' => $businessName]);
     }
 
+    public function notifyBusinessCreditCardNextExipiation(Business $business) {
+        $this->sendEmailNotification($business, 107, 'it');
+    }
+
+    public function disableBusinessCreditCardExired(Business $business) {
+        $this->disableContract($business);
+
+        $business->setEnabled(false);
+        $this->entityManager->persist($business);
+        $this->entityManager->flush();
+        $this->sendEmailNotification($business, 108, 'it');
+    }
+
     public function disableContract(Business $business) {
         if ($business->hasActiveContract()) {
             $contract = $business->getActiveContract();
@@ -344,6 +357,24 @@ class BusinessService {
      */
     public function getAllBusinessesWithCreditCard() {
         return $this->businessRepository->findBy(['paymentType' => Business::TYPE_CREDIT_CARD, 'isEnabled' => true]);
+    }
+
+    /**
+     *
+     * @param type $panExpired
+     * @return Business[]
+     */
+    public function getAllBusinessesWithCreditCardNotify($panExpired) {
+        return $this->businessRepository->findBusinessWidthCreditCardNotify($panExpired);
+    }
+
+    /**
+     *
+     * @param type $panExpired
+     * @return Business[]
+     */
+    public function getAllBusinessesWithCreditCardExpired($panExpired) {
+        return $this->businessRepository->findBusinessWidthCreditCardExpired($panExpired);
     }
 
     /**
@@ -452,7 +483,8 @@ class BusinessService {
         $template = $mail->getContent();
 
         switch ($category) {
-            case 105 :  // company disabled
+            case 105 :  // company disabled, for payment fail
+            case 108 :  // company disabled, for credit card expired
                 $content = sprintf($template, $name);
                 break;
             default :
