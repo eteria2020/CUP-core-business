@@ -150,16 +150,19 @@ class BusinessRepository extends EntityRepository {
      * @return Business[]
      */
     public function findBusinessWidthCreditCardExpired($panExpired) {
-        $em = $this->getEntityManager();
-        $query = $em->createQuery(
-                'SELECT b FROM \BusinessCore\Entity\Business b ' .
-                'JOIN \BusinessCore\Entity\BusinessContract c ' .
-                'WHERE b.isEnabled = true AND ' .
-                'c.disabledDate IS NULL AND ' .
-                'c.panExpiry < :panExpired'
-        );
-        $query->setParameter('panExpired', $panExpired);
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('code', 'code');
+        $rsm->addScalarResult('email', 'email');
 
+        $sql = 'SELECT b.code, b.email FROM business.business b ' .
+                'INNER JOIN business.contract c ON (c.business_code=b.code) ' .
+                'WHERE b.is_enabled = TRUE AND ' .
+                'c.disabled_date IS NULL AND ' .
+                'c.pan_expiry < :panExpired';
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter('panExpired', $panExpired);
+        $query->setSQL($sql);
         return $query->getResult();
     }
 
