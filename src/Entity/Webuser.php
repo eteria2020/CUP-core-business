@@ -11,8 +11,8 @@ use BjyAuthorize\Provider\Role\ProviderInterface;
  * @ORM\Table(name="webuser",schema="business",uniqueConstraints={@ORM\UniqueConstraint(name="email_idx", columns={"email"})})
  * @ORM\Entity(repositoryClass="BusinessCore\Entity\Repository\WebuserRepository")
  */
-class Webuser implements ProviderInterface
-{
+class Webuser implements ProviderInterface {
+
     /**
      * @var integer
      *
@@ -66,8 +66,7 @@ class Webuser implements ProviderInterface
      * @param Business $business
      * @param $role
      */
-    public function __construct($email, $displayName, $password, Business $business, $role)
-    {
+    public function __construct($email, $displayName, $password, Business $business, $role) {
         $this->email = $email;
         $this->displayName = $displayName;
         $this->password = $password;
@@ -80,8 +79,7 @@ class Webuser implements ProviderInterface
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -90,8 +88,7 @@ class Webuser implements ProviderInterface
      *
      * @return string
      */
-    public function getDisplayName()
-    {
+    public function getDisplayName() {
         return $this->displayName;
     }
 
@@ -100,8 +97,7 @@ class Webuser implements ProviderInterface
      *
      * @return string
      */
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
@@ -110,8 +106,7 @@ class Webuser implements ProviderInterface
      *
      * @return string
      */
-    public function getUsername()
-    {
+    public function getUsername() {
         return $this->email;
     }
 
@@ -120,8 +115,7 @@ class Webuser implements ProviderInterface
      *
      * @return string
      */
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
     }
 
@@ -130,8 +124,7 @@ class Webuser implements ProviderInterface
      *
      * @return string
      */
-    public function getRole()
-    {
+    public function getRole() {
         return $this->role;
     }
 
@@ -140,16 +133,23 @@ class Webuser implements ProviderInterface
      *
      * @return array
      */
-    public function getRoles()
-    {
+    public function getRoles() {
         return array($this->getRole());
     }
 
     /**
      * @return Business
      */
-    public function getBusiness()
-    {
+    public function getBusiness() {
         return $this->business;
     }
+
+    /**
+     *
+     * @param type $password
+     */
+    public function setPassword($password) {
+        $this->password = $password;
+    }
+
 }
