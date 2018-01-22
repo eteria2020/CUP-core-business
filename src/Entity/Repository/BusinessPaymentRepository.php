@@ -304,6 +304,26 @@ class BusinessPaymentRepository extends EntityRepository {
         return $query->getResult();
     }
 
+    /**
+     * Return extra payments of Business, in 'pending' status and payment_type not 'credit_card_change'
+     * @param Business $business
+     * @return array
+     */
+    public function getPendingBusinessExtraPaymentsNoCreditCardChange(Business $business) {
+        $dql = 'SELECT e FROM BusinessCore\Entity\ExtraPayment e
+                WHERE e.business = :business
+                AND e.status = :status
+                AND e.paymentType != :payment_type';
+
+        $query = $this->getEntityManager()->createQuery();
+        $query->setParameter('business', $business);
+        $query->setParameter('status', ExtraPayment::STATUS_PENDING);
+        $query->setParameter('payment_type', ExtraPayment::EXTRA_PAYMENT_CREDIT_CARD_CHANGE);
+        $query->setDQL($dql);
+
+        return $query->getResult();
+    }
+
     public function getSubscriptionPaymentToBeInvoiced(Business $business) {
         $dql = 'SELECT e FROM BusinessCore\Entity\SubscriptionPayment e
                 WHERE e.business = :business
