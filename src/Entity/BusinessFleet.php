@@ -10,8 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="fleet", schema="business")
  * @ORM\Entity(readOnly=true, repositoryClass="BusinessCore\Entity\Repository\BusinessFleetRepository")
  */
-class BusinessFleet
-{
+class BusinessFleet {
+
+    const DUMMY_FLEET_LIMIT = 100;
+
     /**
      * @var integer
      *
@@ -44,24 +46,21 @@ class BusinessFleet
     /**
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
     /**
      * @return string
      */
-    public function getInvoiceHeader()
-    {
+    public function getInvoiceHeader() {
         return $this->invoiceHeader;
     }
 

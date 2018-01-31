@@ -5,12 +5,13 @@ namespace BusinessCore\Service;
 use BusinessCore\Entity\Repository\BusinessFleetRepository;
 use Doctrine\ORM\EntityManager;
 
-class BusinessFleetService
-{
+class BusinessFleetService {
+
     /**
      * @var EntityManager
      */
     private $entityManager;
+
     /**
      * @var BusinessFleetRepository
      */
@@ -22,25 +23,26 @@ class BusinessFleetService
      * @param BusinessFleetRepository $businessFleetRepository
      */
     public function __construct(
-        EntityManager $entityManager,
-        BusinessFleetRepository $businessFleetRepository
+    EntityManager $entityManager, BusinessFleetRepository $businessFleetRepository
     ) {
         $this->entityManager = $entityManager;
         $this->businessFleetRepository = $businessFleetRepository;
     }
 
-    public function findFleetById($id)
-    {
+    public function findFleetById($id) {
         return $this->businessFleetRepository->findOneBy(['id' => $id]);
     }
 
-    public function findAll()
-    {
+    public function findAll() {
         return $this->businessFleetRepository->findAll();
     }
 
-    public function getFleetByCode($filterFleet)
-    {
+    public function findAllNoDummy() {
+        return $this->businessFleetRepository->getFeetNoDummy();
+    }
+
+    public function getFleetByCode($filterFleet) {
         return $this->businessFleetRepository->findOneBy(['code' => $filterFleet]);
     }
+
 }
