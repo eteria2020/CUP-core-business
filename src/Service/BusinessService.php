@@ -105,14 +105,27 @@ class BusinessService {
         return $this->businessRepository->searchBusinesses($searchCriteria);
     }
 
-    public function addBusiness(BusinessDetails $businessDetails, BusinessConfigParams $businessParams) {
+    /**
+     * Add a new business compaty
+     * 
+     * @param BusinessDetails $businessDetails
+     * @param BusinessConfigParams $businessParams
+     * @param int $motionDiscount
+     * @param int $parkDiscount
+     * @return Business
+     * @throws \Exception
+     * @throws UniqueConstraintViolationException
+     */
+    public function addBusiness(BusinessDetails $businessDetails, BusinessConfigParams $businessParams, $motionDiscount = 0, $parkDiscount = 0) {
+        $business = null;
         $this->entityManager->beginTransaction();
+
         try {
             $code = $this->getUniqueCode();
             $business = Business::fromBusinessDetailsAndParams($code, $businessDetails, $businessParams);
             //get the base fare, there is only one for now
             $baseFare = $this->fareRepository->findOne();
-            $businessFare = new BusinessFare($business, $baseFare);
+            $businessFare = new BusinessFare($business, $baseFare, $motionDiscount, $parkDiscount);
             //generate pending subscription payment
             $subscriptionPayment = new SubscriptionPayment($business, $business->getSubscriptionFeeCents(), 'EUR');
 

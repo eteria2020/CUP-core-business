@@ -62,8 +62,8 @@ class BusinessFare
      * BusinessFare constructor.
      * @param Business $business
      * @param Fare $baseFare
-     * @param $parkDiscount
-     * @param $motionDiscount
+     * @param int $parkDiscount
+     * @param int $motionDiscount
      */
     public function __construct(Business $business, Fare $baseFare, $motionDiscount = 0, $parkDiscount = 0)
     {
