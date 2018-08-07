@@ -78,7 +78,7 @@ class BusinessPaymentRepository extends EntityRepository {
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
-            $sql .= 'AND LOWER(' . $searchColumn . ') LIKE :value ';
+            $sql .= ' AND LOWER(' . $searchColumn . ') LIKE :value ';
             $query->setParameter('value', $likeValue);
         }
 
@@ -101,14 +101,14 @@ class BusinessPaymentRepository extends EntityRepository {
             $sortColumn = $searchCriteria->getSortColumn();
             $sortOrder = $searchCriteria->getSortOrder();
             if (!empty($sortColumn) && !empty($sortOrder)) {
-                $sql .= 'ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
+                $sql .= ' ORDER BY ' . $sortColumn . ' ' . $sortOrder . ' ';
             }
 
             $paginationLength = $searchCriteria->getPaginationLength();
             $paginationStart = $searchCriteria->getPaginationStart();
             if (!empty($paginationLength) && !empty($paginationStart)) {
-                $sql .= 'LIMIT' . $paginationLength;
-                $sql .= ' OFFSET' . $paginationStart;
+                $sql .= ' LIMIT ' . $paginationLength;
+                $sql .= ' OFFSET ' . $paginationStart;
             }
         }
         $query->setSQL($sql);
@@ -175,7 +175,7 @@ class BusinessPaymentRepository extends EntityRepository {
         $searchValue = $searchCriteria->getSearchValue();
         if (!empty($searchColumn) && !empty($searchValue)) {
             $likeValue = strtolower("%" . $searchValue . "%");
-            $sql .= 'AND LOWER(' . $searchColumn . ') LIKE :value ';
+            $sql .= ' AND LOWER(' . $searchColumn . ') LIKE :value ';
             $query->setParameter('value', $likeValue);
         }
 
