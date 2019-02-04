@@ -56,7 +56,7 @@ class BusinessDataFactory
 
         $validator = new VatNumber();
         if (!$validator->isValid($vatNumber)) {
-            throw new InvalidBusinessFormException("Partita IVA non valida");
+            throw new InvalidBusinessFormException(implode(" ", $validator->getMessages()));
         }
 
         $validator = new Hostname();
