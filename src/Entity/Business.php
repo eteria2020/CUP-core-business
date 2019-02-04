@@ -230,6 +230,20 @@ class Business
      */
     private $businessContracts;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="recipient_code", type="text", nullable=true)
+     */
+    private $recipientCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cem", type="text", nullable=true)
+     */
+    private $cem;
+
     public function __construct($code)
     {
         $this->code = $code;
@@ -420,7 +434,9 @@ class Business
         $this->isEnabled =$enabled;
     }
 
-    
+    /**
+     * @param BusinessDetails $data
+     */
     public function updateDetails(BusinessDetails $data)
     {
         $this->name = $data->getName();
@@ -433,8 +449,13 @@ class Business
         $this->email = $data->getEmail();
         $this->phone = $data->getPhone();
         $this->fax = $data->getFax();
+        $this->recipientCode = $data->getRecipientCode();
+        $this->cem = $data->getCem();
     }
 
+    /**
+     * @param BusinessConfigParams $data
+     */
     public function updateParams(BusinessConfigParams $data)
     {
         $this->isEnabled = $data->getBusinessEnabled();
@@ -679,4 +700,23 @@ class Business
     {
         $this->lastPaymentExecution = date_create();
     }
+
+    /**
+     * Electronic invoice, return recipeint code (codice destinatario)
+     *
+     * @return string
+     */
+    public function getRecipientCode() {
+        return $this->recipientCode;
+    }
+
+    /**
+     * Electronic invoice, return Certified EMail (Posta Elettronica Certificata PEC)
+     *
+     * @return string
+     */
+    public function getCem() {
+        return $this->cem;
+    }
+    
 }

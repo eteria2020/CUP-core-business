@@ -14,8 +14,11 @@ class BusinessDetails
     private $email;
     private $phone;
     private $fax;
+    private $recipientCode;
+    private $cem;
 
     /**
+     * BusinessDetails constructor.
      * @param $name
      * @param $domains
      * @param $address
@@ -26,6 +29,8 @@ class BusinessDetails
      * @param $email
      * @param $phone
      * @param $fax
+     * @param null $recipientCode
+     * @param null $cem
      */
     public function __construct(
         $name,
@@ -37,7 +42,9 @@ class BusinessDetails
         $vatNumber,
         $email,
         $phone,
-        $fax
+        $fax,
+        $recipientCode = null,
+        $cem = null
     ) {
         $this->name = $name;
         $this->domains = $domains;
@@ -49,6 +56,8 @@ class BusinessDetails
         $this->email = $email;
         $this->phone = $phone;
         $this->fax = $fax;
+        $this->recipientCode = $recipientCode;
+        $this->cem = $cem;
     }
 
     /**
@@ -129,6 +138,22 @@ class BusinessDetails
     public function getFax()
     {
         return $this->fax;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRecipientCode()
+    {
+        return $this->recipientCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCem()
+    {
+        return $this->cem;
     }
 }
 
