@@ -2,9 +2,11 @@
 
 namespace BusinessCore\Form\InputData;
 
+
 use BusinessCore\Entity\BusinessFleet;
 use BusinessCore\Exception\InvalidBusinessFormException;
 use BusinessCore\Form\Validator\VatNumber;
+use BusinessCore\Form\Validator\ZipCode;
 use Zend\Mvc\I18n\Translator;
 use Zend\Validator\EmailAddress;
 use Zend\Validator\Hostname;
@@ -56,6 +58,11 @@ class BusinessDataFactory
 
         $validator = new VatNumber();
         if (!$validator->isValid($vatNumber)) {
+            throw new InvalidBusinessFormException(implode(" ", $validator->getMessages()));
+        }
+
+        $validator = new ZipCode();
+        if (!$validator->isValid($zipCode)) {
             throw new InvalidBusinessFormException(implode(" ", $validator->getMessages()));
         }
 
