@@ -420,6 +420,8 @@ class BusinessService {
             $paymentType = "BB101";
         }
 
+        $recipientCode = empty($business->getRecipientCode())? "0000000": $this->exportFormat($business->getRecipientCode(),7);
+
         /**
          * Every element is in a row
          * The first value in the comments for each row is the code number
@@ -453,7 +455,9 @@ class BusinessService {
             "", // 25. BirthCountry 236 - max 3
             "C01", // 26. 240 - max 6
             "200", // 27. 330 - max 6
-            $paymentType                                        // 28. 581 - max 25
+            $paymentType,                                        // 28. 581 - max 25
+            $recipientCode,                                                                  // 29. max 7
+            $this->exportFormat($business->getCem(), 25)                              // 30. max 25
         ];
 
         return implode(";", $registry);
@@ -473,6 +477,7 @@ class BusinessService {
             $result = str_replace(";", "", $result);
             $result = str_replace("\n", "", $result);
             $result = str_replace("\r", "", $result);
+            $result = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $result);
             if ($length > 0) {
                 $result = substr($result, 0, $length);
             }
