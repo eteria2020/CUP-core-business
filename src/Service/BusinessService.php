@@ -420,7 +420,10 @@ class BusinessService {
             $paymentType = "BB101";
         }
 
-        $recipientCode = empty($business->getRecipientCode())? "0000000": $this->exportFormat($business->getRecipientCode(),7);
+        $recipientCode = $this->exportFormat($business->getRecipientCode(), 7);
+        if (empty($recipientCode)) {
+            $recipientCode = "0000000";
+        }
 
         /**
          * Every element is in a row
