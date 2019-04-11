@@ -460,7 +460,7 @@ class BusinessService {
             "200", // 27. 330 - max 6
             $paymentType,                                        // 28. 581 - max 25
             $recipientCode,                                                                  // 29. max 7
-            $this->exportFormat($business->getCem(), 25)                              // 30. max 25
+            $this->exportFormat($business->getCem(), 128)                             // 30. max 128
         ];
 
         return implode(";", $registry);
